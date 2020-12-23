@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.7) (preloaded format=pdflatex 2020.8.3)  23 DEC 2020 12:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.7) (preloaded format=pdflatex 2020.8.3)  23 DEC 2020 12:42
 entering extended mode
 **./bmc_article.tex
 (bmc_article.tex
@@ -202,12 +202,19 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 \address@aff1=\toks33
 \address@aff2=\toks34
 LaTeX Font Info:    Font shape `OT1/cmss/m/it' in size <8> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 286.
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 273.
 
 [1{C:/Users/Fahad Satti/AppData/Local/MiKTeX/pdftex/config/pdftex.map}
 
 ]
-(bmc_article.bbl) 
+(bmc_article.bbl)
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
 AED: lastpage setting LastPage
 [2] [3] (bmc_article.aux)
 
@@ -218,11 +225,11 @@ LaTeX Font Warning: Size substitutions with differences
 Here is how much of TeX's memory you used:
  2684 strings out of 481225
  35088 string characters out of 2915909
- 284939 words of memory out of 3000000
+ 286939 words of memory out of 3000000
  18274 multiletter control sequences out of 15000+200000
  543405 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 35i,13n,41p,253b,390s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,13n,41p,522b,390s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Progra
 m Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKT
 eX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX/fonts/type
@@ -234,7 +241,7 @@ TeX/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Program Files/MiKTeX/fonts/typ
 e1/public/amsfonts/cm/cmssbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmsy7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on bmc_article.pdf (3 pages, 146587 bytes).
+Output written on bmc_article.pdf (3 pages, 148981 bytes).
 PDF statistics:
  64 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
