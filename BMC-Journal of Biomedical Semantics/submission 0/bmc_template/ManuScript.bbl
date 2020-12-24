@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{7}
+\begin{thebibliography}{6}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -43,26 +43,6 @@
 \csname PreBibitemsHook\endcsname
 
 %%% 1
-\bibitem{viani2020temporal}
-\begin{barticle}
-\bauthor{\bsnm{Viani}, \binits{N.}},
-\bauthor{\bsnm{Kam}, \binits{J.}},
-\bauthor{\bsnm{Yin}, \binits{L.}},
-\bauthor{\bsnm{Bittar}, \binits{A.}},
-\bauthor{\bsnm{Dutta}, \binits{R.}},
-\bauthor{\bsnm{Patel}, \binits{R.}},
-\bauthor{\bsnm{Stewart}, \binits{R.}},
-\bauthor{\bsnm{Velupillai}, \binits{S.}}:
-\batitle{Temporal information extraction from mental health records to identify
-  duration of untreated psychosis}.
-\bjtitle{Journal of Biomedical Semantics}
-\bvolume{11}(\bissue{1}),
-\bfpage{1}--\blpage{11}
-(\byear{2020})
-\end{barticle}
-\endbibitem
-
-%%% 2
 \bibitem{koon}
 \begin{barticle}
 \bauthor{\bsnm{Koonin}, \binits{E.V.}},
@@ -76,7 +56,7 @@
 \end{barticle}
 \endbibitem
 
-%%% 3
+%%% 2
 \bibitem{xjon}
 \begin{bchapter}
 \bauthor{\bsnm{Jones}, \binits{X.}}:
@@ -89,7 +69,7 @@ pp. \bfpage{16}--\blpage{27}
 \end{bchapter}
 \endbibitem
 
-%%% 4
+%%% 3
 \bibitem{marg}
 \begin{bbook}
 \bauthor{\bsnm{Margulis}, \binits{L.}}:
@@ -100,7 +80,7 @@ pp. \bfpage{16}--\blpage{27}
 \end{bbook}
 \endbibitem
 
-%%% 5
+%%% 4
 \bibitem{schn}
 \begin{bchapter}
 \bauthor{\bsnm{Schnepf}, \binits{E.}}:
@@ -116,7 +96,7 @@ pp. \bfpage{53}--\blpage{76}.
 \end{bchapter}
 \endbibitem
 
-%%% 6
+%%% 5
 \bibitem{koha}
 \begin{botherref}
 \oauthor{\bsnm{Kohavi}, \binits{R.}}:
@@ -127,7 +107,7 @@ Stanford University, Computer Science Department
 \end{botherref}
 \endbibitem
 
-%%% 7
+%%% 6
 \bibitem{issnic}
 \begin{botherref}
 \oauthor{\bsnm{{ISSN International Centre}}}:
@@ -147,28 +127,6 @@ Accessed Accessed 20 Feb 2007
 <refgrp>
 
 <bibl id="B1">
-  <title><p>Temporal information extraction from mental health records to
-  identify duration of untreated psychosis</p></title>
-  <aug>
-    <au><snm>Viani</snm><fnm>N</fnm></au>
-    <au><snm>Kam</snm><fnm>J</fnm></au>
-    <au><snm>Yin</snm><fnm>L</fnm></au>
-    <au><snm>Bittar</snm><fnm>A</fnm></au>
-    <au><snm>Dutta</snm><fnm>R</fnm></au>
-    <au><snm>Patel</snm><fnm>R</fnm></au>
-    <au><snm>Stewart</snm><fnm>R</fnm></au>
-    <au><snm>Velupillai</snm><fnm>S</fnm></au>
-  </aug>
-  <source>Journal of Biomedical Semantics</source>
-  <publisher>Springer</publisher>
-  <pubdate>2020</pubdate>
-  <volume>11</volume>
-  <issue>1</issue>
-  <fpage>1</fpage>
-  <lpage>-11</lpage>
-</bibl>
-
-<bibl id="B2">
   <title><p>BRCA1 protein products: functional motifs</p></title>
   <aug>
     <au><snm>Koonin</snm><fnm>E V</fnm></au>
@@ -182,7 +140,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>267</lpage>
 </bibl>
 
-<bibl id="B3">
+<bibl id="B2">
   <title><p>Zeolites and synthetic mechanisms</p></title>
   <aug>
     <au><snm>Jones</snm><fnm>X</fnm></au>
@@ -195,7 +153,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>27</lpage>
 </bibl>
 
-<bibl id="B4">
+<bibl id="B3">
   <title><p>Origin of Eukaryotic Cells</p></title>
   <aug>
     <au><snm>Margulis</snm><fnm>L</fnm></au>
@@ -204,7 +162,7 @@ Accessed Accessed 20 Feb 2007
   <pubdate>1970</pubdate>
 </bibl>
 
-<bibl id="B5">
+<bibl id="B4">
   <title><p>From prey via endosymbiont to plastids: comparative studies in
   dinoflagellates</p></title>
   <aug>
@@ -219,7 +177,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>76</lpage>
 </bibl>
 
-<bibl id="B6">
+<bibl id="B5">
   <title><p>Wrappers for performance enhancement and obvious decision
   graphs</p></title>
   <aug>
@@ -230,7 +188,7 @@ Accessed Accessed 20 Feb 2007
   <pubdate>1995</pubdate>
 </bibl>
 
-<bibl id="B7">
+<bibl id="B6">
   <title><p>The ISSN register</p></title>
   <aug>
     <au><cnm>{ISSN International Centre}</cnm></au>
