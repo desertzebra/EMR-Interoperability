@@ -206,77 +206,8 @@ Text for this section.
 
 \end{frontmatter}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%                                            %%
-%% The Main Body begins here                  %%
-%%                                            %%
-%% Please refer to the instructions for       %%
-%% authors on:                                %%
-%% https://www.biomedcentral.com/getpublished %%
-%% and include the section headings           %%
-%% accordingly for your article type.         %%
-%%                                            %%
-%% See the Results and Discussion section     %%
-%% for details on how to create sub-sections  %%
-%%                                            %%
-%% use \cite{...} to cite references          %%
-%%  \cite{koon} and                           %%
-%%  \cite{oreg,khar,zvai,xjon,schn,pond}      %%
-%%                                            %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{content}
 
-%%%%%%%%%%%%%%%%%%%%%%%%% start of article main body
-% <put your article body there>
-
-\section*{Introduction}
-Data and Information modeling in the healthcare domain have witnessed significant improvements in the last decade owing to advances in the development of state-of-the-art information and communication technologies (ICT) and formalization of storage and messaging standards. Subsequently, the scope of Healthcare Management Information Systems (HMIS), medical ontologies, and Clinical Decision Support Systems (CDSS) has broadened, beyond the operational capabilities of traditional rule based systems.
-%%%%%%%%%%%%%%%%
-%% Background %%
-%%
-\section*{Content}
-Text and results for this section, as per the individual journal's instructions for authors.
-
-\section*{Section title}
-Text for this section\ldots
-\subsection*{Sub-heading for section}
-Text for this sub-heading\ldots
-\subsubsection*{Sub-sub heading for section}
-Text for this sub-sub-heading\ldots
-\paragraph*{Sub-sub-sub heading for section}
-Text for this sub-sub-sub-heading\ldots
-
-In this section we examine the growth rate of the mean of $Z_0$, $Z_1$ and $Z_2$. In
-addition, we examine a common modeling assumption and note the
-importance of considering the tails of the extinction time $T_x$ in
-studies of escape dynamics.
-We will first consider the expected resistant population at $vT_x$ for
-some $v>0$, (and temporarily assume $\alpha=0$)
-%
-\[
-E \bigl[Z_1(vT_x) \bigr]=
-\int_0^{v\wedge
-1}Z_0(uT_x)
-\exp (\lambda_1)\,du .
-\]
-%
-If we assume that sensitive cells follow a deterministic decay
-$Z_0(t)=xe^{\lambda_0 t}$ and approximate their extinction time as
-$T_x\approx-\frac{1}{\lambda_0}\log x$, then we can heuristically
-estimate the expected value as
-%
-\begin{equation}\label{eqexpmuts}
-\begin{aligned}[b]
-&      E\bigl[Z_1(vT_x)\bigr]\\
-&\quad      = \frac{\mu}{r}\log x
-\int_0^{v\wedge1}x^{1-u}x^{({\lambda_1}/{r})(v-u)}\,du .
-\end{aligned}
-\end{equation}
-%
-Thus we observe that this expected value is finite for all $v>0$ (also see \cite{koon,xjon,marg,schn,koha,issnic}).
-
-
-\section*{Appendix}
-Text for this section\ldots
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                                          %%
@@ -330,7 +261,8 @@ Text for this section\ldots
 
 % if your bibliography is in bibtex format, use those commands:
 \bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
-\bibliography{bmc_article}      % Bibliography file (usually '*.bib' )
+\bibliography{fahadreferences}      % Bibliography file (usually '*.bib' )
+\bibliography{musarratreferences}      % Bibliography file (usually '*.bib' )
 % for author-year bibliography (bmc-mathphys or spbasic)
 % a) write to bib file (bmc-mathphys only)
 % @settings{label, options="nameyear"}
