@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{6}
+\begin{thebibliography}{11}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -43,6 +43,83 @@
 \csname PreBibitemsHook\endcsname
 
 %%% 1
+\bibitem{althubaiti2020combining}
+\begin{barticle}
+\bauthor{\bsnm{Althubaiti}, \binits{S.}},
+\bauthor{\bsnm{Kafkas}, \binits{{\c{S}}.}},
+\bauthor{\bsnm{Abdelhakim}, \binits{M.}},
+\bauthor{\bsnm{Hoehndorf}, \binits{R.}}:
+\batitle{Combining lexical and context features for automatic ontology
+  extension}.
+\bjtitle{Journal of biomedical semantics}
+\bvolume{11}(\bissue{1}),
+\bfpage{1}--\blpage{13}
+(\byear{2020})
+\end{barticle}
+\endbibitem
+
+%%% 2
+\bibitem{nozaki2019semantic}
+\begin{bchapter}
+\bauthor{\bsnm{Nozaki}, \binits{K.}},
+\bauthor{\bsnm{Hochin}, \binits{T.}},
+\bauthor{\bsnm{Nomiya}, \binits{H.}}:
+\bctitle{Semantic schema matching for string attribute with word vectors}.
+In: \bbtitle{2019 6th International Conference on Computational
+  Science/Intelligence and Applied Informatics (CSII)},
+pp. \bfpage{25}--\blpage{30}
+(\byear{2019}).
+\bcomment{IEEE}
+\end{bchapter}
+\endbibitem
+
+%%% 3
+\bibitem{yousfi2020xmatcher}
+\begin{barticle}
+\bauthor{\bsnm{Yousfi}, \binits{A.}},
+\bauthor{\bsnm{El~Yazidi}, \binits{M.H.}},
+\bauthor{\bsnm{Zellou}, \binits{A.}}:
+\batitle{xmatcher: Matching extensible markup language schemas using
+  semantic-based techniques}.
+\bjtitle{International Journal of Advanced Computer Science and Applications}
+\bvolume{11}(\bissue{8}),
+\bfpage{655}--\blpage{665}
+(\byear{2020})
+\end{barticle}
+\endbibitem
+
+%%% 4
+\bibitem{bulygin2018combining}
+\begin{bchapter}
+\bauthor{\bsnm{Bulygin}, \binits{L.}}:
+\bctitle{Combining lexical and semantic similarity measures with machine
+  learning approach for ontology and schema matching problem}.
+In: \bbtitle{Proceedings of the XX International Conference “Data Analytics
+  and Management in Data Intensive Domains”(DAMDID/RCDL’2018)},
+pp. \bfpage{245}--\blpage{249}
+(\byear{2018})
+\end{bchapter}
+\endbibitem
+
+%%% 5
+\bibitem{kersloot2020natural}
+\begin{barticle}
+\bauthor{\bsnm{Kersloot}, \binits{M.G.}},
+\bauthor{\bparticle{van} \bsnm{Putten}, \binits{F.J.}},
+\bauthor{\bsnm{Abu-Hanna}, \binits{A.}},
+\bauthor{\bsnm{Cornet}, \binits{R.}},
+\bauthor{\bsnm{Arts}, \binits{D.L.}}:
+\batitle{Natural language processing algorithms for mapping clinical text
+  fragments onto ontology concepts: a systematic review and recommendations for
+  future studies}.
+\bjtitle{Journal of biomedical semantics}
+\bvolume{11}(\bissue{1}),
+\bfpage{1}--\blpage{21}
+(\byear{2020})
+\end{barticle}
+\endbibitem
+
+%%% 6
 \bibitem{koon}
 \begin{barticle}
 \bauthor{\bsnm{Koonin}, \binits{E.V.}},
@@ -56,7 +133,7 @@
 \end{barticle}
 \endbibitem
 
-%%% 2
+%%% 7
 \bibitem{xjon}
 \begin{bchapter}
 \bauthor{\bsnm{Jones}, \binits{X.}}:
@@ -69,7 +146,7 @@ pp. \bfpage{16}--\blpage{27}
 \end{bchapter}
 \endbibitem
 
-%%% 3
+%%% 8
 \bibitem{marg}
 \begin{bbook}
 \bauthor{\bsnm{Margulis}, \binits{L.}}:
@@ -80,7 +157,7 @@ pp. \bfpage{16}--\blpage{27}
 \end{bbook}
 \endbibitem
 
-%%% 4
+%%% 9
 \bibitem{schn}
 \begin{bchapter}
 \bauthor{\bsnm{Schnepf}, \binits{E.}}:
@@ -96,7 +173,7 @@ pp. \bfpage{53}--\blpage{76}.
 \end{bchapter}
 \endbibitem
 
-%%% 5
+%%% 10
 \bibitem{koha}
 \begin{botherref}
 \oauthor{\bsnm{Kohavi}, \binits{R.}}:
@@ -107,7 +184,7 @@ Stanford University, Computer Science Department
 \end{botherref}
 \endbibitem
 
-%%% 6
+%%% 11
 \bibitem{issnic}
 \begin{botherref}
 \oauthor{\bsnm{{ISSN International Centre}}}:
@@ -127,6 +204,89 @@ Accessed Accessed 20 Feb 2007
 <refgrp>
 
 <bibl id="B1">
+  <title><p>Combining lexical and context features for automatic ontology
+  extension</p></title>
+  <aug>
+    <au><snm>Althubaiti</snm><fnm>S</fnm></au>
+    <au><snm>Kafkas</snm><fnm>{\c{S}}</fnm></au>
+    <au><snm>Abdelhakim</snm><fnm>M</fnm></au>
+    <au><snm>Hoehndorf</snm><fnm>R</fnm></au>
+  </aug>
+  <source>Journal of biomedical semantics</source>
+  <publisher>BioMed Central</publisher>
+  <pubdate>2020</pubdate>
+  <volume>11</volume>
+  <issue>1</issue>
+  <fpage>1</fpage>
+  <lpage>-13</lpage>
+</bibl>
+
+<bibl id="B2">
+  <title><p>Semantic Schema Matching for String Attribute with Word
+  Vectors</p></title>
+  <aug>
+    <au><snm>Nozaki</snm><fnm>K</fnm></au>
+    <au><snm>Hochin</snm><fnm>T</fnm></au>
+    <au><snm>Nomiya</snm><fnm>H</fnm></au>
+  </aug>
+  <source>2019 6th International Conference on Computational
+  Science/Intelligence and Applied Informatics (CSII)</source>
+  <pubdate>2019</pubdate>
+  <fpage>25</fpage>
+  <lpage>-30</lpage>
+</bibl>
+
+<bibl id="B3">
+  <title><p>xmatcher: Matching extensible markup language schemas using
+  semantic-based techniques</p></title>
+  <aug>
+    <au><snm>Yousfi</snm><fnm>A</fnm></au>
+    <au><snm>El Yazidi</snm><fnm>MH</fnm></au>
+    <au><snm>Zellou</snm><fnm>A</fnm></au>
+  </aug>
+  <source>International Journal of Advanced Computer Science and
+  Applications</source>
+  <pubdate>2020</pubdate>
+  <volume>11</volume>
+  <issue>8</issue>
+  <fpage>655</fpage>
+  <lpage>-665</lpage>
+</bibl>
+
+<bibl id="B4">
+  <title><p>Combining lexical and semantic similarity measures with machine
+  learning approach for ontology and schema matching problem</p></title>
+  <aug>
+    <au><snm>Bulygin</snm><fnm>L</fnm></au>
+  </aug>
+  <source>Proceedings of the XX International Conference “Data Analytics and
+  Management in Data Intensive Domains”(DAMDID/RCDL’2018)</source>
+  <pubdate>2018</pubdate>
+  <fpage>245</fpage>
+  <lpage>-249</lpage>
+</bibl>
+
+<bibl id="B5">
+  <title><p>Natural language processing algorithms for mapping clinical text
+  fragments onto ontology concepts: a systematic review and recommendations for
+  future studies</p></title>
+  <aug>
+    <au><snm>Kersloot</snm><fnm>MG</fnm></au>
+    <au><snm>Putten</snm><fnm>FJ</fnm></au>
+    <au><snm>Abu Hanna</snm><fnm>A</fnm></au>
+    <au><snm>Cornet</snm><fnm>R</fnm></au>
+    <au><snm>Arts</snm><fnm>DL</fnm></au>
+  </aug>
+  <source>Journal of biomedical semantics</source>
+  <publisher>Springer</publisher>
+  <pubdate>2020</pubdate>
+  <volume>11</volume>
+  <issue>1</issue>
+  <fpage>1</fpage>
+  <lpage>-21</lpage>
+</bibl>
+
+<bibl id="B6">
   <title><p>BRCA1 protein products: functional motifs</p></title>
   <aug>
     <au><snm>Koonin</snm><fnm>E V</fnm></au>
@@ -140,7 +300,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>267</lpage>
 </bibl>
 
-<bibl id="B2">
+<bibl id="B7">
   <title><p>Zeolites and synthetic mechanisms</p></title>
   <aug>
     <au><snm>Jones</snm><fnm>X</fnm></au>
@@ -153,7 +313,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>27</lpage>
 </bibl>
 
-<bibl id="B3">
+<bibl id="B8">
   <title><p>Origin of Eukaryotic Cells</p></title>
   <aug>
     <au><snm>Margulis</snm><fnm>L</fnm></au>
@@ -162,7 +322,7 @@ Accessed Accessed 20 Feb 2007
   <pubdate>1970</pubdate>
 </bibl>
 
-<bibl id="B4">
+<bibl id="B9">
   <title><p>From prey via endosymbiont to plastids: comparative studies in
   dinoflagellates</p></title>
   <aug>
@@ -177,7 +337,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>76</lpage>
 </bibl>
 
-<bibl id="B5">
+<bibl id="B10">
   <title><p>Wrappers for performance enhancement and obvious decision
   graphs</p></title>
   <aug>
@@ -188,7 +348,7 @@ Accessed Accessed 20 Feb 2007
   <pubdate>1995</pubdate>
 </bibl>
 
-<bibl id="B6">
+<bibl id="B11">
   <title><p>The ISSN register</p></title>
   <aug>
     <au><cnm>{ISSN International Centre}</cnm></au>
