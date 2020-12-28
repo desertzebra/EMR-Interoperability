@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.7) (preloaded format=pdflatex 2020.8.3)  28 DEC 2020 13:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.7) (preloaded format=pdflatex 2020.8.3)  28 DEC 2020 14:34
 entering extended mode
 **./ManuScript.tex
 (ManuScript.tex
@@ -201,15 +201,21 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 
 \address@aff1=\toks33
 \address@aff2=\toks34
-(content.tex (introduction.tex) (relatedwork.tex
+(content.tex (introduction.tex
 LaTeX Font Info:    Font shape `OT1/cmss/m/it' in size <8> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 2.
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 10.
  [1{C:/Users/Fahad Satti/AppData/Local/MiKTeX/pdftex/config/pdftex.map}
 
-]) [2]) (ManuScript.bbl [3])
+]) (relatedwork.tex) [2]) [3] (ManuScript.bbl)
 
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[4] 
 AED: lastpage setting LastPage
-[4] (ManuScript.aux)
+[5] (ManuScript.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
@@ -218,11 +224,11 @@ LaTeX Font Warning: Size substitutions with differences
 Here is how much of TeX's memory you used:
  2703 strings out of 481225
  35642 string characters out of 2915909
- 285970 words of memory out of 3000000
+ 287970 words of memory out of 3000000
  18287 multiletter control sequences out of 15000+200000
  543405 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 35i,13n,41p,1213b,469s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,13n,41p,1213b,390s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Progra
 m Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKT
 eX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX/fonts/type
@@ -234,9 +240,9 @@ TeX/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Program Files/MiKTeX/fonts/typ
 e1/public/amsfonts/cm/cmssbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmsy7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on ManuScript.pdf (4 pages, 159592 bytes).
+Output written on ManuScript.pdf (5 pages, 161705 bytes).
 PDF statistics:
- 67 PDF objects out of 1000 (max. 8388607)
+ 70 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
