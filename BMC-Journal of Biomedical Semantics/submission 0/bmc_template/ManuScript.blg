@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (MiKTeX 2.9.7440 64-bit)
+This is BibTeX, Version 0.99d
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ManuScript.aux
 Reallocating 'name_of_file' (item size: 1) to 13 items.
@@ -21,49 +21,53 @@ Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Database file #1: references.bib
+Warning--I didn't find a database entry for "alwan2017survey"
 Reallocating 'wiz_functions' (item size: 4) to 9000 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--to sort, need author or key in snomedct_url
+Warning--to sort, need author or key in loinc
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
-You've used 10 entries,
+You've used 13 entries,
             7128 wiz_defined-function locations,
-            1179 strings with 11580 characters,
-and the built_in function-call counts, 281302 in all, are:
-= -- 51773
-> -- 374
-< -- 191
-+ -- 31948
-- -- 134
-* -- 7790
-:= -- 48757
-add.period$ -- 11
-call.type$ -- 10
-change.case$ -- 143
-chr.to.int$ -- 364
-cite$ -- 10
-duplicate$ -- 1059
-empty$ -- 4001
-format.name$ -- 457
-if$ -- 71729
+            1196 strings with 11935 characters,
+and the built_in function-call counts, 288842 in all, are:
+= -- 52778
+> -- 393
+< -- 198
++ -- 32132
+- -- 144
+* -- 8301
+:= -- 50245
+add.period$ -- 15
+call.type$ -- 13
+change.case$ -- 156
+chr.to.int$ -- 370
+cite$ -- 17
+duplicate$ -- 1240
+empty$ -- 4421
+format.name$ -- 487
+if$ -- 73410
 int.to.chr$ -- 1
-int.to.str$ -- 25
-missing$ -- 371
-newline$ -- 363
-num.names$ -- 50
-pop$ -- 483
+int.to.str$ -- 31
+missing$ -- 469
+newline$ -- 413
+num.names$ -- 55
+pop$ -- 624
 preamble$ -- 1
-purify$ -- 44
-quote$ -- 20
-skip$ -- 31067
+purify$ -- 54
+quote$ -- 26
+skip$ -- 31500
 stack$ -- 0
-substring$ -- 28277
-swap$ -- 332
-text.length$ -- 178
+substring$ -- 29244
+swap$ -- 346
+text.length$ -- 205
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 415
-warning$ -- 0
-while$ -- 416
+type$ -- 523
+warning$ -- 2
+while$ -- 458
 width$ -- 0
-write$ -- 508
+write$ -- 570
+(There were 3 warnings)

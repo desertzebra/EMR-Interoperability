@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{10}
+\begin{thebibliography}{13}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -113,6 +113,52 @@
 \endbibitem
 
 %%% 5
+\bibitem{snomedct_url}
+\begin{botherref}
+{SNOMED Clinical Terminologies}.
+\url{http://www.snomed.org/snomed-ct/five-step-briefing}
+Accessed 2020-03-19
+\end{botherref}
+\endbibitem
+
+%%% 6
+\bibitem{loinc}
+\begin{botherref}
+{LOINC}.
+\url{https://loinc.org/}
+Accessed 2019-03-19
+\end{botherref}
+\endbibitem
+
+%%% 7
+\bibitem{CIMI2015}
+\begin{botherref}
+\oauthor{\bsnm{CIMI}}:
+{Clinical Information Modeling Initiative (CIMI)}
+(2015).
+\url{http://www.opencimi.org/}
+Accessed 2020-03-19
+\end{botherref}
+\endbibitem
+
+%%% 8
+\bibitem{Satti2020}
+\begin{barticle}
+\bauthor{\bsnm{Satti}, \binits{F.A.}},
+\bauthor{\bsnm{Ali}, \binits{T.}},
+\bauthor{\bsnm{Hussain}, \binits{J.}},
+\bauthor{\bsnm{Khan}, \binits{W.A.}},
+\bauthor{\bsnm{Khattak}, \binits{A.M.}},
+\bauthor{\bsnm{Lee}, \binits{S.}}:
+\batitle{{Ubiquitous Health Profile (UHPr): a big data curation platform for
+  supporting health data interoperability}}.
+\bjtitle{Computing}
+(\byear{2020}).
+doi:\doiurl{10.1007/s00607-020-00837-2}
+\end{barticle}
+\endbibitem
+
+%%% 9
 \bibitem{althubaiti2020combining}
 \begin{barticle}
 \bauthor{\bsnm{Althubaiti}, \binits{S.}},
@@ -128,7 +174,7 @@
 \end{barticle}
 \endbibitem
 
-%%% 6
+%%% 10
 \bibitem{nozaki2019semantic}
 \begin{bchapter}
 \bauthor{\bsnm{Nozaki}, \binits{K.}},
@@ -143,7 +189,7 @@ pp. \bfpage{25}--\blpage{30}
 \end{bchapter}
 \endbibitem
 
-%%% 7
+%%% 11
 \bibitem{yousfi2020xmatcher}
 \begin{barticle}
 \bauthor{\bsnm{Yousfi}, \binits{A.}},
@@ -158,7 +204,7 @@ pp. \bfpage{25}--\blpage{30}
 \end{barticle}
 \endbibitem
 
-%%% 8
+%%% 12
 \bibitem{bulygin2018combining}
 \begin{bchapter}
 \bauthor{\bsnm{Bulygin}, \binits{L.}}:
@@ -171,21 +217,7 @@ pp. \bfpage{245}--\blpage{249}
 \end{bchapter}
 \endbibitem
 
-%%% 9
-\bibitem{alwan2017survey}
-\begin{botherref}
-\oauthor{\bsnm{Alwan}, \binits{A.A.}},
-\oauthor{\bsnm{Nordin}, \binits{A.}},
-\oauthor{\bsnm{Alzeber}, \binits{M.}},
-\oauthor{\bsnm{Abualkishik}, \binits{A.Z.}}:
-A survey of schema matching research using database schemas and instances.
-International Journal of Advanced Computer Science and Applications
-\textbf{8}(10)
-(2017)
-\end{botherref}
-\endbibitem
-
-%%% 10
+%%% 13
 \bibitem{kersloot2020natural}
 \begin{barticle}
 \bauthor{\bsnm{Kersloot}, \binits{M.G.}},
@@ -285,6 +317,40 @@ International Journal of Advanced Computer Science and Applications
 </bibl>
 
 <bibl id="B5">
+  <title><p>{SNOMED Clinical Terminologies}</p></title>
+  <url>http://www.snomed.org/snomed-ct/five-step-briefing</url>
+</bibl>
+
+<bibl id="B6">
+  <title><p>{LOINC}</p></title>
+  <url>https://loinc.org/</url>
+</bibl>
+
+<bibl id="B7">
+  <title><p>{Clinical Information Modeling Initiative (CIMI)}</p></title>
+  <aug>
+    <au><cnm>CIMI</cnm></au>
+  </aug>
+  <pubdate>2015</pubdate>
+  <url>http://www.opencimi.org/</url>
+</bibl>
+
+<bibl id="B8">
+  <title><p>{Ubiquitous Health Profile (UHPr): a big data curation platform for
+  supporting health data interoperability}</p></title>
+  <aug>
+    <au><snm>Satti</snm><fnm>FA</fnm></au>
+    <au><snm>Ali</snm><fnm>T</fnm></au>
+    <au><snm>Hussain</snm><fnm>J</fnm></au>
+    <au><snm>Khan</snm><fnm>WA</fnm></au>
+    <au><snm>Khattak</snm><fnm>AM</fnm></au>
+    <au><snm>Lee</snm><fnm>S</fnm></au>
+  </aug>
+  <source>Computing</source>
+  <pubdate>2020</pubdate>
+</bibl>
+
+<bibl id="B9">
   <title><p>Combining lexical and context features for automatic ontology
   extension</p></title>
   <aug>
@@ -302,7 +368,7 @@ International Journal of Advanced Computer Science and Applications
   <lpage>-13</lpage>
 </bibl>
 
-<bibl id="B6">
+<bibl id="B10">
   <title><p>Semantic Schema Matching for String Attribute with Word
   Vectors</p></title>
   <aug>
@@ -317,7 +383,7 @@ International Journal of Advanced Computer Science and Applications
   <lpage>-30</lpage>
 </bibl>
 
-<bibl id="B7">
+<bibl id="B11">
   <title><p>xmatcher: Matching extensible markup language schemas using
   semantic-based techniques</p></title>
   <aug>
@@ -334,7 +400,7 @@ International Journal of Advanced Computer Science and Applications
   <lpage>-665</lpage>
 </bibl>
 
-<bibl id="B8">
+<bibl id="B12">
   <title><p>Combining lexical and semantic similarity measures with machine
   learning approach for ontology and schema matching problem</p></title>
   <aug>
@@ -347,23 +413,7 @@ International Journal of Advanced Computer Science and Applications
   <lpage>-249</lpage>
 </bibl>
 
-<bibl id="B9">
-  <title><p>A survey of schema matching research using database schemas and
-  instances</p></title>
-  <aug>
-    <au><snm>Alwan</snm><fnm>AA</fnm></au>
-    <au><snm>Nordin</snm><fnm>A</fnm></au>
-    <au><snm>Alzeber</snm><fnm>M</fnm></au>
-    <au><snm>Abualkishik</snm><fnm>AZ</fnm></au>
-  </aug>
-  <source>International Journal of Advanced Computer Science and
-  Applications</source>
-  <pubdate>2017</pubdate>
-  <volume>8</volume>
-  <issue>10</issue>
-</bibl>
-
-<bibl id="B10">
+<bibl id="B13">
   <title><p>Natural language processing algorithms for mapping clinical text
   fragments onto ontology concepts: a systematic review and recommendations for
   future studies</p></title>
