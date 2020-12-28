@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{13}
+\begin{thebibliography}{14}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -218,6 +218,19 @@ pp. \bfpage{245}--\blpage{249}
 \endbibitem
 
 %%% 13
+\bibitem{martono2017review}
+\begin{barticle}
+\bauthor{\bsnm{Martono}, \binits{G.H.}},
+\bauthor{\bsnm{Azhari}, \binits{S.}}:
+\batitle{Review implementation of linguistic approach in schema matching}.
+\bjtitle{International Journal of Advances in Intelligent Informatics}
+\bvolume{3}(\bissue{1}),
+\bfpage{1}--\blpage{9}
+(\byear{2017})
+\end{barticle}
+\endbibitem
+
+%%% 14
 \bibitem{kersloot2020natural}
 \begin{barticle}
 \bauthor{\bsnm{Kersloot}, \binits{M.G.}},
@@ -414,6 +427,22 @@ pp. \bfpage{245}--\blpage{249}
 </bibl>
 
 <bibl id="B13">
+  <title><p>Review implementation of linguistic approach in schema
+  matching</p></title>
+  <aug>
+    <au><snm>Martono</snm><fnm>GH</fnm></au>
+    <au><snm>Azhari</snm><fnm>SN</fnm></au>
+  </aug>
+  <source>International Journal of Advances in Intelligent Informatics</source>
+  <publisher>Universitas Ahmad Dahlan</publisher>
+  <pubdate>2017</pubdate>
+  <volume>3</volume>
+  <issue>1</issue>
+  <fpage>1</fpage>
+  <lpage>-9</lpage>
+</bibl>
+
+<bibl id="B14">
   <title><p>Natural language processing algorithms for mapping clinical text
   fragments onto ontology concepts: a systematic review and recommendations for
   future studies</p></title>
