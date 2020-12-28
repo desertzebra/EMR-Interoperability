@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (MiKTeX 2.9.7440 64-bit)
+This is BibTeX, Version 0.99d
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ManuScript.aux
 Reallocating 'name_of_file' (item size: 1) to 13 items.
@@ -26,44 +26,44 @@ Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
-You've used 11 entries,
+You've used 15 entries,
             7128 wiz_defined-function locations,
-            1190 strings with 11057 characters,
-and the built_in function-call counts, 305115 in all, are:
-= -- 57961
-> -- 319
-< -- 189
-+ -- 37075
-- -- 107
-* -- 6593
-:= -- 52399
-add.period$ -- 13
-call.type$ -- 11
-change.case$ -- 127
-chr.to.int$ -- 398
-cite$ -- 11
-duplicate$ -- 952
-empty$ -- 2773
-format.name$ -- 269
-if$ -- 79080
+            1216 strings with 12113 characters,
+and the built_in function-call counts, 402717 in all, are:
+= -- 75304
+> -- 487
+< -- 261
++ -- 47266
+- -- 171
+* -- 9966
+:= -- 69501
+add.period$ -- 17
+call.type$ -- 15
+change.case$ -- 193
+chr.to.int$ -- 510
+cite$ -- 15
+duplicate$ -- 1425
+empty$ -- 4707
+format.name$ -- 524
+if$ -- 103521
 int.to.chr$ -- 1
-int.to.str$ -- 29
-missing$ -- 352
-newline$ -- 340
-num.names$ -- 61
-pop$ -- 440
+int.to.str$ -- 37
+missing$ -- 517
+newline$ -- 477
+num.names$ -- 81
+pop$ -- 666
 preamble$ -- 1
-purify$ -- 50
-quote$ -- 22
-skip$ -- 35404
+purify$ -- 66
+quote$ -- 30
+skip$ -- 45576
 stack$ -- 0
-substring$ -- 28337
-swap$ -- 308
-text.length$ -- 206
+substring$ -- 38828
+swap$ -- 440
+text.length$ -- 267
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 468
+type$ -- 630
 warning$ -- 0
-while$ -- 396
+while$ -- 572
 width$ -- 0
-write$ -- 423
+write$ -- 645

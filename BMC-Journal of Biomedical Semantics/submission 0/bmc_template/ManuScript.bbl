@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{11}
+\begin{thebibliography}{15}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -43,6 +43,76 @@
 \csname PreBibitemsHook\endcsname
 
 %%% 1
+\bibitem{geraci1991ieee}
+\begin{bbook}
+\bauthor{\bsnm{Geraci}, \binits{A.}},
+\bauthor{\bsnm{Katki}, \binits{F.}},
+\bauthor{\bsnm{McMonegal}, \binits{L.}},
+\bauthor{\bsnm{Meyer}, \binits{B.}},
+\bauthor{\bsnm{Lane}, \binits{J.}},
+\bauthor{\bsnm{Wilson}, \binits{P.}},
+\bauthor{\bsnm{Radatz}, \binits{J.}},
+\bauthor{\bsnm{Yee}, \binits{M.}},
+\bauthor{\bsnm{Porteous}, \binits{H.}},
+\bauthor{\bsnm{Springsteel}, \binits{F.}}:
+\bbtitle{IEEE Standard Computer Dictionary: Compilation of IEEE Standard
+  Computer Glossaries}.
+\bpublisher{IEEE Press}, \blocation{???}
+(\byear{1991})
+\end{bbook}
+\endbibitem
+
+%%% 2
+\bibitem{Himss_url2013}
+\begin{botherref}
+\oauthor{\bsnm{{Healthcare Information and Management Systems Society}}}:
+{Definition of Interoperability}
+(2013).
+\url{http://www.himss.org/library/interoperability-standards/what-is}
+\end{botherref}
+\endbibitem
+
+%%% 3
+\bibitem{khan2013process}
+\begin{barticle}
+\bauthor{\bsnm{Khan}, \binits{W.A.}},
+\bauthor{\bsnm{Hussain}, \binits{M.}},
+\bauthor{\bsnm{Latif}, \binits{K.}},
+\bauthor{\bsnm{Afzal}, \binits{M.}},
+\bauthor{\bsnm{Ahmad}, \binits{F.}},
+\bauthor{\bsnm{Lee}, \binits{S.}}:
+\batitle{Process interoperability in healthcare systems with dynamic semantic
+  web services}.
+\bjtitle{Computing}
+\bvolume{95}(\bissue{9}),
+\bfpage{837}--\blpage{862}
+(\byear{2013})
+\end{barticle}
+\endbibitem
+
+%%% 4
+\bibitem{ali2017multi}
+\begin{barticle}
+\bauthor{\bsnm{Ali}, \binits{T.}},
+\bauthor{\bsnm{Hussain}, \binits{M.}},
+\bauthor{\bsnm{Khan}, \binits{W.A.}},
+\bauthor{\bsnm{Afzal}, \binits{M.}},
+\bauthor{\bsnm{Hussain}, \binits{J.}},
+\bauthor{\bsnm{Ali}, \binits{R.}},
+\bauthor{\bsnm{Hassan}, \binits{W.}},
+\bauthor{\bsnm{Jamshed}, \binits{A.}},
+\bauthor{\bsnm{Kang}, \binits{B.H.}},
+\bauthor{\bsnm{Lee}, \binits{S.}}:
+\batitle{Multi-model-based interactive authoring environment for creating
+  shareable medical knowledge}.
+\bjtitle{Computer Methods and Programs in Biomedicine}
+\bvolume{150},
+\bfpage{41}--\blpage{72}
+(\byear{2017})
+\end{barticle}
+\endbibitem
+
+%%% 5
 \bibitem{althubaiti2020combining}
 \begin{barticle}
 \bauthor{\bsnm{Althubaiti}, \binits{S.}},
@@ -58,7 +128,7 @@
 \end{barticle}
 \endbibitem
 
-%%% 2
+%%% 6
 \bibitem{nozaki2019semantic}
 \begin{bchapter}
 \bauthor{\bsnm{Nozaki}, \binits{K.}},
@@ -73,7 +143,7 @@ pp. \bfpage{25}--\blpage{30}
 \end{bchapter}
 \endbibitem
 
-%%% 3
+%%% 7
 \bibitem{yousfi2020xmatcher}
 \begin{barticle}
 \bauthor{\bsnm{Yousfi}, \binits{A.}},
@@ -88,7 +158,7 @@ pp. \bfpage{25}--\blpage{30}
 \end{barticle}
 \endbibitem
 
-%%% 4
+%%% 8
 \bibitem{bulygin2018combining}
 \begin{bchapter}
 \bauthor{\bsnm{Bulygin}, \binits{L.}}:
@@ -101,7 +171,7 @@ pp. \bfpage{245}--\blpage{249}
 \end{bchapter}
 \endbibitem
 
-%%% 5
+%%% 9
 \bibitem{kersloot2020natural}
 \begin{barticle}
 \bauthor{\bsnm{Kersloot}, \binits{M.G.}},
@@ -119,7 +189,7 @@ pp. \bfpage{245}--\blpage{249}
 \end{barticle}
 \endbibitem
 
-%%% 6
+%%% 10
 \bibitem{koon}
 \begin{barticle}
 \bauthor{\bsnm{Koonin}, \binits{E.V.}},
@@ -133,7 +203,7 @@ pp. \bfpage{245}--\blpage{249}
 \end{barticle}
 \endbibitem
 
-%%% 7
+%%% 11
 \bibitem{xjon}
 \begin{bchapter}
 \bauthor{\bsnm{Jones}, \binits{X.}}:
@@ -146,7 +216,7 @@ pp. \bfpage{16}--\blpage{27}
 \end{bchapter}
 \endbibitem
 
-%%% 8
+%%% 12
 \bibitem{marg}
 \begin{bbook}
 \bauthor{\bsnm{Margulis}, \binits{L.}}:
@@ -157,7 +227,7 @@ pp. \bfpage{16}--\blpage{27}
 \end{bbook}
 \endbibitem
 
-%%% 9
+%%% 13
 \bibitem{schn}
 \begin{bchapter}
 \bauthor{\bsnm{Schnepf}, \binits{E.}}:
@@ -173,7 +243,7 @@ pp. \bfpage{53}--\blpage{76}.
 \end{bchapter}
 \endbibitem
 
-%%% 10
+%%% 14
 \bibitem{koha}
 \begin{botherref}
 \oauthor{\bsnm{Kohavi}, \binits{R.}}:
@@ -184,7 +254,7 @@ Stanford University, Computer Science Department
 \end{botherref}
 \endbibitem
 
-%%% 11
+%%% 15
 \bibitem{issnic}
 \begin{botherref}
 \oauthor{\bsnm{{ISSN International Centre}}}:
@@ -204,6 +274,79 @@ Accessed Accessed 20 Feb 2007
 <refgrp>
 
 <bibl id="B1">
+  <title><p>IEEE standard computer dictionary: Compilation of IEEE standard
+  computer glossaries</p></title>
+  <aug>
+    <au><snm>Geraci</snm><fnm>A</fnm></au>
+    <au><snm>Katki</snm><fnm>F</fnm></au>
+    <au><snm>McMonegal</snm><fnm>L</fnm></au>
+    <au><snm>Meyer</snm><fnm>B</fnm></au>
+    <au><snm>Lane</snm><fnm>J</fnm></au>
+    <au><snm>Wilson</snm><fnm>P</fnm></au>
+    <au><snm>Radatz</snm><fnm>J</fnm></au>
+    <au><snm>Yee</snm><fnm>M</fnm></au>
+    <au><snm>Porteous</snm><fnm>H</fnm></au>
+    <au><snm>Springsteel</snm><fnm>F</fnm></au>
+  </aug>
+  <publisher>IEEE Press</publisher>
+  <pubdate>1991</pubdate>
+</bibl>
+
+<bibl id="B2">
+  <title><p>{Definition of Interoperability}</p></title>
+  <aug>
+    <au><cnm>{Healthcare Information and Management Systems Society}</cnm></au>
+  </aug>
+  <source>Himss</source>
+  <pubdate>2013</pubdate>
+  <fpage>2013</fpage>
+  <url>http://www.himss.org/library/interoperability-standards/what-is</url>
+</bibl>
+
+<bibl id="B3">
+  <title><p>Process interoperability in healthcare systems with dynamic
+  semantic web services</p></title>
+  <aug>
+    <au><snm>Khan</snm><fnm>WA</fnm></au>
+    <au><snm>Hussain</snm><fnm>M</fnm></au>
+    <au><snm>Latif</snm><fnm>K</fnm></au>
+    <au><snm>Afzal</snm><fnm>M</fnm></au>
+    <au><snm>Ahmad</snm><fnm>F</fnm></au>
+    <au><snm>Lee</snm><fnm>S</fnm></au>
+  </aug>
+  <source>Computing</source>
+  <publisher>Springer</publisher>
+  <pubdate>2013</pubdate>
+  <volume>95</volume>
+  <issue>9</issue>
+  <fpage>837</fpage>
+  <lpage>-862</lpage>
+</bibl>
+
+<bibl id="B4">
+  <title><p>Multi-model-based interactive authoring environment for creating
+  shareable medical knowledge</p></title>
+  <aug>
+    <au><snm>Ali</snm><fnm>T</fnm></au>
+    <au><snm>Hussain</snm><fnm>M</fnm></au>
+    <au><snm>Khan</snm><fnm>WA</fnm></au>
+    <au><snm>Afzal</snm><fnm>M</fnm></au>
+    <au><snm>Hussain</snm><fnm>J</fnm></au>
+    <au><snm>Ali</snm><fnm>R</fnm></au>
+    <au><snm>Hassan</snm><fnm>W</fnm></au>
+    <au><snm>Jamshed</snm><fnm>A</fnm></au>
+    <au><snm>Kang</snm><fnm>BH</fnm></au>
+    <au><snm>Lee</snm><fnm>S</fnm></au>
+  </aug>
+  <source>Computer Methods and Programs in Biomedicine</source>
+  <publisher>Elsevier</publisher>
+  <pubdate>2017</pubdate>
+  <volume>150</volume>
+  <fpage>41</fpage>
+  <lpage>-72</lpage>
+</bibl>
+
+<bibl id="B5">
   <title><p>Combining lexical and context features for automatic ontology
   extension</p></title>
   <aug>
@@ -221,7 +364,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>-13</lpage>
 </bibl>
 
-<bibl id="B2">
+<bibl id="B6">
   <title><p>Semantic Schema Matching for String Attribute with Word
   Vectors</p></title>
   <aug>
@@ -236,7 +379,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>-30</lpage>
 </bibl>
 
-<bibl id="B3">
+<bibl id="B7">
   <title><p>xmatcher: Matching extensible markup language schemas using
   semantic-based techniques</p></title>
   <aug>
@@ -253,7 +396,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>-665</lpage>
 </bibl>
 
-<bibl id="B4">
+<bibl id="B8">
   <title><p>Combining lexical and semantic similarity measures with machine
   learning approach for ontology and schema matching problem</p></title>
   <aug>
@@ -266,7 +409,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>-249</lpage>
 </bibl>
 
-<bibl id="B5">
+<bibl id="B9">
   <title><p>Natural language processing algorithms for mapping clinical text
   fragments onto ontology concepts: a systematic review and recommendations for
   future studies</p></title>
@@ -286,7 +429,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>-21</lpage>
 </bibl>
 
-<bibl id="B6">
+<bibl id="B10">
   <title><p>BRCA1 protein products: functional motifs</p></title>
   <aug>
     <au><snm>Koonin</snm><fnm>E V</fnm></au>
@@ -300,7 +443,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>267</lpage>
 </bibl>
 
-<bibl id="B7">
+<bibl id="B11">
   <title><p>Zeolites and synthetic mechanisms</p></title>
   <aug>
     <au><snm>Jones</snm><fnm>X</fnm></au>
@@ -313,7 +456,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>27</lpage>
 </bibl>
 
-<bibl id="B8">
+<bibl id="B12">
   <title><p>Origin of Eukaryotic Cells</p></title>
   <aug>
     <au><snm>Margulis</snm><fnm>L</fnm></au>
@@ -322,7 +465,7 @@ Accessed Accessed 20 Feb 2007
   <pubdate>1970</pubdate>
 </bibl>
 
-<bibl id="B9">
+<bibl id="B13">
   <title><p>From prey via endosymbiont to plastids: comparative studies in
   dinoflagellates</p></title>
   <aug>
@@ -337,7 +480,7 @@ Accessed Accessed 20 Feb 2007
   <lpage>76</lpage>
 </bibl>
 
-<bibl id="B10">
+<bibl id="B14">
   <title><p>Wrappers for performance enhancement and obvious decision
   graphs</p></title>
   <aug>
@@ -348,7 +491,7 @@ Accessed Accessed 20 Feb 2007
   <pubdate>1995</pubdate>
 </bibl>
 
-<bibl id="B11">
+<bibl id="B15">
   <title><p>The ISSN register</p></title>
   <aug>
     <au><cnm>{ISSN International Centre}</cnm></au>
