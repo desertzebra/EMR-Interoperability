@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{15}
+\begin{thebibliography}{10}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -172,6 +172,20 @@ pp. \bfpage{245}--\blpage{249}
 \endbibitem
 
 %%% 9
+\bibitem{alwan2017survey}
+\begin{botherref}
+\oauthor{\bsnm{Alwan}, \binits{A.A.}},
+\oauthor{\bsnm{Nordin}, \binits{A.}},
+\oauthor{\bsnm{Alzeber}, \binits{M.}},
+\oauthor{\bsnm{Abualkishik}, \binits{A.Z.}}:
+A survey of schema matching research using database schemas and instances.
+International Journal of Advanced Computer Science and Applications
+\textbf{8}(10)
+(2017)
+\end{botherref}
+\endbibitem
+
+%%% 10
 \bibitem{kersloot2020natural}
 \begin{barticle}
 \bauthor{\bsnm{Kersloot}, \binits{M.G.}},
@@ -187,82 +201,6 @@ pp. \bfpage{245}--\blpage{249}
 \bfpage{1}--\blpage{21}
 (\byear{2020})
 \end{barticle}
-\endbibitem
-
-%%% 10
-\bibitem{koon}
-\begin{barticle}
-\bauthor{\bsnm{Koonin}, \binits{E.V.}},
-\bauthor{\bsnm{Altschul}, \binits{S.F.}},
-\bauthor{\bsnm{Bork}, \binits{P.}}:
-\batitle{Brca1 protein products: functional motifs}.
-\bjtitle{Nat. Genet.}
-\bvolume{13},
-\bfpage{266}--\blpage{267}
-(\byear{1996})
-\end{barticle}
-\endbibitem
-
-%%% 11
-\bibitem{xjon}
-\begin{bchapter}
-\bauthor{\bsnm{Jones}, \binits{X.}}:
-\bctitle{Zeolites and synthetic mechanisms}.
-In: \beditor{\bsnm{Smith}, \binits{Y.}} (ed.)
-\bbtitle{Proceedings of the First National Conference on Porous Sieves: 27-30
-  June 1996; Baltimore},
-pp. \bfpage{16}--\blpage{27}
-(\byear{1996})
-\end{bchapter}
-\endbibitem
-
-%%% 12
-\bibitem{marg}
-\begin{bbook}
-\bauthor{\bsnm{Margulis}, \binits{L.}}:
-\bbtitle{Origin of Eukaryotic Cells}.
-\bpublisher{Yale University Press},
-\blocation{New Haven}
-(\byear{1970})
-\end{bbook}
-\endbibitem
-
-%%% 13
-\bibitem{schn}
-\begin{bchapter}
-\bauthor{\bsnm{Schnepf}, \binits{E.}}:
-\bctitle{From prey via endosymbiont to plastids: comparative studies in
-  dinoflagellates}.
-In: \beditor{\bsnm{Lewin}, \binits{R.A.}} (ed.)
-\bbtitle{Origins of Plastids},
-\bedition{2nd} edn.,
-pp. \bfpage{53}--\blpage{76}.
-\bpublisher{Chapman and Hall},
-\blocation{New York}
-(\byear{1993})
-\end{bchapter}
-\endbibitem
-
-%%% 14
-\bibitem{koha}
-\begin{botherref}
-\oauthor{\bsnm{Kohavi}, \binits{R.}}:
-Wrappers for performance enhancement and obvious decision graphs.
-PhD thesis,
-Stanford University, Computer Science Department
-(1995)
-\end{botherref}
-\endbibitem
-
-%%% 15
-\bibitem{issnic}
-\begin{botherref}
-\oauthor{\bsnm{{ISSN International Centre}}}:
-The ISSN register
-(2006).
-\url{http://www.issn.org}
-Accessed Accessed 20 Feb 2007
-\end{botherref}
 \endbibitem
 
 \end{thebibliography}
@@ -410,6 +348,22 @@ Accessed Accessed 20 Feb 2007
 </bibl>
 
 <bibl id="B9">
+  <title><p>A survey of schema matching research using database schemas and
+  instances</p></title>
+  <aug>
+    <au><snm>Alwan</snm><fnm>AA</fnm></au>
+    <au><snm>Nordin</snm><fnm>A</fnm></au>
+    <au><snm>Alzeber</snm><fnm>M</fnm></au>
+    <au><snm>Abualkishik</snm><fnm>AZ</fnm></au>
+  </aug>
+  <source>International Journal of Advanced Computer Science and
+  Applications</source>
+  <pubdate>2017</pubdate>
+  <volume>8</volume>
+  <issue>10</issue>
+</bibl>
+
+<bibl id="B10">
   <title><p>Natural language processing algorithms for mapping clinical text
   fragments onto ontology concepts: a systematic review and recommendations for
   future studies</p></title>
@@ -427,77 +381,6 @@ Accessed Accessed 20 Feb 2007
   <issue>1</issue>
   <fpage>1</fpage>
   <lpage>-21</lpage>
-</bibl>
-
-<bibl id="B10">
-  <title><p>BRCA1 protein products: functional motifs</p></title>
-  <aug>
-    <au><snm>Koonin</snm><fnm>E V</fnm></au>
-    <au><snm>Altschul</snm><fnm>S F</fnm></au>
-    <au><snm>Bork</snm><fnm>P</fnm></au>
-  </aug>
-  <source>Nat. Genet.</source>
-  <pubdate>1996</pubdate>
-  <volume>13</volume>
-  <fpage>266</fpage>
-  <lpage>267</lpage>
-</bibl>
-
-<bibl id="B11">
-  <title><p>Zeolites and synthetic mechanisms</p></title>
-  <aug>
-    <au><snm>Jones</snm><fnm>X</fnm></au>
-  </aug>
-  <source>Proceedings of the First National Conference on Porous Sieves: 27-30
-  June 1996; Baltimore</source>
-  <editor>Y Smith</editor>
-  <pubdate>1996</pubdate>
-  <fpage>16</fpage>
-  <lpage>27</lpage>
-</bibl>
-
-<bibl id="B12">
-  <title><p>Origin of Eukaryotic Cells</p></title>
-  <aug>
-    <au><snm>Margulis</snm><fnm>L</fnm></au>
-  </aug>
-  <publisher>New Haven: Yale University Press</publisher>
-  <pubdate>1970</pubdate>
-</bibl>
-
-<bibl id="B13">
-  <title><p>From prey via endosymbiont to plastids: comparative studies in
-  dinoflagellates</p></title>
-  <aug>
-    <au><snm>Schnepf</snm><fnm>E</fnm></au>
-  </aug>
-  <source>Origins of Plastids</source>
-  <publisher>New York: Chapman and Hall</publisher>
-  <editor>R A Lewin</editor>
-  <edition>2</edition>
-  <pubdate>1993</pubdate>
-  <fpage>53</fpage>
-  <lpage>76</lpage>
-</bibl>
-
-<bibl id="B14">
-  <title><p>Wrappers for performance enhancement and obvious decision
-  graphs</p></title>
-  <aug>
-    <au><snm>Kohavi</snm><fnm>R</fnm></au>
-  </aug>
-  <source>PhD thesis</source>
-  <publisher>Stanford University, Computer Science Department</publisher>
-  <pubdate>1995</pubdate>
-</bibl>
-
-<bibl id="B15">
-  <title><p>The ISSN register</p></title>
-  <aug>
-    <au><cnm>{ISSN International Centre}</cnm></au>
-  </aug>
-  <pubdate>2006</pubdate>
-  <url>http://www.issn.org</url>
 </bibl>
 
 </refgrp>
