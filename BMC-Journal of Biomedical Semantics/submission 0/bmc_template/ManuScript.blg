@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (MiKTeX 2.9.7440 64-bit)
+This is BibTeX, Version 0.99d
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ManuScript.aux
 Reallocating 'name_of_file' (item size: 1) to 13 items.
@@ -21,7 +21,6 @@ Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Database file #1: references.bib
-Warning--I didn't find a database entry for "alwan2017survey"
 Reallocating 'wiz_functions' (item size: 4) to 9000 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Warning--to sort, need author or key in snomedct_url
@@ -29,45 +28,45 @@ Warning--to sort, need author or key in loinc
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
-You've used 14 entries,
+You've used 15 entries,
             7128 wiz_defined-function locations,
-            1202 strings with 12139 characters,
-and the built_in function-call counts, 293253 in all, are:
-= -- 53327
-> -- 421
-< -- 216
-+ -- 32256
-- -- 150
-* -- 8633
-:= -- 51144
-add.period$ -- 16
-call.type$ -- 14
-change.case$ -- 164
-chr.to.int$ -- 407
-cite$ -- 18
-duplicate$ -- 1326
-empty$ -- 4659
-format.name$ -- 511
-if$ -- 74410
+            1204 strings with 12295 characters,
+and the built_in function-call counts, 298255 in all, are:
+= -- 53933
+> -- 443
+< -- 222
++ -- 32357
+- -- 158
+* -- 9054
+:= -- 52182
+add.period$ -- 17
+call.type$ -- 15
+change.case$ -- 173
+chr.to.int$ -- 408
+cite$ -- 19
+duplicate$ -- 1414
+empty$ -- 4991
+format.name$ -- 550
+if$ -- 75470
 int.to.chr$ -- 1
-int.to.str$ -- 34
-missing$ -- 501
-newline$ -- 441
-num.names$ -- 60
-pop$ -- 656
+int.to.str$ -- 36
+missing$ -- 537
+newline$ -- 469
+num.names$ -- 65
+pop$ -- 703
 preamble$ -- 1
-purify$ -- 59
-quote$ -- 28
-skip$ -- 31779
+purify$ -- 63
+quote$ -- 30
+skip$ -- 32040
 stack$ -- 0
-substring$ -- 29755
-swap$ -- 378
-text.length$ -- 221
+substring$ -- 30515
+swap$ -- 393
+text.length$ -- 233
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 568
+type$ -- 594
 warning$ -- 2
-while$ -- 492
+while$ -- 521
 width$ -- 0
-write$ -- 605
-(There were 3 warnings)
+write$ -- 646
+(There were 2 warnings)

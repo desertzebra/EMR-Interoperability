@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{14}
+\begin{thebibliography}{15}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -231,6 +231,20 @@ pp. \bfpage{245}--\blpage{249}
 \endbibitem
 
 %%% 14
+\bibitem{alwan2017survey}
+\begin{botherref}
+\oauthor{\bsnm{Alwan}, \binits{A.A.}},
+\oauthor{\bsnm{Nordin}, \binits{A.}},
+\oauthor{\bsnm{Alzeber}, \binits{M.}},
+\oauthor{\bsnm{Abualkishik}, \binits{A.Z.}}:
+A survey of schema matching research using database schemas and instances.
+International Journal of Advanced Computer Science and Applications
+\textbf{8}(10)
+(2017)
+\end{botherref}
+\endbibitem
+
+%%% 15
 \bibitem{kersloot2020natural}
 \begin{barticle}
 \bauthor{\bsnm{Kersloot}, \binits{M.G.}},
@@ -443,6 +457,22 @@ pp. \bfpage{245}--\blpage{249}
 </bibl>
 
 <bibl id="B14">
+  <title><p>A survey of schema matching research using database schemas and
+  instances</p></title>
+  <aug>
+    <au><snm>Alwan</snm><fnm>AA</fnm></au>
+    <au><snm>Nordin</snm><fnm>A</fnm></au>
+    <au><snm>Alzeber</snm><fnm>M</fnm></au>
+    <au><snm>Abualkishik</snm><fnm>AZ</fnm></au>
+  </aug>
+  <source>International Journal of Advanced Computer Science and
+  Applications</source>
+  <pubdate>2017</pubdate>
+  <volume>8</volume>
+  <issue>10</issue>
+</bibl>
+
+<bibl id="B15">
   <title><p>Natural language processing algorithms for mapping clinical text
   fragments onto ontology concepts: a systematic review and recommendations for
   future studies</p></title>
