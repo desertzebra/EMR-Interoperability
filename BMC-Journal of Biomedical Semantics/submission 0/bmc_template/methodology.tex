@@ -1,14 +1,18 @@
 
 \section*{Methodology}
 \label{methodology}
-Healthcare interoperability, with a focus on non-standard compliant medical schema, is dependent on the generation and validation of schema maps, as discussed above. To this end, the creation of a cohesive workflow is of utmost importance. As a possible realization of this aim, and from a purely practical point of view, our methodology is presented in the following subsections.
+Healthcare interoperability, with a focus on non-standard compliant medical schema, is dependent on the generation and validation of schema maps, as discussed above. To this end, the creation of a cohesive workflow is of utmost importance. In our earlier work \cite{Satti2020} we used maximum sequence identification and matching using suffix trees for syntactic matching of two distinctly sources data schemas. This was followed by semantic concept enrichment and subsequently concept matching, for creating rules in the form of schema maps. The simplified mapping functions, thereby created, provided a simple methodology for converting semi-structured medical data, into a non-persisted, interpretable, model form.
+In our current methodology we have utilized state-of-the-art machine learning techniques for converting medical schemas into semi-structured form, which is then used to create embedding vectors. These vectors are then used for modeling and creating interpretable rules for applying semantic reconciliation in the form of schema matching and/or transformation. These rules are managed by the RDR which allows fast inference using the relevant knowledge sub-tree, and can well manage knowledge evolution to scale out (by incorporating new schema) and up (by incorporating changes and additions to existing schema)
+As a possible realization of this aim, and from a practical point of view, our methodology is presented in the following subsections.
 
 \subsection*{Schema acquisition}
 \label{schema_acq}
-In the first step of our semantic reconciliation methodology, we collect medical schema from three distinct information systems.
+In the first step of our semantic reconciliation methodology, we collect medical schema from \textbf{three} distinct information systems. The include ....
 
 
-\subsection*{Schema preprocessing}
+
+
+\subsection*{Schema processing}
 \label{schema_prepro}
 The medical schemas and their instances are converted into an interpretable form with each attribute containining:
 
