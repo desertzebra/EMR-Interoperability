@@ -13,9 +13,10 @@ Differences in normalization cause semantic differences, due to which some data 
 ``time" in ``Diagnosis" table of $s_3$, and  ``dateOfAdmission" in ``Diagnosis" and ``CareHistory" tables of $s_4$.
 Finally, $s_1$ and $s_3$ have separate tables containing the medicinal prescription details, however the same details are unavailable in $s_2$, $s_4$, $s_5$. Once again, this is not an incorrect behavior since this information, might not be a part of the context or the requirements for these EMR storage systems.
 In fact, the change in context of the EMR storage system from the initial time of development to a later stage of collaborative processing systems, is the main cause of heterogeneity.
-In order to provide an interoperable solution, it is therefore necessary to provide syntactic and semantic mappings, while taking the data instances (or tuples) into account.
+In order to provide an interoperable solution, it is therefore necessary to provide syntactic and semantic mappings, while taking the data instances (or tuples) into account. Data instances are used to enrich the semantic context of an attribute ($a_i$) by establishing its probable data type and possible value set. 
+In our earlier work \cite{Satti2020} $s_1$, $s_2$, and $s_5$ were used to generate over 115 million patient records, which are converted into a semi-structured form and stored in Hadoop Distributed File System (HDFS). We extended the same setup to \textbf{further include}
 
-In our earlier work \cite{Satti2020} $s_1$, $s_2$, and $s_3$ were used to generate over 115 million patient records, which are converted into a semi-structured form and stored in Hadoop Distributed File System (HDFS). We extended the same setup to \textbf{further include}
+In essence, the set of attribute ($A$) holds all unique attributes of all participating schema.
 
 
 
