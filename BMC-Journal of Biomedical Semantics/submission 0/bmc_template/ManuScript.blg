@@ -20,6 +20,7 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: references.bib
+Warning--I didn't find a database entry for "SQLDataTypes"
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Warning--to sort, need author or key in snomedct_url
@@ -29,7 +30,7 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 You've used 18 entries,
             7128 wiz_defined-function locations,
-            1222 strings with 12900 characters,
+            1224 strings with 12924 characters,
 and the built_in function-call counts, 374570 in all, are:
 = -- 68190
 > -- 537
@@ -68,4 +69,4 @@ warning$ -- 2
 while$ -- 629
 width$ -- 0
 write$ -- 761
-(There were 2 warnings)
+(There were 3 warnings)

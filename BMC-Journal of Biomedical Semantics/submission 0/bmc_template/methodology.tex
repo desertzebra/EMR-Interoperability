@@ -3,7 +3,32 @@
 \label{methodology}
 Healthcare interoperability, with a focus on non-standard compliant medical schema, is dependent on the generation and validation of schema maps, as discussed above. To this end, the creation of a cohesive workflow is of utmost importance. In our earlier work \cite{Satti2020} we used maximum sequence identification and matching using suffix trees for syntactic matching of two distinctly sources data schemas. This was followed by semantic concept enrichment and subsequently concept matching, for creating rules in the form of schema maps. The simplified mapping functions, thereby created, provided a simple methodology for converting semi-structured medical data, into a non-persisted, interpretable, model form.
 In our current methodology we have utilized state-of-the-art machine learning techniques for converting medical schemas into semi-structured form, which is then used to create embedding vectors. These vectors are then used for modeling and creating interpretable rules for applying semantic reconciliation in the form of schema matching and/or transformation. These rules are managed by the RDR which allows fast inference using the relevant knowledge sub-tree, and can well manage knowledge evolution to scale out (by incorporating new schema) and up (by incorporating changes and additions to existing schema)
-As a possible realization of this aim, and from a practical point of view, our methodology is presented in the following subsections.
+In essence, the aim here is to define a uniqueness property ($\mathbb{P}$), as shown in Equation \eqref{uniquenessProp}, whereby the semantic and syntactic uniqueness of each attribute as a disjoint union, is used.
+
+\begin{equation}\label{uniquenessProp}
+range(\mathbb{P})= \tau_{syntatic} \uplus \tau_{semantic}
+\end{equation}
+
+The syntactic uniqueness as represented in Equation \eqref{synType}, is also a disjoint union of the measured attribute type, corresponding to one of integer, float, boolean, or string, and it valid values. The elements of the attribute type set have been determined based on the common primitive types available to the applications at an abstract level. While database schema used by EMR systems, correspond to the SQL datatypes\cite{SQLDataTypes}, the application of semantic reconciliation-on-read strategy, instead necessitates the usage of common programming primitive types. On the other hand, ``validValues" are determined based on what is contained in some sampled portion of the database. It is represented by the set of all possible categorical values (such as values of the attribute with type string which can be used to represent names, address, and others), the minimum and maximum values enclosed within open intervals (``\( \)") or closed intervals (``\[ \]") to represent a range of numerical values ( such as values of attributes with type float or integer ), and boolean values (such as values represented by 1/0 or True/False).
+\begin{equation}\label{synType}
+\tau_{syntatic}= \left \{ a \mid a \epsilon \left \{ \left \{ integer, float, boolean, string\right \} \uplus validValues \right \} \right \}
+\end{equation}
+
+The semantic type is represented by the Equation \eqref{semType}, which is the set of all concepts corresponding to the leaf nodes of the suffix tree, generated from the name of the attribute. Suffix trees are used to divide a string into components, which is a very useful base for quickly identifying the longest common subsequence between a pair of strings and data compression. In our case, these trees provide a manageable list of words, contained with the name of attribute. For each substring, represented by a path of the tree, we then identify the corresponding concept, if it exists, thereby producing a set of concepts which may represent the attribute.
+
+\begin{equation}\label{semType}
+\tau_{semantic}= \left \{b \mid b \epsilon \left \{ concept_{i,j} \mid i \leq width(suffixTree(b)) \wedge j \epsilon \left \{ substring_i \right \} \right \} \right \}
+\end{equation}
+
+Finally, the set of attribute ($A$) holds all unique attributes of participating schema, as shown in Equation \eqref{uniqueA}. For each element of this set, the attribute is unique if its properties from Equation \eqref{uniquenessProp}, are not similar to any other element of this set. The similarity function ``$\sim$" is a threshold based loose bound, on the disjoint elements of ``$\mathbb{P}$".
+
+
+\begin{equation}\label{uniqueA}
+\exists a \epsilon A \mid ( \mathbb{P}(a) \wedge \forall b \epsilon A \mid \mathbb{P}(b) \rightarrow a \sim b)
+\end{equation}
+
+
+As a possible realization of this theoretical set notation form, and from a practical point of view, our methodology is presented in the following subsections.
 
 \subsection*{Schema acquisition}
 \label{schema_acq}
@@ -16,16 +41,19 @@ In fact, the change in context of the EMR storage system from the initial time o
 In order to provide an interoperable solution, it is therefore necessary to provide syntactic and semantic mappings, while taking the data instances (or tuples) into account. Data instances are used to enrich the semantic context of an attribute ($a_i$) by establishing its probable data type and possible value set. 
 In our earlier work \cite{Satti2020} $s_1$, $s_2$, and $s_5$ were used to generate over 115 million patient records, which are converted into a semi-structured form and stored in Hadoop Distributed File System (HDFS). We extended the same setup to \textbf{further include}
 
-In essence, the set of attribute ($A$) holds all unique attributes of all participating schema.
-
-
-
 \subsection*{Schema processing}
 \label{schema_prepro}
-The medical schemas and their instances are converted into an interpretable form with each attribute containining:
 
-schema name, attribute name, min value, max value, type, semantic types[]
+In order to process the EMR schema set $S$, we use the methodology shown in \textbf{algorithm}. For each data representation $s_i$, we first serialize its tables into Comma Separated Value (CSV) formatted flat files. Each table has a separate file, which contains the attribute names in the header and the data instances (following the same format and CSV struture), in subsequent lines. Each file is loaded in memory and converted into an algorithmic iterable structure. For each attribute, we then generate the suffix tree, which provides all possible substring representations contained within the attribute name. Then for each node of this suffix tree, if its length is greater than 2 (to avoid lookups for alphabets), we then query UMLS to retrieve its associated semantic concepts. \textbf{threshold}
+If atleast one semantic concepts is found for the substring, we enhance the suffix tree, to now store the substring and its associated semantic concepts. We continue this process, untill all substrings have been processed. This is followed by syntactic type check of the attribute, which is based on its data. Here we determine, if the attribute values correspond to one of Integer, Float, Boolean, or String types. Additionally, we collect the values of each corresponding data cell, and determine the set of possible values in each case. 
+This semantic enrichment from UMLS concepts and syntactic enrichment from attribute types, is then saved into persistent storage for further processing. 
+
+Meanwhile the process continues for the next attribute, then the next table, and finally the next system, till no further processing is possible. The flat enriched schema, following the design shown in \textbf{enrichedSchemaPic} provides the input to our knowledge base, whose creation is described in the next section.
+
+\subsection*{Schema Map generation}
+\label{schema_map_gen}
 
 
+\subsection*{Schema Map evolution}
+\label{schema_map_evol}
 
-Methodology goes here ....
