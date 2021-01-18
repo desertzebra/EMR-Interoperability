@@ -5,3 +5,25 @@ Althubait et al. \cite{althubaiti2020combining} proposed an ontology expansion m
 Bylygin et al. \cite{bulygin2018combining} devised an ontology and schema matching approach by combining lexical and semantic similarity with machine learning approaches.  The authors used lexical and semantic measures as features and trained various machine learning algorithms including Naive Bayes, logistic regression, and gradient boosted tree. The result achieved showed that the combination of algorithms outperformed the single modal.
 
 Martono et al. \cite{martono2017review} provided overview of previous studies related to linguistic approaches used for schema matching. Linguistic methods focused on finding strings and evaluate there similarity in different schemas. The string are normally normalized before to align both the strings before similarity comparison. The normalized strings are categories based on the information relatedness and element with similar category are compared using various similarity measure including  Jaro-distance, Lavenstein (edit-distance), and many more. Alwan et al. \cite{alwan2017survey} have summarized the techniques used in the literature for schemas and instances based schema matching. The information used for schema matching is categories into  schema information, instance and auxiliary information. Most of the searchers have used syntactic techniques (including n-gram, and regular expression), semantic techniques (including Latent Semantic Analysis, WordNet/Thesaurus and Google Similarity) for schema level and instance level matching to achieve the final goal of data/information interoperability.  Kersloot et al. \cite{kersloot2020natural} performed a comprehensive systematic review to evaluate natural language processing (NLP) algorithms used for clinical text mapping onto ontological concepts. The findings of the studies were evaluated with respect to five categories; use of NLP algorithms, data used, validation and evaluation performed, result presentation, and generalization of results. The authors revealed that over one-fourth of the NLP algorithms used were not evaluated and have no validation. The systems that claimed generalization, were self evaluated and having no external validation.  
+
+\begin{algorithm}
+	\textbf{Input}: $ AttributeRepresentation AR_1, AR_2$ \\
+	\textbf{Output}: Similarity $S$ 
+	\begin{algorithmic}[1]
+		\State Similarity $S = 0$;
+		\If{$AR_1.AttributeContext == AR_2.AttributeContext$}:
+			\State return 1;
+		\ElsIf{$AR_1.AttributeType == AR_2.AttributeType$}:
+			\State	$S = 0.2$
+		\ElsIf{$AR_1.AttributeType <--> AR_2.AttributeType$}:
+			\State $S = 0.2$
+		\EndIf
+		\If{$AR_1.AttributSemantics$}:
+			\State $S += \frac{AR_1.AttributeSemantics.TreeEmbedding \cdot AR_2.AttributeSemantics.TreeEmbedding}{\|A\|\|B\|}$
+		\EndIf
+		
+		\State return $S$
+		\caption{Attributes similarity identifier}
+		\label{knowledgeEvolAlgo}
+	\end{algorithmic}
+\end{algorithm}
