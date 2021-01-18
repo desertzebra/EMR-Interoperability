@@ -20,11 +20,11 @@ The semantic type is represented by the Equation \eqref{semType}, which is the s
 \tau_{semantic}= \left \{b \mid b \epsilon \left \{ concept_{i,j} \mid i \leq width(suffixTree(b)) \wedge j \epsilon \left \{ substring_i \right \} \right \} \right \}
 \end{equation}
 
-Finally, the set of attribute ($A$) holds all unique attributes of participating schema, as shown in Equation \eqref{uniqueA}. For each element of this set, the attribute is unique if its properties from Equation \eqref{uniquenessProp}, are not similar to any other element of this set. The similarity function ``$\sim$" is a threshold based loose bound, on the disjoint elements of ``$\mathbb{P}$".
+Finally, the set $AA$ of Amplified Attribute (AA), holds all unique attributes of participating schema, as shown in Equation \eqref{uniqueA}. For each element of this set, the attribute is unique if its properties from Equation \eqref{uniquenessProp}, are not similar to any other element of this set. The similarity function ``$\sim$" is a threshold based loose bound, on the disjoint elements of ``$\mathbb{P}$".
 
 
 \begin{equation}\label{uniqueA}
-\exists a \epsilon A \mid ( \mathbb{P}(a) \wedge \forall b \epsilon A \mid \mathbb{P}(b) \rightarrow a \sim b)
+\exists a \epsilon AA \mid ( \mathbb{P}(a) \wedge \forall b \epsilon AA \mid \mathbb{P}(b) \rightarrow a \sim b)
 \end{equation}
 
 
@@ -50,8 +50,8 @@ If atleast one semantic concept is found for the substring, we replace the subst
 We continue this process, until all substrings have been processed. This is followed by syntactic type check of the attribute, which is based on its data. Here we determine, if the attribute values correspond to one of Integer, Float, Boolean, or String types. Additionally, we collect the values of each corresponding data cell, and determine the set of possible values in each case. 
 This semantic enrichment from UMLS concepts and syntactic enrichment from attribute types, is then saved into persistent storage for further processing. 
 
-Meanwhile the process continues for the next attribute, then the next table, and finally the next system, till no further processing is possible. The flat enriched schema, following the design shown in \textbf{figEnrichedSchema} provides the input to our knowledge base. The logical structure of the enriched attribute, is represented in \textbf{figAttributeRepresentation}. Here, the elements of this particular data-structure are categorized into three parts. ``AttributeContext" contains the metadata conforming to an instance of the attribute's existence,  with its name, container table name and schema name, acting as a pointer, and schema version, source, and recorded date providing the version control features. In this manner, the attribute's fully qualified reference, along with its existential context is identified. ``AttributeType" then encapsulates the data type features of this attribute's instances, with its primitive data type, and values providing a representation of the attribute's instance. Finally, ``Attribute Semantics" holds, the semantic information of this attribute, in the form of its suffix tree, SCT and Tree Embedding.
-A pair of this data-structure with distinct references, are then used as an input to the schema map generation process, which is explained in the next step.
+Meanwhile the process continues for the next attribute, then the next table, and finally the next system, till no further processing is possible. The flat enriched schema, following the design shown in \textbf{figEnrichedSchema} provides the input to our knowledge base. The logically amplified structure of the attribute, AA, is represented in \textbf{figAttributeRepresentation}. Here, the elements of AA are categorized into three parts. ``AttributeContext" contains the metadata conforming to an instance of the attribute's existence,  with its name, container table name and schema name, acting as a pointer, and schema version, source, and recorded date providing the version control features. In this manner, the attribute's fully qualified reference, along with its existential context is identified. ``AttributeType" then encapsulates the data type features of this attribute's instances, with its primitive data type, and values providing a representation of the attribute's instance. Finally, ``Attribute Semantics" holds, the semantic information of this attribute, in the form of its suffix tree, SCT and Tree Embedding.
+A pair of AA's with distinct references, are then used as an input to the schema map generation process, which is explained in the next step.
 
 \subsection*{Schema Map generation}
 \label{schema_map_gen}
