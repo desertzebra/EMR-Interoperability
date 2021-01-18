@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{18}
+\begin{thebibliography}{19}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -263,6 +263,15 @@ International Journal of Advanced Computer Science and Applications
 \endbibitem
 
 %%% 16
+\bibitem{SQLDataTypes}
+\begin{botherref}
+SQL Data Types.
+\url{https://www.w3resource.com/sql/data-type.php}.
+Accessed: 2021-01-14
+\end{botherref}
+\endbibitem
+
+%%% 17
 \bibitem{kartoun2016methodology}
 \begin{botherref}
 \oauthor{\bsnm{Kartoun}, \binits{U.}}:
@@ -272,7 +281,7 @@ arXiv preprint arXiv:1608.00570
 \end{botherref}
 \endbibitem
 
-%%% 17
+%%% 18
 \bibitem{pan2016design}
 \begin{bchapter}
 \bauthor{\bsnm{Pan}, \binits{L.}},
@@ -290,7 +299,7 @@ pp. \bfpage{38}--\blpage{41}
 \end{bchapter}
 \endbibitem
 
-%%% 18
+%%% 19
 \bibitem{inokuchi2007medtakmi}
 \begin{barticle}
 \bauthor{\bsnm{Inokuchi}, \binits{A.}},
@@ -537,6 +546,12 @@ pp. \bfpage{38}--\blpage{41}
 </bibl>
 
 <bibl id="B16">
+  <title><p>SQL Data Types</p></title>
+  <source>\url{https://www.w3resource.com/sql/data-type.php}</source>
+  <note>Accessed: 2021-01-14</note>
+</bibl>
+
+<bibl id="B17">
   <title><p>A methodology to generate virtual patient repositories</p></title>
   <aug>
     <au><snm>Kartoun</snm><fnm>U</fnm></au>
@@ -545,7 +560,7 @@ pp. \bfpage{38}--\blpage{41}
   <pubdate>2016</pubdate>
 </bibl>
 
-<bibl id="B17">
+<bibl id="B18">
   <title><p>Design a novel electronic medical record system for regional
   clinics and health centers in China</p></title>
   <aug>
@@ -562,7 +577,7 @@ pp. \bfpage{38}--\blpage{41}
   <lpage>-41</lpage>
 </bibl>
 
-<bibl id="B18">
+<bibl id="B19">
   <title><p>MedTAKMI-CDI: interactive knowledge discovery for clinical decision
   intelligence</p></title>
   <aug>

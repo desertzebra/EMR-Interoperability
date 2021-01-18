@@ -20,53 +20,53 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: references.bib
-Warning--I didn't find a database entry for "SQLDataTypes"
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Warning--to sort, need author or key in snomedct_url
 Warning--to sort, need author or key in loinc
+Warning--to sort, need author or key in SQLDataTypes
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 18 entries,
+You've used 19 entries,
             7128 wiz_defined-function locations,
-            1224 strings with 12924 characters,
-and the built_in function-call counts, 374570 in all, are:
-= -- 68190
+            1227 strings with 13008 characters,
+and the built_in function-call counts, 375925 in all, are:
+= -- 68396
 > -- 537
 < -- 275
-+ -- 41303
++ -- 41346
 - -- 188
-* -- 10930
-:= -- 65352
-add.period$ -- 21
-call.type$ -- 18
-change.case$ -- 210
-chr.to.int$ -- 519
-cite$ -- 22
-duplicate$ -- 1700
-empty$ -- 5885
+* -- 10993
+:= -- 65633
+add.period$ -- 23
+call.type$ -- 19
+change.case$ -- 214
+chr.to.int$ -- 520
+cite$ -- 25
+duplicate$ -- 1756
+empty$ -- 5932
 format.name$ -- 649
-if$ -- 95113
+if$ -- 95434
 int.to.chr$ -- 1
-int.to.str$ -- 42
-missing$ -- 640
-newline$ -- 551
+int.to.str$ -- 44
+missing$ -- 671
+newline$ -- 566
 num.names$ -- 80
-pop$ -- 838
+pop$ -- 885
 preamble$ -- 1
-purify$ -- 75
-quote$ -- 36
-skip$ -- 40705
+purify$ -- 78
+quote$ -- 38
+skip$ -- 40800
 stack$ -- 0
-substring$ -- 37821
-swap$ -- 481
-text.length$ -- 284
+substring$ -- 37892
+swap$ -- 484
+text.length$ -- 291
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 711
-warning$ -- 2
-while$ -- 629
+type$ -- 738
+warning$ -- 3
+while$ -- 636
 width$ -- 0
-write$ -- 761
+write$ -- 777
 (There were 3 warnings)
