@@ -11,13 +11,13 @@ range(\mathbb{P})= \tau_{syntatic} \uplus \tau_{semantic}
 
 The syntactic uniqueness as represented in Equation \eqref{synType}, is also a disjoint union of the measured attribute type, corresponding to one of integer, float, boolean, or string, and it valid values. The elements of the attribute type set have been determined based on the common primitive types available to the applications at an abstract level. While database schema used by EMR systems, correspond to the SQL datatypes\cite{SQLDataTypes}, the application of semantic reconciliation-on-read strategy, instead necessitates the usage of common programming primitive types. On the other hand, ``validValues" are determined based on what is contained in some sampled portion of the database. It is represented by the set of all possible categorical values (such as values of the attribute with type string which can be used to represent names, address, and others), the minimum and maximum values enclosed within open intervals (``( )") or closed intervals (``[ ]") to represent a range of numerical values ( such as values of attributes with type float or integer ), and boolean values (such as values represented by 1/0 or True/False).
 \begin{equation}\label{synType}
-\tau_{syntatic}= \left \{ a \mid a \epsilon \left \{ \left \{ integer, float, boolean, string\right \} \uplus validValues \right \} \right \}
+\tau_{syntatic}= \left \{ t \mid t \epsilon \left \{ \left \{ integer, float, boolean, string\right \} \uplus validValues \right \} \right \}
 \end{equation}
 
 The semantic type is represented by the Equation \eqref{semType}, which is the set of all concepts corresponding to the leaf nodes of the suffix tree, generated from the name of the attribute. Suffix trees are used to divide a string into components, which is a very useful base for quickly identifying the longest common subsequence between a pair of strings and data compression. In our case, these trees provide a manageable list of words, contained with the name of attribute. For each substring, represented by a path of the tree, we then identify the corresponding concept, if it exists, thereby producing a set of concepts which may represent the attribute.
 
 \begin{equation}\label{semType}
-\tau_{semantic}= \left \{b \mid b \epsilon \left \{ concept_{i,j} \mid i \leq width(suffixTree(b)) \wedge j \epsilon \left \{ substring_i \right \} \right \} \right \}
+\tau_{semantic}= \left \{s \mid s \epsilon \left \{ concept_{i,j} \mid i \leq width(suffixTree(s)) \wedge j \epsilon \left \{ substring_i \right \} \right \} \right \}
 \end{equation}
 
 Finally, the set $AA$ of Amplified Attribute (AA), holds all unique attributes of participating schema, as shown in Equation \eqref{uniqueA}. For each element of this set, the attribute is unique if its properties from Equation \eqref{uniquenessProp}, are not similar to any other element of this set. The similarity function ``$\sim$" is a threshold based loose bound, on the disjoint elements of ``$\mathbb{P}$".
@@ -55,7 +55,11 @@ A pair of AA's with distinct references, are then used as an input to the schema
 
 \subsection*{Schema Map generation}
 \label{schema_map_gen}
+%Schema Maps, provide an interoperable bridge between two medical systems, by identifying the links between their participating attributes. This identification is based on the schema matching process, which process the cartesian product  of the two systems (le$).
 
+
+
+attribute set of bothTheoretically, for ``n" attributes in $s_i$ and ``m" attributes in $s_j$
 
 \subsection*{Schema Map evolution}
 \label{schema_map_evol}
