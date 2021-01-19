@@ -55,11 +55,41 @@ A pair of AA's with distinct references, are then used as an input to the schema
 
 \subsection*{Schema Map generation}
 \label{schema_map_gen}
-%Schema Maps, provide an interoperable bridge between two medical systems, by identifying the links between their participating attributes. This identification is based on the schema matching process, which process the cartesian product  of the two systems (le$).
+Schema Maps, provide an interoperable bridge between two medical systems ($s_i \wedge s_j$), by identifying the links between their participating attributes. This identification is based on the schema matching process, shown in Algorithm \ref{knowledgeEvolAlgo}, which operates on a pair of amplified attributes, $\left ( aa_i,aa_j \right ) \mid aa_i \epsilon s_i \wedge aa_j \epsilon s_j$, and calculates the similarity score $S$.
 
 
-
-attribute set of bothTheoretically, for ``n" attributes in $s_i$ and ``m" attributes in $s_j$
+\begin{algorithm}
+	\textbf{Input}: AmplifiedAttributes $ aa_i, aa_j$ \\
+	\textbf{Output}: Similarity $S$ 
+	\begin{algorithmic}[1]
+		\State Similarity $S = 0$;
+		\If{$aa_i.AttributeContext == aa_j.AttributeContext$}:
+		\State $S = 1$;
+		\Else
+		% Checking Attribute Type
+		\State Syntactic Similarity $SynSim = 0 $
+		\State $at_i = aa_i.AttributeType$
+		\State $at_j = aa_j.AttributeType$
+		
+		\If{$(at_i.DataType == at_j.DataType) || (at_i.DataType \Leftrightarrow at_j.DataType)$}: 
+		\State	$SynSim = 0.5$
+		\EndIf
+		\State Semantic Similarity $SemSim = 0 $
+		\State $\vec{ae_i} =  aa_i.Attribute Semantics
+		.TreeEmbedding$
+		\State $\vec{ae_j} =  aa_j.Attribute Semantics
+		.TreeEmbedding$
+		
+		\State $SemSim = \frac{\vec{ae_i} \cdot \vec{ae_j}}{\|\vec{ae_i}\|\|\vec{ae_j}\|}$
+		
+		\State $S = (0.5 * SynSim) + (0.5 * SemSim) $
+		\EndIf
+		
+		\State return $S$
+		\caption{Attributes similarity identifier}
+		\label{knowledgeEvolAlgo}
+	\end{algorithmic}
+\end{algorithm}
 
 \subsection*{Schema Map evolution}
 \label{schema_map_evol}
