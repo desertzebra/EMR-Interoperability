@@ -43,7 +43,7 @@ In our earlier work \cite{Satti2020} $s_1$, $s_2$, and $s_5$ were used to genera
 
 \subsection*{Schema processing}
 \label{schema_prepro}
-
+\textbf{metadata}
 In order to process the EMR schema set $S$, we use the methodology shown in \textbf{figAlgorithm}. For each data representation $s_i$, we first serialize its tables into Comma Separated Value (CSV) formatted flat files. Each table has a separate file, which contains the attribute names in the header and the data instances (following the same format and CSV struture), in subsequent lines. Each file is loaded in memory and converted into an algorithmic iterable structure. For each attribute, we then generate the suffix tree, which provides all possible substring representations contained within the attribute name. Then for each node of this suffix tree, if its length is greater than 2 (to avoid lookups for alphabets), we then query UMLS with approximate search strategy.Using Lexical Variant Generation (LVG) this strategy retrieves an expanded list of associated semantic concepts.
 If atleast one semantic concept is found for the substring, we replace the substring with the most relevant concept, based on the highest value of the confidence measure, creating the Suffix Concept Tree (SCT). The SCT is structurally smaller than or equal to the suffix tree, since all suffix which are smaller than 2 and those without a qualifying semantic concept, are discarded. Finally for each node of the SCT, the substring from the suffix tree and its corresponding concept is placed into a sentence, which is converted into an embedding vector using \textbf{BioBERT}. This embedding vector represents the domain qualified semantics of the source attribute.
 
@@ -72,7 +72,7 @@ Schema Maps, provide an interoperable bridge between two medical systems ($s_i \
 		\State $at_j = aa_j.AttributeType$
 		
 		\If{$(at_i.DataType == at_j.DataType) || (at_i.DataType \Leftrightarrow at_j.DataType)$}: 
-		\State	$SynSim = 0.5$
+		\State	$SynSim = 1$
 		\EndIf
 		\State Semantic Similarity $SemSim = 0 $
 		\State $\vec{ae_i} =  aa_i.Attribute Semantics
@@ -90,6 +90,9 @@ Schema Maps, provide an interoperable bridge between two medical systems ($s_i \
 		\label{knowledgeEvolAlgo}
 	\end{algorithmic}
 \end{algorithm}
+
+This algorithmic process starts by comparing the metadata context of the two amplified attributes. The schema name, table name, attribute name, and version are used to establish the context of each attribute, which are then evaluated based on naive string matching of corresponding elements. If the pair refer to the same instance of the amplified attribute the process simply returns 1 as the similarity score. If however, the amplified attribute refer to separate instances, we then apply syntactic and semantic similarity on the pair. Firstly we compare the datatypes of the pair, to determine if they either have the same datatype or the datatypes are convertible. In our current approach \textit{float} and \textit{integer} datatypes are considered convertible, however this step is very much implementation specific and can be extended when the set of types is enhanced with newer data types, such as \textit{short} is convertible to \textit{integer} and vice versa, \textit{bit} is convertible to \textit{boolean} and vice versa, and so on. This test is used to set the ``SynSim" score to ``1", if the datatypes are equal or convertible, and ``0" otherwise. Secondly, we compare the semantic concepts of the two amplified attributes, by applying \textbf{cosine} similarity between their embedding vectors. Since the embedding vector is based on the amalgamation of the suffix strings and their corresponding suffix concepts, \textbf{cosine similarity can give a good measure of the direction of these vectors}. ``SemSim", thereby obtained is then used in conjuction with previously obtained ``SynSim" to calculate the similarity of the two amplified attributes. Using equal weights for syntactic and semantic similarity, we then re-scale their individual values to finally provide a similarity score between ``0" and ``1".
+
 
 \subsection*{Schema Map evolution}
 \label{schema_map_evol}
