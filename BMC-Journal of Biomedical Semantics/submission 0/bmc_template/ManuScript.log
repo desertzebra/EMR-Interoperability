@@ -1,46 +1,45 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1 32-bit) (preloaded format=pdflatex 2021.1.22)  22 JAN 2021 08:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.1.19)  22 JAN 2021 10:54
 entering extended mode
-**./ManuScript.tex
-(ManuScript.tex
-LaTeX2e <2020-10-01> patch level 4
-L3 programming layer <2021-01-09> xparse <2020-03-03> (bmcart.cls
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**ManuScript.tex
+(./ManuScript.tex
+LaTeX2e <2020-02-02> patch level 2
+L3 programming layer <2020-02-14> (./bmcart.cls
 Document Class: bmcart 2017/07/31BioMed Central class (VS)
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
-Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
-File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
 )
-\c@part=\count177
-\c@section=\count178
-\c@subsection=\count179
-\c@subsubsection=\count180
-\c@paragraph=\count181
-\c@subparagraph=\count182
-\c@figure=\count183
-\c@table=\count184
+\c@part=\count167
+\c@section=\count168
+\c@subsection=\count169
+\c@subsubsection=\count170
+\c@paragraph=\count171
+\c@subparagraph=\count172
+\c@figure=\count173
+\c@table=\count174
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
-\bibindent=\dimen138
+\bibindent=\dimen134
 )
-\mathindent=\dimen139
+\mathindent=\dimen135
 
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.s
-ty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks15
+\KV@toks@=\toks14
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
 
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\colo
-r.cfg
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package xcolor Info: Driver file: pdftex.def on input line 225.
 
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdft
-ex.def
-File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 )
 Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
 Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
@@ -52,100 +51,92 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/lastpage\lastpage
-.sty
+(/usr/share/texlive/texmf-dist/tex/latex/lastpage/lastpage.sty
 Package: lastpage 2015/03/29 v1.2m Refers to last page's name (HMM; JPG)
 )
-\c@thanks=\count185
-\bmcfloat@box=\box47
-\c@author=\count186
-\c@address=\count187
-\sv@mathsurround=\dimen140
-\fm@box=\box48
-\c@addressref=\count188
-\thanks@box=\box49
-\abstract@box=\box50
-\authors@list=\toks16
-\keywords@list=\toks17
+\c@thanks=\count175
+\bmcfloat@box=\box45
+\c@author=\count176
+\c@address=\count177
+\sv@mathsurround=\dimen136
+\fm@box=\box46
+\c@addressref=\count178
+\thanks@box=\box47
+\abstract@box=\box48
+\authors@list=\toks15
+\keywords@list=\toks16
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amscls\amsthm.sty
-Package: amsthm 2020/05/29 v2.20.6
-\thm@style=\toks18
-\thm@bodyfont=\toks19
-\thm@headfont=\toks20
-\thm@notefont=\toks21
-\thm@headpunct=\toks22
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty
+Package: amsthm 2017/10/31 v2.20.4
+\thm@style=\toks17
+\thm@bodyfont=\toks18
+\thm@headfont=\toks19
+\thm@notefont=\toks20
+\thm@headpunct=\toks21
 \thm@preskip=\skip49
 \thm@postskip=\skip50
 \thm@headsep=\skip51
-\dth@everypar=\toks23
+\dth@everypar=\toks22
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.s
-ty
-Package: amsmath 2020/09/23 v2.17i AMS math features
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2020/01/20 v2.17e AMS math features
 \@mathmargin=\skip52
 
 For additional information on amsmath, use the `?' option.
-
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.s
-ty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2000/06/29 v2.01 AMS text
 
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.st
-y
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks24
-\ex@=\dimen141
+\@emptytoks=\toks23
+\ex@=\dimen137
 ))
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.st
-y
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen142
+\pmbraise@=\dimen138
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.st
-y
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2016/03/08 v2.02 operator names
 )
-\inf@bad=\count189
-LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count190
-\leftroot@=\count191
-LaTeX Info: Redefining \overline on input line 399.
-\classnum@=\count192
-\DOTSCASE@=\count193
-LaTeX Info: Redefining \ldots on input line 496.
-LaTeX Info: Redefining \dots on input line 499.
-LaTeX Info: Redefining \cdots on input line 620.
-\Mathstrutbox@=\box51
-\strutbox@=\box52
-\big@size=\dimen143
-LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count194
-\c@MaxMatrixCols=\count195
+\inf@bad=\count179
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count180
+\leftroot@=\count181
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count182
+\DOTSCASE@=\count183
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box49
+\strutbox@=\box50
+\big@size=\dimen139
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count184
+\c@MaxMatrixCols=\count185
 \dotsspace@=\muskip16
-\c@parentequation=\count196
-\dspbrk@lvl=\count197
-\tag@help=\toks25
-\row@=\count198
-\column@=\count199
-\maxfields@=\count266
-\andhelp@=\toks26
-\eqnshift@=\dimen144
-\alignsep@=\dimen145
-\tagshift@=\dimen146
-\tagwidth@=\dimen147
-\totwidth@=\dimen148
-\lineht@=\dimen149
-\@envbody=\toks27
+\c@parentequation=\count186
+\dspbrk@lvl=\count187
+\tag@help=\toks24
+\row@=\count188
+\column@=\count189
+\maxfields@=\count190
+\andhelp@=\toks25
+\eqnshift@=\dimen140
+\alignsep@=\dimen141
+\tagshift@=\dimen142
+\tagwidth@=\dimen143
+\totwidth@=\dimen144
+\lineht@=\dimen145
+\@envbody=\toks26
 \multlinegap=\skip53
 \multlinetaggap=\skip54
-\mathdisplay@stack=\toks28
-LaTeX Info: Redefining \[ on input line 2923.
-LaTeX Info: Redefining \] on input line 2924.
+\mathdisplay@stack=\toks27
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts
-.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
@@ -153,58 +144,54 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algori
-thm.sty
+(/usr/share/texlive/texmf-dist/tex/latex/algorithms/algorithm.sty
 Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
 nment
 
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count267
-\float@exts=\toks29
-\float@box=\box53
-\@float@everytoks=\toks30
-\@floatcapt=\box54
+\c@float@type=\count191
+\float@exts=\toks28
+\float@box=\box51
+\@float@everytoks=\toks29
+\@floatcapt=\box52
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
-\@float@every@algorithm=\toks31
-\c@algorithm=\count268
+\@float@every@algorithm=\toks30
+\c@algorithm=\count192
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algp
-seudocode.sty
+(/usr/share/texlive/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
 Package: algpseudocode 
 
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algo
-rithmicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
 
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
-\c@ALG@line=\count269
-\c@ALG@rem=\count270
-\c@ALG@nested=\count271
+\c@ALG@line=\count193
+\c@ALG@rem=\count194
+\c@ALG@nested=\count195
 \ALG@tlm=\skip55
 \ALG@thistlm=\skip56
-\c@ALG@Lnr=\count272
-\c@ALG@blocknr=\count273
-\c@ALG@storecount=\count274
-\c@ALG@tmpcounter=\count275
+\c@ALG@Lnr=\count196
+\c@ALG@blocknr=\count197
+\c@ALG@storecount=\count198
+\c@ALG@tmpcounter=\count199
 \ALG@tmplength=\skip57
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
+) (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks31
+\inpenc@posthook=\toks32
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty
-Package: inputenc 2020/08/01 v1.3d Input encoding file
-\inpenc@prehook=\toks32
-\inpenc@posthook=\toks33
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count266
+\l__pdf_internal_box=\box53
 )
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backe
-nd-pdftex.def
-File: l3backend-pdftex.def 2021-01-09 L3 backend support: PDF output (pdfTeX)
-\l__kernel_color_stack_int=\count276
-\l__pdf_internal_box=\box55
-) (ManuScript.aux)
+(./ManuScript.aux)
 \openout1 = `ManuScript.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 83.
@@ -222,20 +209,19 @@ LaTeX Font Info:    ... okay on input line 83.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 83.
 LaTeX Font Info:    ... okay on input line 83.
 
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-
-pdf.mkii
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count277
-\scratchdimen=\dimen150
-\scratchbox=\box56
-\nofMPsegments=\count278
-\nofMParguments=\count279
-\everyMPshowfont=\toks34
-\MPscratchCnt=\count280
-\MPscratchDim=\dimen151
-\MPnumerator=\count281
-\makeMPintoPDFobject=\count282
-\everyMPtoPDFconversion=\toks35
+\scratchcounter=\count267
+\scratchdimen=\dimen146
+\scratchbox=\box54
+\nofMPsegments=\count268
+\nofMParguments=\count269
+\everyMPshowfont=\toks33
+\MPscratchCnt=\count270
+\MPscratchDim=\dimen147
+\MPnumerator=\count271
+\makeMPintoPDFobject=\count272
+\everyMPtoPDFconversion=\toks34
 )
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
@@ -264,64 +250,63 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 
 LaTeX Font Info:    Trying to load font information for U+msa on input line 118
 .
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 118
 .
-(C:\Users\desertzebra\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-\address@aff1=\toks36
-\address@aff2=\toks37
-(content.tex (introduction.tex
+\address@aff1=\toks35
+\address@aff2=\toks36
+ (./content.tex
+(./introduction.tex
 LaTeX Font Info:    Font shape `OT1/cmss/m/it' in size <8> not available
 (Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 12.
- [1{C:/Users/desertzebra/AppData/Local/MiKTeX/pdftex/config/pdftex.map}
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
-]) (relatedwork.tex [2]) (methodology.tex [3] [4]
-[5] [6] [7]) (experimentalsetup.tex) (results.tex)) (ManuScript.bbl [8])
+])
+(./relatedwork.tex [2]) (./methodology.tex [3] [4] [5] [6] [7])
+(./experimentalsetup.tex) (./results.tex)) (./ManuScript.bbl [8])
 
 AED: lastpage setting LastPage
-[9] (ManuScript.aux)
+[9] (./ManuScript.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
  ) 
 Here is how much of TeX's memory you used:
- 3550 strings out of 479618
- 50234 string characters out of 2862176
- 342111 words of memory out of 3000000
- 20683 multiletter control sequences out of 15000+200000
- 415368 words of font info for 73 fonts, out of 3000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 67i,9n,74p,1912b,492s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Users/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
-ts/cm/cmbx10.pfb><C:/Users/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type
-1/public/amsfonts/cm/cmmi10.pfb><C:/Users/desertzebra/AppData/Local/Programs/Mi
-KTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/desertzebra/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/desertzeb
-ra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/U
-sers/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
-mmi8.pfb><C:/Users/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/amsfonts/cm/cmr10.pfb><C:/Users/desertzebra/AppData/Local/Programs/MiKTeX/font
-s/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/desertzebra/AppData/Local/Program
-s/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/desertzebra/AppData/
-Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Users/deser
-tzebra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss17.pfb>
-<C:/Users/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmss8.pfb><C:/Users/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmssbx10.pfb><C:/Users/desertzebra/AppData/Local/Programs/MiK
-TeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/desertzebra/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/desertzeb
-ra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/U
-sers/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
-mti10.pfb><C:/Users/desertzebra/AppData/Local/Programs/MiKTeX/fonts/type1/publi
-c/amsfonts/symbols/msbm10.pfb>
-Output written on ManuScript.pdf (9 pages, 235550 bytes).
+ 3460 strings out of 483107
+ 45731 string characters out of 5964630
+ 294374 words of memory out of 5000000
+ 18452 multiletter control sequences out of 15000+600000
+ 544276 words of font info for 70 fonts, out of 8000000 for 9000
+ 59 hyphenation exceptions out of 8191
+ 32i,9n,41p,1898b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss1
+7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on ManuScript.pdf (9 pages, 220688 bytes).
 PDF statistics:
- 104 PDF objects out of 1000 (max. 8388607)
+ 106 PDF objects out of 1000 (max. 8388607)
+ 76 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
