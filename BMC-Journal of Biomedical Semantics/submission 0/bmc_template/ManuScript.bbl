@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{19}
+\begin{thebibliography}{23}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -263,6 +263,20 @@ International Journal of Advanced Computer Science and Applications
 \endbibitem
 
 %%% 16
+\bibitem{xu2003discovering}
+\begin{bchapter}
+\bauthor{\bsnm{Xu}, \binits{L.}},
+\bauthor{\bsnm{Embley}, \binits{D.W.}}:
+\bctitle{Discovering direct and indirect matches for schema elements}.
+In: \bbtitle{Eighth International Conference on Database Systems for Advanced
+  Applications, 2003.(DASFAA 2003). Proceedings.},
+pp. \bfpage{39}--\blpage{46}
+(\byear{2003}).
+\bcomment{IEEE}
+\end{bchapter}
+\endbibitem
+
+%%% 17
 \bibitem{SQLDataTypes}
 \begin{botherref}
 SQL Data Types.
@@ -271,7 +285,7 @@ Accessed: 2021-01-14
 \end{botherref}
 \endbibitem
 
-%%% 17
+%%% 18
 \bibitem{kartoun2016methodology}
 \begin{botherref}
 \oauthor{\bsnm{Kartoun}, \binits{U.}}:
@@ -281,7 +295,7 @@ arXiv preprint arXiv:1608.00570
 \end{botherref}
 \endbibitem
 
-%%% 18
+%%% 19
 \bibitem{pan2016design}
 \begin{bchapter}
 \bauthor{\bsnm{Pan}, \binits{L.}},
@@ -299,7 +313,7 @@ pp. \bfpage{38}--\blpage{41}
 \end{bchapter}
 \endbibitem
 
-%%% 19
+%%% 20
 \bibitem{inokuchi2007medtakmi}
 \begin{barticle}
 \bauthor{\bsnm{Inokuchi}, \binits{A.}},
@@ -312,6 +326,51 @@ pp. \bfpage{38}--\blpage{41}
 \bvolume{46}(\bissue{1}),
 \bfpage{115}--\blpage{133}
 (\byear{2007})
+\end{barticle}
+\endbibitem
+
+%%% 21
+\bibitem{compton1992ripple}
+\begin{barticle}
+\bauthor{\bsnm{Compton}, \binits{P.}},
+\bauthor{\bsnm{Edwards}, \binits{G.}},
+\bauthor{\bsnm{Kang}, \binits{B.}},
+\bauthor{\bsnm{Lazarus}, \binits{L.}},
+\bauthor{\bsnm{Malor}, \binits{R.}},
+\bauthor{\bsnm{Preston}, \binits{P.}},
+\bauthor{\bsnm{Srinivasan}, \binits{A.}}:
+\batitle{Ripple down rules: Turning knowledge acquisition into knowledge
+  maintenance}.
+\bjtitle{Artificial Intelligence in Medicine}
+\bvolume{4}(\bissue{6}),
+\bfpage{463}--\blpage{475}
+(\byear{1992})
+\end{barticle}
+\endbibitem
+
+%%% 22
+\bibitem{richards2009two}
+\begin{botherref}
+\oauthor{\bsnm{Richards}, \binits{D.}}, et al.:
+Two decades of ripple down rules research
+(2009)
+\end{botherref}
+\endbibitem
+
+%%% 23
+\bibitem{kim2018rdr}
+\begin{barticle}
+\bauthor{\bsnm{Kim}, \binits{D.}},
+\bauthor{\bsnm{Han}, \binits{S.C.}},
+\bauthor{\bsnm{Lin}, \binits{Y.}},
+\bauthor{\bsnm{Kang}, \binits{B.H.}},
+\bauthor{\bsnm{Lee}, \binits{S.}}:
+\batitle{Rdr-based knowledge based system to the failure detection in
+  industrial cyber physical systems}.
+\bjtitle{Knowledge-Based Systems}
+\bvolume{150},
+\bfpage{1}--\blpage{13}
+(\byear{2018})
 \end{barticle}
 \endbibitem
 
@@ -546,12 +605,26 @@ pp. \bfpage{38}--\blpage{41}
 </bibl>
 
 <bibl id="B16">
+  <title><p>Discovering direct and indirect matches for schema
+  elements</p></title>
+  <aug>
+    <au><snm>Xu</snm><fnm>L</fnm></au>
+    <au><snm>Embley</snm><fnm>DW</fnm></au>
+  </aug>
+  <source>Eighth International Conference on Database Systems for Advanced
+  Applications, 2003.(DASFAA 2003). Proceedings.</source>
+  <pubdate>2003</pubdate>
+  <fpage>39</fpage>
+  <lpage>-46</lpage>
+</bibl>
+
+<bibl id="B17">
   <title><p>SQL Data Types</p></title>
   <source>\url{https://www.w3resource.com/sql/data-type.php}</source>
   <note>Accessed: 2021-01-14</note>
 </bibl>
 
-<bibl id="B17">
+<bibl id="B18">
   <title><p>A methodology to generate virtual patient repositories</p></title>
   <aug>
     <au><snm>Kartoun</snm><fnm>U</fnm></au>
@@ -560,7 +633,7 @@ pp. \bfpage{38}--\blpage{41}
   <pubdate>2016</pubdate>
 </bibl>
 
-<bibl id="B18">
+<bibl id="B19">
   <title><p>Design a novel electronic medical record system for regional
   clinics and health centers in China</p></title>
   <aug>
@@ -577,7 +650,7 @@ pp. \bfpage{38}--\blpage{41}
   <lpage>-41</lpage>
 </bibl>
 
-<bibl id="B19">
+<bibl id="B20">
   <title><p>MedTAKMI-CDI: interactive knowledge discovery for clinical decision
   intelligence</p></title>
   <aug>
@@ -593,6 +666,55 @@ pp. \bfpage{38}--\blpage{41}
   <issue>1</issue>
   <fpage>115</fpage>
   <lpage>-133</lpage>
+</bibl>
+
+<bibl id="B21">
+  <title><p>Ripple down rules: Turning knowledge acquisition into knowledge
+  maintenance</p></title>
+  <aug>
+    <au><snm>Compton</snm><fnm>P</fnm></au>
+    <au><snm>Edwards</snm><fnm>G</fnm></au>
+    <au><snm>Kang</snm><fnm>B</fnm></au>
+    <au><snm>Lazarus</snm><fnm>L</fnm></au>
+    <au><snm>Malor</snm><fnm>R</fnm></au>
+    <au><snm>Preston</snm><fnm>P</fnm></au>
+    <au><snm>Srinivasan</snm><fnm>A</fnm></au>
+  </aug>
+  <source>Artificial Intelligence in Medicine</source>
+  <publisher>Elsevier</publisher>
+  <pubdate>1992</pubdate>
+  <volume>4</volume>
+  <issue>6</issue>
+  <fpage>463</fpage>
+  <lpage>-475</lpage>
+</bibl>
+
+<bibl id="B22">
+  <title><p>Two decades of ripple down rules research</p></title>
+  <aug>
+    <au><snm>Richards</snm><fnm>D</fnm></au>
+    <au><cnm>others</cnm></au>
+  </aug>
+  <publisher>Cambridge University Press</publisher>
+  <pubdate>2009</pubdate>
+</bibl>
+
+<bibl id="B23">
+  <title><p>RDR-based knowledge based system to the failure detection in
+  industrial cyber physical systems</p></title>
+  <aug>
+    <au><snm>Kim</snm><fnm>D</fnm></au>
+    <au><snm>Han</snm><fnm>SC</fnm></au>
+    <au><snm>Lin</snm><fnm>Y</fnm></au>
+    <au><snm>Kang</snm><fnm>BH</fnm></au>
+    <au><snm>Lee</snm><fnm>S</fnm></au>
+  </aug>
+  <source>Knowledge-Based Systems</source>
+  <publisher>Elsevier</publisher>
+  <pubdate>2018</pubdate>
+  <volume>150</volume>
+  <fpage>1</fpage>
+  <lpage>-13</lpage>
 </bibl>
 
 </refgrp>
