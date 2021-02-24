@@ -1,18 +1,33 @@
+import json
+from termSemanticType import *
+
 class Similarity:
 
-	def readData(self, url):
-		
-		data = []
-		file = open(url, "r")
+    def __init__(self):
+    	self.termSemanticTypeObj = TermSemanticType()
 
-		for row in file:
-			data.append(row)
+    def readData(self, url):
+    	data = []
+    	with open(url) as json_file:
+    		data = json.load(json_file)
 
-		return data
-  		
+    	return data
+
+    def calculateSimilarity(self, url):
+
+    	result = self.termSemanticTypeObj.getTermSemanticType('diabetes')
+    	print(result)
+    	exit()
+    	data = self.readData(url)
+    	print('Total Attribute: ', len(data))
+    	for attr in data:
+    		print('attr')
+    		print(attr)
+    		print(attr['schemaName'])
+    		exit()
 
 
 simObj = Similarity()
-data = simObj.readData('Data/attempt4.txt') 
-print(len(data))
+simObj.calculateSimilarity('Data/data.json') 
+
 		
