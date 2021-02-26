@@ -28,45 +28,45 @@ Warning--to sort, need author or key in SQLDataTypes
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 23 entries,
+You've used 24 entries,
             7128 wiz_defined-function locations,
-            1248 strings with 13825 characters,
-and the built_in function-call counts, 476321 in all, are:
-= -- 87013
-> -- 678
-< -- 352
-+ -- 52935
-- -- 235
-* -- 13597
-:= -- 83032
-add.period$ -- 27
-call.type$ -- 23
-change.case$ -- 263
-chr.to.int$ -- 671
-cite$ -- 29
-duplicate$ -- 2158
-empty$ -- 7200
-format.name$ -- 810
-if$ -- 121177
+            1255 strings with 14135 characters,
+and the built_in function-call counts, 482233 in all, are:
+= -- 87689
+> -- 718
+< -- 382
++ -- 53059
+- -- 241
+* -- 14065
+:= -- 84212
+add.period$ -- 28
+call.type$ -- 24
+change.case$ -- 271
+chr.to.int$ -- 744
+cite$ -- 30
+duplicate$ -- 2256
+empty$ -- 7574
+format.name$ -- 834
+if$ -- 122503
 int.to.chr$ -- 1
-int.to.str$ -- 54
-missing$ -- 814
-newline$ -- 681
-num.names$ -- 100
-pop$ -- 1069
+int.to.str$ -- 57
+missing$ -- 846
+newline$ -- 709
+num.names$ -- 105
+pop$ -- 1101
 preamble$ -- 1
-purify$ -- 95
-quote$ -- 46
-skip$ -- 52086
+purify$ -- 100
+quote$ -- 48
+skip$ -- 52378
 stack$ -- 0
-substring$ -- 47558
-swap$ -- 610
-text.length$ -- 362
+substring$ -- 48467
+swap$ -- 654
+text.length$ -- 378
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 902
+type$ -- 947
 warning$ -- 3
-while$ -- 794
+while$ -- 828
 width$ -- 0
-write$ -- 945
+write$ -- 980
 (There were 3 warnings)

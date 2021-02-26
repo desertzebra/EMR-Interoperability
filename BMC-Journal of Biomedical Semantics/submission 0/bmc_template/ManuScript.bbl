@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{23}
+\begin{thebibliography}{24}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -277,6 +277,21 @@ pp. \bfpage{39}--\blpage{46}
 \endbibitem
 
 %%% 17
+\bibitem{moll2020oncology}
+\begin{barticle}
+\bauthor{\bsnm{Moll}, \binits{J.}},
+\bauthor{\bsnm{Cajander}, \binits{{\AA}.}}:
+\batitle{Oncology health-care professionals’ perceived effects of patient
+  accessible electronic health records 6 years after launch: a survey study at
+  a major university hospital in sweden}.
+\bjtitle{Health informatics journal}
+\bvolume{26}(\bissue{2}),
+\bfpage{1392}--\blpage{1403}
+(\byear{2020})
+\end{barticle}
+\endbibitem
+
+%%% 18
 \bibitem{SQLDataTypes}
 \begin{botherref}
 SQL Data Types.
@@ -285,7 +300,7 @@ Accessed: 2021-01-14
 \end{botherref}
 \endbibitem
 
-%%% 18
+%%% 19
 \bibitem{kartoun2016methodology}
 \begin{botherref}
 \oauthor{\bsnm{Kartoun}, \binits{U.}}:
@@ -295,7 +310,7 @@ arXiv preprint arXiv:1608.00570
 \end{botherref}
 \endbibitem
 
-%%% 19
+%%% 20
 \bibitem{pan2016design}
 \begin{bchapter}
 \bauthor{\bsnm{Pan}, \binits{L.}},
@@ -313,7 +328,7 @@ pp. \bfpage{38}--\blpage{41}
 \end{bchapter}
 \endbibitem
 
-%%% 20
+%%% 21
 \bibitem{inokuchi2007medtakmi}
 \begin{barticle}
 \bauthor{\bsnm{Inokuchi}, \binits{A.}},
@@ -329,7 +344,7 @@ pp. \bfpage{38}--\blpage{41}
 \end{barticle}
 \endbibitem
 
-%%% 21
+%%% 22
 \bibitem{compton1992ripple}
 \begin{barticle}
 \bauthor{\bsnm{Compton}, \binits{P.}},
@@ -348,7 +363,7 @@ pp. \bfpage{38}--\blpage{41}
 \end{barticle}
 \endbibitem
 
-%%% 22
+%%% 23
 \bibitem{richards2009two}
 \begin{botherref}
 \oauthor{\bsnm{Richards}, \binits{D.}}, et al.:
@@ -357,7 +372,7 @@ Two decades of ripple down rules research
 \end{botherref}
 \endbibitem
 
-%%% 23
+%%% 24
 \bibitem{kim2018rdr}
 \begin{barticle}
 \bauthor{\bsnm{Kim}, \binits{D.}},
@@ -619,12 +634,29 @@ Two decades of ripple down rules research
 </bibl>
 
 <bibl id="B17">
+  <title><p>Oncology health-care professionals’ perceived effects of patient
+  accessible electronic health records 6 years after launch: a survey study at
+  a major university hospital in Sweden</p></title>
+  <aug>
+    <au><snm>Moll</snm><fnm>J</fnm></au>
+    <au><snm>Cajander</snm><fnm>{\AA}</fnm></au>
+  </aug>
+  <source>Health informatics journal</source>
+  <publisher>Sage Publications Sage UK: London, England</publisher>
+  <pubdate>2020</pubdate>
+  <volume>26</volume>
+  <issue>2</issue>
+  <fpage>1392</fpage>
+  <lpage>-1403</lpage>
+</bibl>
+
+<bibl id="B18">
   <title><p>SQL Data Types</p></title>
   <source>\url{https://www.w3resource.com/sql/data-type.php}</source>
   <note>Accessed: 2021-01-14</note>
 </bibl>
 
-<bibl id="B18">
+<bibl id="B19">
   <title><p>A methodology to generate virtual patient repositories</p></title>
   <aug>
     <au><snm>Kartoun</snm><fnm>U</fnm></au>
@@ -633,7 +665,7 @@ Two decades of ripple down rules research
   <pubdate>2016</pubdate>
 </bibl>
 
-<bibl id="B19">
+<bibl id="B20">
   <title><p>Design a novel electronic medical record system for regional
   clinics and health centers in China</p></title>
   <aug>
@@ -650,7 +682,7 @@ Two decades of ripple down rules research
   <lpage>-41</lpage>
 </bibl>
 
-<bibl id="B20">
+<bibl id="B21">
   <title><p>MedTAKMI-CDI: interactive knowledge discovery for clinical decision
   intelligence</p></title>
   <aug>
@@ -668,7 +700,7 @@ Two decades of ripple down rules research
   <lpage>-133</lpage>
 </bibl>
 
-<bibl id="B21">
+<bibl id="B22">
   <title><p>Ripple down rules: Turning knowledge acquisition into knowledge
   maintenance</p></title>
   <aug>
@@ -689,7 +721,7 @@ Two decades of ripple down rules research
   <lpage>-475</lpage>
 </bibl>
 
-<bibl id="B22">
+<bibl id="B23">
   <title><p>Two decades of ripple down rules research</p></title>
   <aug>
     <au><snm>Richards</snm><fnm>D</fnm></au>
@@ -699,7 +731,7 @@ Two decades of ripple down rules research
   <pubdate>2009</pubdate>
 </bibl>
 
-<bibl id="B23">
+<bibl id="B24">
   <title><p>RDR-based knowledge based system to the failure detection in
   industrial cyber physical systems</p></title>
   <aug>
