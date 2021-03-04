@@ -95,7 +95,29 @@ Schema Maps, provide an interoperable bridge between two medical systems ($s_i \
 	\end{algorithmic}
 \end{algorithm}
 
-This algorithmic process starts by comparing the metadata context of the two amplified attributes. The schema name, table name, attribute name, and version are used to establish the context of each attribute, which are then evaluated based on naive string matching of corresponding elements. If the pair refer to the same instance of the amplified attribute the process simply returns 1 as the similarity score. If however, the amplified attribute refer to separate instances, we then apply syntactic and semantic similarity on the pair. Firstly we compare the datatypes of the pair, to determine if they either have the same datatype or the datatypes are convertible. In our current approach \textit{Double} is convertible into \textit{Long} and vice versa, and \textit{Date} is convertible into \textit{DateTime} datatypes and vice versa. However, this step is very much implementation specific and can be extended if $t$ is enhanced with newer data types. This test is used to set the ``SynSim" score to ``1", if the datatypes are equal or convertible, and ``0" otherwise. Secondly, we compare the semantic concepts of the two amplified attributes, by applying \textbf{cosine} similarity between their embedding vectors. Since the embedding vector is based on the amalgamation of the suffix strings and their corresponding suffix concepts, \textbf{cosine similarity can give a good measure of the direction of these vectors}. ``SemSim", thereby obtained is then used in conjuction with previously obtained ``SynSim" to calculate the similarity of the two amplified attributes. Using equal weights for syntactic and semantic similarity, we then re-scale their individual values to finally provide a similarity score between ``0" and ``1". 
+This algorithmic process starts by comparing the metadata context of the two amplified attributes. The schema name, table name, attribute name, and version are used to establish the context of each attribute, which are then evaluated based on naive string matching of corresponding elements. If the pair refer to the same instance of the amplified attribute the process simply returns 1 as the similarity score. If however, the amplified attribute refer to separate instances, we then apply syntactic and semantic similarity on the pair. Firstly we compare the datatypes of the pair, to determine if they either have the same datatype or the datatypes are convertible. In our current approach \textit{Double} is convertible into \textit{Long} and vice versa, and \textit{Date} is convertible into \textit{DateTime} datatypes and vice versa. However, this step is very much implementation specific and can be extended if $t$ is enhanced with newer data types. This test is used to set the ``SynSim" score to ``1", if the datatypes are equal or convertible, and ``0" otherwise. Secondly, we compare the semantic concepts of the two amplified attributes, by applying \textbf{cosine} similarity between their embedding vectors. In order to generate the embedding vectors, we utilize {BERT} and apply it on the sentence formed by flattening the AA. This operation is applied on each AA in the schema map pair, by concatenating the name of the attribute, its $m$ suffixes, and their associated $0..n$ concepts, to create a sentence as shown in Equation \ref{aaSentenceFormat}:
+
+\begin{equation}\label{aaSentenceFormat}
+\begin{aligned}
+\left \{ Attribute\_Name < w_0,c_{00},c_{01},...c_{0n}; w_1,c_{10},c_{11},...c_{1n};...w_m,c_{m0},c_{m1},...c_{mn};>\right \}\\
+| w_i \epsilon \phi_{suffix}(Attribute\_Name) \wedge c_{ij} \epsilon \phi_{concept}(w_i) 
+\end{aligned}
+\end{equation}
+
+An example of the resultant sentence is shown as follows:\\
+
+\framebox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{\itshape%
+		
+		``$DateOfAdmission < mission,C0026219;Dat,C1420213,C3813713,C0114838,\\
+		C0200555,C1439340,C2826247,C0057150,C0002395;Of,C1705644,C0919490,\\
+		C1704913,C1426958,C0332285,C0456628,C0029151,C1879775;ion,C1700702,\\
+		C0022023;Admission,C0809949,C0184666;Da,C3668815,C0678223,C0226032,\\
+		C1602374,C0280573,C4761311,C0332151,C1704643;Date,C1548309,C2740799,\\
+		C0011008,C1547350,C2348077;on,C2985244,C0029446,C1420342,C1720294,\\
+		C1720176 >$"
+}}\\
+
+Since the embedding vector is based on the amalgamation of the suffix strings and their corresponding concepts, \textbf{cosine similarity can give a good measure of the direction of these vectors}. ``SemSim", thereby obtained is then used in conjuction with previously obtained ``SynSim" to calculate the similarity of the two amplified attributes. Using equal weights for syntactic and semantic similarity, we then re-scale their individual values to finally provide a similarity score between ``0" and ``1". 
 
 The schema matching approach represented above, can be further improved by enwrapping the individual calls with memoization, which can avoid redundant checks. However, in practical terms, the creation of the schema map between two amplified attributes is rarer than its application to transform or link two distinct schemas. Additionally, just like its other schema/ontology matching counterparts, the presented Algorithm \ref{knowledgeEvolAlgo}, applies a one-way compression on the various matched factors to produce a similarity measure/ indicator. This operation is very useful for building unsupervised and semi-supervised automated systems, which base their decisions on a measured confidence score. However, in the healthcare domain, knowledge acquisition and application process, requires the use of supervised automated systems, which can provide strong traceability for the decision making process. Summarily, it is not enough for our schema matching process to simply return $S$.
 
