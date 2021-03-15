@@ -12,9 +12,13 @@ class Similarity:
         self.embeddingVectors = {}
 
     def readData(self, url):
-        data = []
-        with open(url, "rb") as fp:
-            data = pickle.load(fp)
+
+        with open(url) as json_file:
+            data = json.load(json_file)
+
+        # data = []
+        # with open(url, "rb") as fp:
+        #     data = pickle.load(fp)
 
         return data
 
@@ -111,7 +115,8 @@ class Similarity:
             syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
             semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
 
-            print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
+            # print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
+            print('Semantic index: ', index)
 
             similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
 
@@ -176,8 +181,13 @@ num_cores = multiprocessing.cpu_count() - 1
 print("num_cores:", num_cores)
 
 simObj = Similarity()
-# data = simObj.readData('Data/dataV03.json')
-data = simObj.readData('Data/BaseSimiliaty-bert-base-nli-mean-tokensV0.9.txt')
+data = simObj.readData('Data/schema_processed_1615541107002.json')
+
+
+print('data')
+print(len(data))
+
+data = simObj.calcualteBaseLineSimilarity(data)
 
 print('data')
 print(len(data))
@@ -187,9 +197,9 @@ synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-print('synAndSemSimilarity')
-print(synAndSemSimilarity)
+# print('synAndSemSimilarity')
+# print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV1.0.txt", "wb") as fp:   #Pickling
+with open("Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.1.txt", "wb") as fp:   #Pickling
     pickle.dump(synAndSemSimilarity, fp)
 

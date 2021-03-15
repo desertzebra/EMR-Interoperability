@@ -1,5 +1,3 @@
-print('test')
-exit()
 import pickle
 import csv
 
@@ -42,19 +40,32 @@ class Results:
 
         for attrIndex, attr in enumerate(attributes):
 
+            print('attrIndex: ', attrIndex)
+            #print(attr)
             leftKey = attr['nodeLeft']['schemaName']+"_"+attr['nodeLeft']['tableName']+"_"+attr['nodeLeft']['name']
             rightKey = attr['nodeRight']['schemaName'] + "_" + attr['nodeRight']['tableName'] + "_" + attr['nodeRight'][
                 'name']
+
+            # print('leftKey: ', leftKey)
+            # print('rightKey: ', rightKey)
+            #
+            # print('matrix.keys')
+            # print(matrix.keys())
+
             #print("count:", attrIndex)
             if(leftKey not in matrix.keys()):
                 matrix[leftKey] = {}
                 leftNodes.append(leftKey)
-            if (rightKey not in matrix.keys()):
+            #if (rightKey not in matrix.keys()):
+
+            if (rightKey not in rightNodes):
                 rightNodes.append(rightKey)
+
             if(confidenceIndex == 1):
                 matrix[leftKey][rightKey] = str(float(attr['relationshipList'][confidenceIndex]['confidence'])/ 100)
             else:
                 matrix[leftKey][rightKey] = attr['relationshipList'][confidenceIndex]['confidence']
+
 
         print("Building the "+str(confidenceIndex)+" table")
         rowSize = len(leftNodes)
@@ -97,10 +108,10 @@ class Results:
 
 resultObj = Results()
 # data = simObj.readData('Data/dataV03.json')
-data = resultObj.readData('Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV1.0.txt')
+data = resultObj.readData('Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.1.txt')
 
-#print('data')
-#print(len(data))
+print('data')
+print(len(data))
 
 #resultObj.generateCSV(data)
 resultObj.printBaseHeatMap(data,resultObj.BASE_INDEX)
