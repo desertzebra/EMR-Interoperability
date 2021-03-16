@@ -181,7 +181,7 @@ num_cores = multiprocessing.cpu_count() - 1
 print("num_cores:", num_cores)
 
 simObj = Similarity()
-data = simObj.readData('Data/schema_processed_1615541107002.json')
+data = simObj.readData('Data/schema_processed_1615861448988.json')
 
 
 print('data')

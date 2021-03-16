@@ -68,6 +68,10 @@ class Results:
 
 
         print("Building the "+str(confidenceIndex)+" table")
+
+        leftNodes.sort()
+        rightNodes.sort()
+
         rowSize = len(leftNodes)
         colSize = len(rightNodes)
         i,j = 0,0
@@ -87,13 +91,16 @@ class Results:
 
                 #print("leftNodes[i]=", leftNodes[i], ", rightNodes[j]=", rightNodes[j])
                 #print("matrix[leftNodes[i]][rightNodes[j]]=", matrix[leftNodes[i]][rightNodes[j]])
-                table += str(matrix[leftNodes[i]][rightNodes[j]]) + ", "
+                if(leftNodes[i] == rightNodes[j]):
+                    table += str(1) + ", "
+                else:
+                    table += str(matrix[leftNodes[i]][rightNodes[j]]) + ", "
                 j += 1
             table += '\r\n'
             i += 1
 
         print("Done. Now saving it:")
-        with open("Data/"+str(confidenceIndex)+"-table-V0.1.csv", "wb") as fp:  # Pickling
+        with open("Data/"+str(confidenceIndex)+"-table-V0.2.csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         #print(table)
 
