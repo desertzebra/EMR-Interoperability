@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{24}
+\begin{thebibliography}{26}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -389,6 +389,30 @@ Two decades of ripple down rules research
 \end{barticle}
 \endbibitem
 
+%%% 25
+\bibitem{FuzzyWuzzy}
+\begin{botherref}
+\oauthor{\bsnm{{Adam Cohen}}}:
+FuzzyWuzzy: Fuzzy String Matching in Python
+(Jul 8th, 2011).
+\url{https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python/}
+\end{botherref}
+\endbibitem
+
+%%% 26
+\bibitem{reimers-2019-sentence-bert}
+\begin{bchapter}
+\bauthor{\bsnm{Reimers}, \binits{N.}},
+\bauthor{\bsnm{Gurevych}, \binits{I.}}:
+\bctitle{Sentence-bert: Sentence embeddings using siamese bert-networks}.
+In: \bbtitle{Proceedings of the 2019 Conference on Empirical Methods in Natural
+  Language Processing}.
+\bpublisher{Association for Computational Linguistics}, \blocation{???}
+(\byear{2019}).
+\burl{http://arxiv.org/abs/1908.10084}
+\end{bchapter}
+\endbibitem
+
 \end{thebibliography}
 
 \newcommand{\BMCxmlcomment}[1]{}
@@ -747,6 +771,29 @@ Two decades of ripple down rules research
   <volume>150</volume>
   <fpage>1</fpage>
   <lpage>-13</lpage>
+</bibl>
+
+<bibl id="B25">
+  <title><p>FuzzyWuzzy: Fuzzy String Matching in Python</p></title>
+  <aug>
+    <au><cnm>{Adam Cohen}</cnm></au>
+  </aug>
+  <pubdate>Jul 8th, 2011</pubdate>
+  <url>https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python/</url>
+</bibl>
+
+<bibl id="B26">
+  <title><p>Sentence-BERT: Sentence Embeddings using Siamese
+  BERT-Networks</p></title>
+  <aug>
+    <au><snm>Reimers</snm><fnm>N</fnm></au>
+    <au><snm>Gurevych</snm><fnm>I</fnm></au>
+  </aug>
+  <source>Proceedings of the 2019 Conference on Empirical Methods in Natural
+  Language Processing</source>
+  <publisher>Association for Computational Linguistics</publisher>
+  <pubdate>2019</pubdate>
+  <url>http://arxiv.org/abs/1908.10084</url>
 </bibl>
 
 </refgrp>

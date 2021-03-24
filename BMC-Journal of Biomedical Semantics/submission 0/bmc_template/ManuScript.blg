@@ -20,6 +20,11 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: references.bib
+I was expecting a `,' or a `}'---line 485 of file references.bib
+ :  
+ :  note = {Accessed: 2021-03-19}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Warning--to sort, need author or key in snomedct_url
@@ -28,45 +33,45 @@ Warning--to sort, need author or key in SQLDataTypes
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 24 entries,
+You've used 26 entries,
             7128 wiz_defined-function locations,
-            1255 strings with 14135 characters,
-and the built_in function-call counts, 482233 in all, are:
-= -- 87689
-> -- 718
-< -- 382
-+ -- 53059
-- -- 241
-* -- 14065
-:= -- 84212
-add.period$ -- 28
-call.type$ -- 24
-change.case$ -- 271
-chr.to.int$ -- 744
-cite$ -- 30
-duplicate$ -- 2256
-empty$ -- 7574
-format.name$ -- 834
-if$ -- 122503
+            1267 strings with 14576 characters,
+and the built_in function-call counts, 551999 in all, are:
+= -- 101318
+> -- 744
+< -- 392
++ -- 61995
+- -- 261
+* -- 15321
+:= -- 96020
+add.period$ -- 32
+call.type$ -- 26
+change.case$ -- 294
+chr.to.int$ -- 746
+cite$ -- 32
+duplicate$ -- 2388
+empty$ -- 7998
+format.name$ -- 870
+if$ -- 140729
 int.to.chr$ -- 1
-int.to.str$ -- 57
-missing$ -- 846
-newline$ -- 709
-num.names$ -- 105
-pop$ -- 1101
+int.to.str$ -- 62
+missing$ -- 907
+newline$ -- 753
+num.names$ -- 115
+pop$ -- 1186
 preamble$ -- 1
-purify$ -- 100
-quote$ -- 48
-skip$ -- 52378
+purify$ -- 109
+quote$ -- 52
+skip$ -- 60700
 stack$ -- 0
-substring$ -- 48467
-swap$ -- 654
-text.length$ -- 378
+substring$ -- 54914
+swap$ -- 673
+text.length$ -- 415
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 947
+type$ -- 1023
 warning$ -- 3
-while$ -- 828
+while$ -- 884
 width$ -- 0
-write$ -- 980
-(There were 3 warnings)
+write$ -- 1035
+(There was 1 error message)
