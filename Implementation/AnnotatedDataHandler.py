@@ -169,16 +169,16 @@ class AnnotatedDataHandler:
         # log("**********************************************************************************")
         # log("*****************************************Annotator 2*****************************************")
         if not readHeaders:
-            self.method2Data = annotatedDataHandler.readCSVWithoutHeaders('Data/0-table-V0.2.csv')
+            self.method2Data = annotatedDataHandler.readCSVWithoutHeaders('Data/1-table-V0.2.csv')
         else:
-            self.method2Data = annotatedDataHandler.readCSV('Data/0-table-V0.2.csv')
+            self.method2Data = annotatedDataHandler.readCSV('Data/1-table-V0.2.csv')
         self.log(["method2 data loaded: ", len(self.method2Data), " with readHeaders=", readHeaders])
         # log("**********************************************************************************")
         # log("*****************************************Annotator 3*****************************************")
         if not readHeaders:
-            self.method3Data = annotatedDataHandler.readCSVWithoutHeaders('Data/0-table-V0.2.csv')
+            self.method3Data = annotatedDataHandler.readCSVWithoutHeaders('Data/2-table-V0.2.csv')
         else:
-            self.method3Data = annotatedDataHandler.readCSV('Data/0-table-V0.2.csv')
+            self.method3Data = annotatedDataHandler.readCSV('Data/2-table-V0.2.csv')
         self.log(["method3 data loaded: ", len(self.method3Data), " with readHeaders=", readHeaders])
 
         self.log("**********************************************************************************")
@@ -259,6 +259,41 @@ class AnnotatedDataHandler:
         self.log("**********************************************************************************")
         self.log(allKappaAnnotatedDataHandlers)
 
+    def calculateKappaScoreBetweenComputedAndAnnotatedData(self, avgAnnotatedData=None):
+        if avgAnnotatedData == None:
+            if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 or len(
+                    self.annotator4Data) < 1:
+                self.log("Insufficient data for the annotators, have you read the files yet?")
+                return
+            else:
+                avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators()
+
+        if len(self.method1Data) < 1 or len(self.method1Data) < 1 or len(self.method1Data) < 1:
+            self.log("Insufficient data for the computed methods, have you read the files yet?")
+            return
+
+
+        resultAsCsvString = "\r\n"
+
+        self.log('Cohen kappa score  between method1 and avg(annotators): ')
+        resultAsCsvString += "method1 vs avg(annotators)," + ",".join(
+            annotatedDataHandler.getKappaCorrelationScore(self.method1Data, avgAnnotatedData)) + "\r\n"
+        self.log("**********************************************************************************")
+
+        self.log('Cohen kappa score  between method2 and avg(annotators): ')
+        resultAsCsvString += "method2 vs avg(annotators)," + ",".join(
+            annotatedDataHandler.getKappaCorrelationScore(self.method2Data, avgAnnotatedData)) + "\r\n"
+        self.log("**********************************************************************************")
+        self.log('Cohen kappa score  between method3 and avg(annotators): ')
+
+        resultAsCsvString += "method3 vs avg(annotators)," + ",".join(
+            annotatedDataHandler.getKappaCorrelationScore(self.method3Data, avgAnnotatedData)) + "\r\n"
+        self.log("**********************************************************************************")
+
+        self.log("**********************************************************************************")
+        self.log(resultAsCsvString)
+
+
     def calculateAverageScoreBetweenAllAnnotators(self):
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 \
                 or len(self.annotator4Data) < 1:
@@ -290,9 +325,11 @@ class AnnotatedDataHandler:
 
 
 annotatedDataHandler = AnnotatedDataHandler()
-annotatedDataHandler.readAllAnnotatorsData(True)
+annotatedDataHandler.readAllAnnotatorsData(False)
+annotatedDataHandler.readAllComputedData(False)
 # annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
 avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators()
 
+# annotatedDataHandler.log(avgAnnotatedData, "DEBUG")
 
-annotatedDataHandler.log(avgAnnotatedData)
+annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(avgAnnotatedData)
