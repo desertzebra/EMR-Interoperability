@@ -78,21 +78,21 @@ class AnnotatedDataHandler:
                     data.append(cellData)
         return data
 
-    @staticmethod
-    def getPearsonCorrelationScore(list1, list2):
+    def getPearsonCorrelationScore(self, list1, list2):
         correlationBetweenLists = []
         for list1_attr, list2_attr in zip(list1, list2):
-            (correlation_value, p_value) = pearsonr(list1_attr, list2_attr)
+            (correlation_value, p_value) = pearsonr(list(float(v) for v in list1_attr), list(float(v) for v in list2_attr))
             formatted_correlation_value = str(round(correlation_value, 2))
             correlationBetweenLists.append(formatted_correlation_value)
             # AnnotatedDataHandler = round(AnnotatedDataHandler, 2)
             # print('%7.4f %7.4f' % (AnnotatedDataHandler, p_value))
         return correlationBetweenLists
 
-    @staticmethod
-    def getKappaCorrelationScore(list1, list2):
+    def getKappaCorrelationScore(self, list1, list2):
         kappaCorrelationBetweenLists = []
         for list1_attr, list2_attr in zip(list1, list2):
+            # self.log(len(list1_attr))
+            # self.log(len(list2_attr))
             d_score = cohen_kappa_score(list1_attr, list2_attr)
             formatted_d_score = str(round(d_score, 2))
             kappaCorrelationBetweenLists.append(formatted_d_score)
@@ -277,17 +277,17 @@ class AnnotatedDataHandler:
 
         self.log('Cohen kappa score  between method1 and avg(annotators): ')
         resultAsCsvString += "method1 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.method1Data, avgAnnotatedData)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.method1Data, avgAnnotatedData)) + "\r\n"
         self.log("**********************************************************************************")
 
         self.log('Cohen kappa score  between method2 and avg(annotators): ')
         resultAsCsvString += "method2 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.method2Data, avgAnnotatedData)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.method2Data, avgAnnotatedData)) + "\r\n"
         self.log("**********************************************************************************")
         self.log('Cohen kappa score  between method3 and avg(annotators): ')
 
         resultAsCsvString += "method3 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.method3Data, avgAnnotatedData)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.method3Data, avgAnnotatedData)) + "\r\n"
         self.log("**********************************************************************************")
 
         self.log("**********************************************************************************")
