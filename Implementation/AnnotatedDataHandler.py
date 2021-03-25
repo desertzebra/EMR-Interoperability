@@ -10,7 +10,13 @@ class AnnotatedDataHandler:
     annotator2Data = []
     annotator3Data = []
     annotator4Data = []
+    method1Data = []
+    method2Data = []
+    method3Data = []
+
     logLevel = ["DEBUG", "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
+
+
 
     def __init__(self):
         pass
@@ -73,26 +79,26 @@ class AnnotatedDataHandler:
         return data
 
     @staticmethod
-    def getAnnotatedDataHandler(list1, list2):
-        AnnotatedDataHandlerBetweenLists = []
+    def getPearsonCorrelationScore(list1, list2):
+        correlationBetweenLists = []
         for list1_attr, list2_attr in zip(list1, list2):
             (correlation_value, p_value) = pearsonr(list1_attr, list2_attr)
             formatted_correlation_value = str(round(correlation_value, 2))
-            AnnotatedDataHandlerBetweenLists.append(formatted_correlation_value)
+            correlationBetweenLists.append(formatted_correlation_value)
             # AnnotatedDataHandler = round(AnnotatedDataHandler, 2)
             # print('%7.4f %7.4f' % (AnnotatedDataHandler, p_value))
-        return AnnotatedDataHandlerBetweenLists
+        return correlationBetweenLists
 
     @staticmethod
-    def getKappaAnnotatedDataHandler(list1, list2):
-        kappaAnnotatedDataHandlerBetweenLists = []
+    def getKappaCorrelationScore(list1, list2):
+        kappaCorrelationBetweenLists = []
         for list1_attr, list2_attr in zip(list1, list2):
             d_score = cohen_kappa_score(list1_attr, list2_attr)
             formatted_d_score = str(round(d_score, 2))
-            kappaAnnotatedDataHandlerBetweenLists.append(formatted_d_score)
+            kappaCorrelationBetweenLists.append(formatted_d_score)
             # AnnotatedDataHandler = round(AnnotatedDataHandler, 2)
             # print('%7.4f %7.4f' % (AnnotatedDataHandler, p_value))
-        return kappaAnnotatedDataHandlerBetweenLists
+        return kappaCorrelationBetweenLists
 
     @staticmethod
     def convertAttrValue(attr):
@@ -152,6 +158,31 @@ class AnnotatedDataHandler:
 
         self.log("**********************************************************************************")
 
+    def readAllComputedData(self, readHeaders=False):
+
+        # log("*****************************************Annotator 1*****************************************")
+        if not readHeaders:
+            self.method1Data = annotatedDataHandler.readCSVWithoutHeaders('Data/0-table-V0.2.csv')
+        else:
+            self.method1Data = annotatedDataHandler.readCSV('Data/0-table-V0.2.csv')
+        self.log(["method1 data loaded: ", len(self.method1Data), " with readHeaders=", readHeaders])
+        # log("**********************************************************************************")
+        # log("*****************************************Annotator 2*****************************************")
+        if not readHeaders:
+            self.method2Data = annotatedDataHandler.readCSVWithoutHeaders('Data/0-table-V0.2.csv')
+        else:
+            self.method2Data = annotatedDataHandler.readCSV('Data/0-table-V0.2.csv')
+        self.log(["method2 data loaded: ", len(self.method2Data), " with readHeaders=", readHeaders])
+        # log("**********************************************************************************")
+        # log("*****************************************Annotator 3*****************************************")
+        if not readHeaders:
+            self.method3Data = annotatedDataHandler.readCSVWithoutHeaders('Data/0-table-V0.2.csv')
+        else:
+            self.method3Data = annotatedDataHandler.readCSV('Data/0-table-V0.2.csv')
+        self.log(["method3 data loaded: ", len(self.method3Data), " with readHeaders=", readHeaders])
+
+        self.log("**********************************************************************************")
+
     def calculatePearsonScoreBetweenAnnotators(self):
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 or len(
                 self.annotator4Data) < 1:
@@ -160,32 +191,32 @@ class AnnotatedDataHandler:
 
         # log('Pearson AnnotatedDataHandler between annotator1 and annotator2: ')
         allAnnotatedDataHandlers += "annotator1 vs annotator2," + ",".join(
-            annotatedDataHandler.getAnnotatedDataHandler(self.annotator1Data, self.annotator2Data)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.annotator1Data, self.annotator2Data)) + "\r\n"
         # log("**********************************************************************************")
 
         # log('Pearson AnnotatedDataHandler between annotator1 and annotator3: ')
         allAnnotatedDataHandlers += "annotator1 vs annotator3," + ",".join(
-            annotatedDataHandler.getAnnotatedDataHandler(self.annotator1Data, self.annotator3Data)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.annotator1Data, self.annotator3Data)) + "\r\n"
         # log("**********************************************************************************")
 
         # log('Pearson AnnotatedDataHandler between annotator1 and annotator4: ')
         allAnnotatedDataHandlers += "annotator1 vs annotator4," + ",".join(
-            annotatedDataHandler.getAnnotatedDataHandler(self.annotator1Data, self.annotator4Data)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.annotator1Data, self.annotator4Data)) + "\r\n"
         # log("**********************************************************************************")
 
         # log('Pearson AnnotatedDataHandler between annotator2 and annotator3: ')
         allAnnotatedDataHandlers += "annotator2 vs annotator3," + ",".join(
-            annotatedDataHandler.getAnnotatedDataHandler(self.annotator2Data, self.annotator3Data)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.annotator2Data, self.annotator3Data)) + "\r\n"
         # log("**********************************************************************************")
 
         # log('Pearson AnnotatedDataHandler between annotator2 and annotator4: ')
         allAnnotatedDataHandlers += "annotator2 vs annotator4," + ",".join(
-            annotatedDataHandler.getAnnotatedDataHandler(self.annotator2Data, self.annotator4Data)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.annotator2Data, self.annotator4Data)) + "\r\n"
         # log("**********************************************************************************")
 
         # log('Pearson AnnotatedDataHandler between annotator3 and annotator4: ')
         allAnnotatedDataHandlers += "annotator3 vs annotator4," + ",".join(
-            annotatedDataHandler.getAnnotatedDataHandler(self.annotator3Data, self.annotator4Data)) + "\r\n"
+            annotatedDataHandler.getPearsonCorrelationScore(self.annotator3Data, self.annotator4Data)) + "\r\n"
         self.log("**********************************************************************************")
         print(allAnnotatedDataHandlers)
         self.log("**********************************************************************************")
@@ -199,32 +230,32 @@ class AnnotatedDataHandler:
 
         self.log('Cohen kappa score  between annotator1 and annotator2: ')
         allKappaAnnotatedDataHandlers += "annotator1 vs annotator2," + ",".join(
-            annotatedDataHandler.getKappaAnnotatedDataHandler(self.annotator1Data, self.annotator2Data)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator2Data)) + "\r\n"
         self.log("**********************************************************************************")
 
         self.log('Cohen kappa score  between annotator1 and annotator3: ')
         allKappaAnnotatedDataHandlers += "annotator1 vs annotator3," + ",".join(
-            annotatedDataHandler.getKappaAnnotatedDataHandler(self.annotator1Data, self.annotator3Data)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator3Data)) + "\r\n"
         self.log("**********************************************************************************")
 
         self.log('Cohen kappa score  between annotator1 and annotator4: ')
         allKappaAnnotatedDataHandlers += "annotator1 vs annotator4," + ",".join(
-            annotatedDataHandler.getKappaAnnotatedDataHandler(self.annotator1Data, self.annotator4Data)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator4Data)) + "\r\n"
         self.log("**********************************************************************************")
 
         self.log('Cohen kappa score  between annotator2 and annotator3: ')
         allKappaAnnotatedDataHandlers += "annotator2 vs annotator3," + ",".join(
-            annotatedDataHandler.getKappaAnnotatedDataHandler(self.annotator2Data, self.annotator3Data)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator3Data)) + "\r\n"
         self.log("**********************************************************************************")
 
         self.log('Cohen kappa score  between annotator2 and annotator4: ')
         allKappaAnnotatedDataHandlers += "annotator2 vs annotator4," + ",".join(
-            annotatedDataHandler.getKappaAnnotatedDataHandler(self.annotator2Data, self.annotator4Data)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator4Data)) + "\r\n"
         self.log("**********************************************************************************")
 
         self.log('Cohen kappa score  between annotator3 and annotator4: ')
         allKappaAnnotatedDataHandlers += "annotator3 vs annotator4," + ",".join(
-            annotatedDataHandler.getKappaAnnotatedDataHandler(self.annotator3Data, self.annotator4Data)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator3Data, self.annotator4Data)) + "\r\n"
         self.log("**********************************************************************************")
         self.log(allKappaAnnotatedDataHandlers)
 
@@ -262,4 +293,6 @@ annotatedDataHandler = AnnotatedDataHandler()
 annotatedDataHandler.readAllAnnotatorsData(True)
 # annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
 avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators()
+
+
 annotatedDataHandler.log(avgAnnotatedData)
