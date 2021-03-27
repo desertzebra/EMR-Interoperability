@@ -315,11 +315,13 @@ class AnnotatedDataHandler:
                                                 self.annotator4Data):
             rowIterator += 1
             if hasHeaders and rowIterator == 1:
+                print(a1Row)
                 for attr in a1Row:
                     colHeadNameList.append(attr)
                 # Even java has labeled loops. This sucks!
                 if rowIterator == 1:
                     averagedData.append(colHeadNameList)
+                    print(averagedData)
                     continue
 
             colIterator = 0
@@ -371,6 +373,22 @@ class AnnotatedDataHandler:
 
         return list1d
 
+    def compare1dLists(self, list2dWithHeader1, list2dWithHeader2):
+        self.log(["len(list2dWithHeader1):", len(list2dWithHeader1)])
+        self.log(["len(list2dWithHeader2):", len(list2dWithHeader2)])
+        countProblematicRows=0
+        self.log(["list2dWithHeader1:", list2dWithHeader1[0]])
+        self.log(["list2dWithHeader2:", list2dWithHeader2[0]])
+        for (row1, row2) in zip(list2dWithHeader1, list2dWithHeader2):
+            for (a1Col, a2Col) in zip(row1, row2):
+                 if not self.isFloat(a1Col) and not self.isFloat(a2Col) and not a1Col == a2Col:
+                     countProblematicRows+=1
+                    # self.log(["row1:", row1])
+                    # self.log(["row2:", row2])
+                    # self.log(["a1Col:",a1Col, ",a2Col:", a2Col])
+        self.log(["countProblematicRows:",countProblematicRows])
+
+
 
 annotatedDataHandler = AnnotatedDataHandler()
 annotatedDataHandler.readAllAnnotatorsData(False)
@@ -395,8 +413,15 @@ flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.
 flatMethod2Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
 flatMethod3Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method3Data)
 
+annotatedDataHandler.compare1dLists(flatAnnotatedData, flatMethod1Data)
 annotatedDataHandler.log(["*"]*80)
-annotatedDataHandler.log(flatAnnotatedData)
+annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod1Data)
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod3Data)
+annotatedDataHandler.log(["*"]*80)
+
+# annotatedDataHandler.log(["*"]*80)
+# annotatedDataHandler.log(flatAnnotatedData)
 # annotatedDataHandler.log(["*"]*80)
 # annotatedDataHandler.log(flatMethod1Data)
 # annotatedDataHandler.log(["*"]*80)
