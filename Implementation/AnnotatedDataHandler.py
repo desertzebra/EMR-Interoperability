@@ -1,7 +1,8 @@
 import csv
 from scipy.stats import pearsonr
-from sklearn.metrics import cohen_kappa_score
+from sklearn.metrics import cohen_kappa_score, confusion_matrix, ConfusionMatrixDisplay
 import numpy as np
+import matplotlib.pyplot as plt
 import re
 
 
@@ -15,8 +16,6 @@ class AnnotatedDataHandler:
     method3Data = []
 
     logLevel = ["DEBUG", "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
-
-
 
     def __init__(self):
         pass
@@ -90,7 +89,8 @@ class AnnotatedDataHandler:
     def getPearsonCorrelationScore(self, list1, list2):
         correlationBetweenLists = []
         for list1_attr, list2_attr in zip(list1, list2):
-            (correlation_value, p_value) = pearsonr(list(float(v) for v in list1_attr), list(float(v) for v in list2_attr))
+            (correlation_value, p_value) = pearsonr(list(float(v) for v in list1_attr),
+                                                    list(float(v) for v in list2_attr))
             formatted_correlation_value = str(round(correlation_value, 2))
             correlationBetweenLists.append(formatted_correlation_value)
             # AnnotatedDataHandler = round(AnnotatedDataHandler, 2)
@@ -165,7 +165,7 @@ class AnnotatedDataHandler:
             self.annotator4Data = annotatedDataHandler.readCSV('Data/Annotated/Annotator4.csv')
         self.log(["annotator4 data loaded: ", len(self.annotator4Data), " with readHeaders=", readHeaders])
 
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
     def readAllComputedData(self, readHeaders=False):
 
@@ -190,9 +190,10 @@ class AnnotatedDataHandler:
             self.method3Data = annotatedDataHandler.readCSV('Data/2-table-V0.2.csv')
         self.log(["method3 data loaded: ", len(self.method3Data), " with readHeaders=", readHeaders])
 
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
     def calculatePearsonScoreBetweenAnnotators(self):
+        allAnnotatedDataHandlers = ""
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 or len(
                 self.annotator4Data) < 1:
             self.log("Insufficient data for the annotators, have you read the files yet?")
@@ -226,9 +227,9 @@ class AnnotatedDataHandler:
         # log('Pearson AnnotatedDataHandler between annotator3 and annotator4: ')
         allAnnotatedDataHandlers += "annotator3 vs annotator4," + ",".join(
             annotatedDataHandler.getPearsonCorrelationScore(self.annotator3Data, self.annotator4Data)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
         print(allAnnotatedDataHandlers)
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
     def calculateKappaScoreBetweenAnnotators(self):
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 or len(
@@ -240,32 +241,32 @@ class AnnotatedDataHandler:
         self.log('Cohen kappa score  between annotator1 and annotator2: ')
         allKappaAnnotatedDataHandlers += "annotator1 vs annotator2," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator2Data)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator1 and annotator3: ')
         allKappaAnnotatedDataHandlers += "annotator1 vs annotator3," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator3Data)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator1 and annotator4: ')
         allKappaAnnotatedDataHandlers += "annotator1 vs annotator4," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator4Data)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator2 and annotator3: ')
         allKappaAnnotatedDataHandlers += "annotator2 vs annotator3," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator3Data)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator2 and annotator4: ')
         allKappaAnnotatedDataHandlers += "annotator2 vs annotator4," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator4Data)) + "\r\n"
-        annotatedDataHandler.log(["*"]*80)
+        annotatedDataHandler.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator3 and annotator4: ')
         allKappaAnnotatedDataHandlers += "annotator3 vs annotator4," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.annotator3Data, self.annotator4Data)) + "\r\n"
-        annotatedDataHandler.log(["*"]*80)
+        annotatedDataHandler.log(["*"] * 80)
         self.log(allKappaAnnotatedDataHandlers)
 
     def calculateKappaScoreBetweenComputedAndAnnotatedData(self, avgAnnotatedData=None):
@@ -281,27 +282,25 @@ class AnnotatedDataHandler:
             self.log("Insufficient data for the computed methods, have you read the files yet?")
             return
 
-
         resultAsCsvString = "\r\n"
 
         self.log('Cohen kappa score  between method1 and avg(annotators): ')
         resultAsCsvString += "method1 vs avg(annotators)," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.method1Data, avgAnnotatedData)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between method2 and avg(annotators): ')
         resultAsCsvString += "method2 vs avg(annotators)," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.method2Data, avgAnnotatedData)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
         self.log('Cohen kappa score  between method3 and avg(annotators): ')
 
         resultAsCsvString += "method3 vs avg(annotators)," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.method3Data, avgAnnotatedData)) + "\r\n"
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
 
-        self.log(["*"]*80)
+        self.log(["*"] * 80)
         self.log(resultAsCsvString)
-
 
     def calculateAverageScoreBetweenAllAnnotators(self, hasHeaders=False):
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 \
@@ -315,15 +314,8 @@ class AnnotatedDataHandler:
                                                 self.annotator4Data):
             rowIterator += 1
             if hasHeaders and rowIterator == 1:
-                print(a1Row)
-                for attr in a1Row:
-                    colHeadNameList.append(attr)
-                # Even java has labeled loops. This sucks!
-                if rowIterator == 1:
-                    averagedData.append(colHeadNameList)
-                    print(averagedData)
-                    continue
-
+                averagedData.append(a1Row)
+                continue
             colIterator = 0
             cellData = []
 
@@ -331,7 +323,7 @@ class AnnotatedDataHandler:
                 colIterator += 1
                 self.log(a1Col, "TRACE")
                 if hasHeaders and colIterator == 1:
-                    cellData.append(attr)
+                    cellData.append(a1Col)
                     # print(rowHeaderName)
                 elif not self.isFloat(a1Col) or not self.isFloat(a2Col) or not self.isFloat(a3Col) or not self.isFloat(
                         a4Col):
@@ -343,7 +335,7 @@ class AnnotatedDataHandler:
                         exit()
                 else:
                     avg = (float(a1Col) + float(a2Col) + float(a3Col) + float(a4Col)) / 4
-                    cellData.append(avg)
+                    cellData.append(str(avg))
             averagedData.append(cellData)
         return averagedData
 
@@ -353,41 +345,69 @@ class AnnotatedDataHandler:
         colHeadNameList = []
         for row in list2dWithHeaders:
             rowIterator += 1
-            if rowIterator==1:
-                for attr in row:
-                    colHeadNameList.append(attr)
+            # if rowIterator == 1:
+            #     for attr in row:
+            #         colHeadNameList.append(attr)
             # Even java has labeled loops. This sucks!
-            if rowIterator==1:
+            if rowIterator == 1:
                 continue
             # print("colHeadNameList", colHeadNameList)
             colIterator = 0
+            # rowHeaderName = ""
+            for attr in row:
+                colIterator += 1
+                if colIterator == 1:
+                    # rowHeaderName = attr
+                    # print(rowHeaderName)
+                    continue
+                # colHeaderName = colHeadNameList[colIterator - 1]
+                # attr = self.convertAttrValue(attr)
+                list1d.append(attr)
+
+        return list1d
+
+    def collapseDataSetTo1dArrayWithHeaders(self, list2dWithHeaders):
+        list1d = []
+        rowIterator = 0
+        colHeadNameList = []
+        for row in list2dWithHeaders:
+            rowIterator += 1
+            if rowIterator == 1:
+                for attr in row:
+                    colHeadNameList.append(attr)
+            # Even java has labeled loops. This sucks!
+            if rowIterator == 1:
+                continue
+            # print("colHeadNameList", colHeadNameList)
+            colIterator = 0
+            rowHeaderName = ""
             for attr in row:
                 colIterator += 1
                 if colIterator == 1:
                     rowHeaderName = attr
                     # print(rowHeaderName)
                     continue
-                colHeaderName = colHeadNameList[colIterator-1]
+                colHeaderName = colHeadNameList[colIterator - 1]
                 # attr = self.convertAttrValue(attr)
                 list1d.append([rowHeaderName, colHeaderName, attr])
 
         return list1d
 
+
     def compare1dLists(self, list2dWithHeader1, list2dWithHeader2):
         self.log(["len(list2dWithHeader1):", len(list2dWithHeader1)])
         self.log(["len(list2dWithHeader2):", len(list2dWithHeader2)])
-        countProblematicRows=0
+        countProblematicRows = 0
         self.log(["list2dWithHeader1:", list2dWithHeader1[0]])
         self.log(["list2dWithHeader2:", list2dWithHeader2[0]])
         for (row1, row2) in zip(list2dWithHeader1, list2dWithHeader2):
             for (a1Col, a2Col) in zip(row1, row2):
-                 if not self.isFloat(a1Col) and not self.isFloat(a2Col) and not a1Col == a2Col:
-                     countProblematicRows+=1
-                    # self.log(["row1:", row1])
-                    # self.log(["row2:", row2])
-                    # self.log(["a1Col:",a1Col, ",a2Col:", a2Col])
-        self.log(["countProblematicRows:",countProblematicRows])
-
+                if not self.isFloat(a1Col) and not self.isFloat(a2Col) and not a1Col == a2Col:
+                    countProblematicRows += 1
+                # self.log(["row1:", row1])
+                # self.log(["row2:", row2])
+                # self.log(["a1Col:",a1Col, ",a2Col:", a2Col])
+        self.log(["countProblematicRows:", countProblematicRows])
 
 
 annotatedDataHandler = AnnotatedDataHandler()
@@ -398,7 +418,6 @@ avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotator
 
 # annotatedDataHandler.log(avgAnnotatedData, "DEBUG")
 annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(avgAnnotatedData)
-
 
 # Now to convert the datasets into 1d
 
@@ -413,12 +432,28 @@ flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.
 flatMethod2Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
 flatMethod3Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method3Data)
 
-annotatedDataHandler.compare1dLists(flatAnnotatedData, flatMethod1Data)
-annotatedDataHandler.log(["*"]*80)
-annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod1Data)
-annotatedDataHandler.log(["*"]*80)
-annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod3Data)
-annotatedDataHandler.log(["*"]*80)
+# annotatedDataHandler.compare1dLists(flatAnnotatedData, flatMethod1Data)
+# annotatedDataHandler.log(["*"] * 80)
+# annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod1Data)
+# annotatedDataHandler.log(["*"] * 80)
+# annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod3Data)
+# annotatedDataHandler.log(["*"] * 80)
+
+np.set_printoptions(precision=2)
+
+
+
+cm = confusion_matrix(flatAnnotatedData, flatMethod1Data, sample_weight=None, labels=None, normalize=None)
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot()
+
+disp.ax_.set_title("Confusion Matrix between Averaged Anntoated Data and Method 1")
+print(disp.confusion_matrix)
+plt.show()
+
+
+
 
 # annotatedDataHandler.log(["*"]*80)
 # annotatedDataHandler.log(flatAnnotatedData)
@@ -429,4 +464,3 @@ annotatedDataHandler.log(["*"]*80)
 # annotatedDataHandler.log(["*"]*80)
 # annotatedDataHandler.log(flatMethod2Data)
 # annotatedDataHandler.log(["*"]*80)
-
