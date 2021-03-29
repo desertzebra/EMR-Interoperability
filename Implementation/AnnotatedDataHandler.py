@@ -4,6 +4,7 @@ from sklearn.metrics import cohen_kappa_score, confusion_matrix, ConfusionMatrix
 import numpy as np
 import matplotlib.pyplot as plt
 import re
+import pandas as pd
 
 
 class AnnotatedDataHandler:
@@ -36,20 +37,23 @@ class AnnotatedDataHandler:
             else:
                 print(msg)
 
-    def readCSV(self, url):
+    def readCSV(self, url, isComputed=False, thresholds={}):
         data = []
         with open(url) as csvFile:
             csvReader = csv.reader(csvFile, delimiter=',')
             for row in csvReader:
                 cellData = []
                 for attr in row:
-                    attr = self.convertAttrValue(attr)
+                    if not isComputed:
+                        attr = self.convertAnnotatedAttrValue(attr)
+                    else:
+                        attr = self.convertComputedAttrValue(attr, thresholds)
                     cellData.append(attr)
                 if len(cellData) > 0:
                     data.append(cellData)
         return data
 
-    def readCSVWithoutHeaders(self, url):
+    def readCSVWithoutHeaders(self, url, isComputed=False, thresholds={}):
         data = []
         with open(url) as csvFile:
             csvReader = csv.reader(csvFile, delimiter=',')
@@ -64,7 +68,12 @@ class AnnotatedDataHandler:
                     colIterator += 1
                     if colIterator == 1:
                         continue
-                    attr = self.convertAttrValue(attr)
+
+                    # Convert the attribute values, according to thresholds
+                    if not isComputed:
+                        attr = self.convertAnnotatedAttrValue(attr)
+                    else:
+                        attr = self.convertComputedAttrValue(attr, thresholds)
 
                     if attr == '':
                         self.log(["rowIterator:", rowIterator, ",colIterator:", colIterator, ",attr:", attr], "DEBUG")
@@ -110,7 +119,42 @@ class AnnotatedDataHandler:
         return kappaCorrelationBetweenLists
 
     @staticmethod
-    def convertAttrValue(attr):
+    def getDefaultThresholdValues(attr, thresholdValues={}):
+        # since the call could hold an undefined, otherwise not needed for routine operations
+        if thresholdValues == "undefined":
+            thresholdValues = {}
+
+        # initializing default threshold values. Perhaps this should be in a separate function?
+        if "0" not in thresholdValues or thresholdValues["0"] == "undefined":
+            thresholdValues["0"] = 0.5
+        if "1" not in thresholdValues or thresholdValues["1"] == "undefined":
+            thresholdValues["1"] = 0.8
+        if "0.5" not in thresholdValues or thresholdValues["0.5"] == "undefined":
+            thresholdValues["0.5"] = 0.8
+        return thresholdValues
+
+    def convertComputedAttrValue(self, attr, thresholdValues={}):
+        attr = attr.strip()
+
+        thresholdValues = self.getDefaultThresholdValues(thresholdValues)
+
+        if attr == '-1' or attr == '-' or attr == '~' or attr == '':
+            return "-1.0"
+        elif self.isFloat(attr) and 0 <= float(attr) < thresholdValues["0"]:
+            return "0.0"
+        elif self.isFloat(attr) and thresholdValues["0"] <= float(attr) < thresholdValues["0.5"]:
+            return "0.5"
+        elif self.isFloat(attr) and thresholdValues["1"] <= float(attr):
+            return "1.0"
+
+        # check if some float value was missed
+        if self.isFloat(attr):
+            self.log([attr], "DEBUG")
+
+        return attr
+
+    @staticmethod
+    def convertAnnotatedAttrValue(attr):
         attr = attr.strip()
         if attr == '-' or attr == '~':
             attr = "-1.0"
@@ -139,55 +183,72 @@ class AnnotatedDataHandler:
 
         # log("*****************************************Annotator 1*****************************************")
         if not readHeaders:
-            self.annotator1Data = annotatedDataHandler.readCSVWithoutHeaders('Data/Annotated/Annotator1.csv')
+            self.annotator1Data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/Annotated/Annotator1.csv')
         else:
-            self.annotator1Data = annotatedDataHandler.readCSV('Data/Annotated/Annotator1.csv')
+            self.annotator1Data = annotatedDataHandler.readCSV(
+                'Data/Annotated/Annotator1.csv')
         self.log(["annotator1 data loaded: ", len(self.annotator1Data), " with readHeaders=", readHeaders])
         # log(["*"]*80)
         # log("*****************************************Annotator 2*****************************************")
         if not readHeaders:
-            self.annotator2Data = annotatedDataHandler.readCSVWithoutHeaders('Data/Annotated/Annotator2.csv')
+            self.annotator2Data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/Annotated/Annotator2.csv')
         else:
-            self.annotator2Data = annotatedDataHandler.readCSV('Data/Annotated/Annotator2.csv')
+            self.annotator2Data = annotatedDataHandler.readCSV(
+                'Data/Annotated/Annotator2.csv')
         self.log(["annotator2 data loaded: ", len(self.annotator2Data), " with readHeaders=", readHeaders])
         # log(["*"]*80)
         # log("*****************************************Annotator 3*****************************************")
         if not readHeaders:
-            self.annotator3Data = annotatedDataHandler.readCSVWithoutHeaders('Data/Annotated/Annotator3.csv')
+            self.annotator3Data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/Annotated/Annotator3.csv')
         else:
-            self.annotator3Data = annotatedDataHandler.readCSV('Data/Annotated/Annotator3.csv')
+            self.annotator3Data = annotatedDataHandler.readCSV(
+                'Data/Annotated/Annotator3.csv')
         self.log(["annotator3 data loaded: ", len(self.annotator3Data), " with readHeaders=", readHeaders])
         # log(["*"]*80)
         # log("*****************************************Annotator 4*****************************************")
         if not readHeaders:
-            self.annotator4Data = annotatedDataHandler.readCSVWithoutHeaders('Data/Annotated/Annotator4.csv')
+            self.annotator4Data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/Annotated/Annotator4.csv')
         else:
-            self.annotator4Data = annotatedDataHandler.readCSV('Data/Annotated/Annotator4.csv')
+            self.annotator4Data = annotatedDataHandler.readCSV(
+                'Data/Annotated/Annotator4.csv')
         self.log(["annotator4 data loaded: ", len(self.annotator4Data), " with readHeaders=", readHeaders])
 
         self.log(["*"] * 80)
 
     def readAllComputedData(self, readHeaders=False):
 
-        # log("*****************************************Annotator 1*****************************************")
+        # log("*****************************************Method 1*****************************************")
         if not readHeaders:
-            self.method1Data = annotatedDataHandler.readCSVWithoutHeaders('Data/0-table-V0.2.csv')
+            self.method1Data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/0-table-V0.3.csv', True)
         else:
-            self.method1Data = annotatedDataHandler.readCSV('Data/0-table-V0.2.csv')
+            self.method1Data = annotatedDataHandler.readCSV(
+                'Data/0-table-V0.3.csv', True)
         self.log(["method1 data loaded: ", len(self.method1Data), " with readHeaders=", readHeaders])
         # log(["*"]*80)
-        # log("*****************************************Annotator 2*****************************************")
+        # log("*****************************************Method 2*****************************************")
+        thresholdsMethod2 = {"0.0": 0.5, "0.5": 0.9, "1": 0.9}
         if not readHeaders:
-            self.method2Data = annotatedDataHandler.readCSVWithoutHeaders('Data/1-table-V0.2.csv')
+            self.method2Data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/1-table-V0.3.csv', True,
+                thresholdsMethod2)
         else:
-            self.method2Data = annotatedDataHandler.readCSV('Data/1-table-V0.2.csv')
+            self.method2Data = annotatedDataHandler.readCSV(
+                'Data/1-table-V0.3.csv', True,
+                thresholdsMethod2)
         self.log(["method2 data loaded: ", len(self.method2Data), " with readHeaders=", readHeaders])
         # log(["*"]*80)
-        # log("*****************************************Annotator 3*****************************************")
+        # log("*****************************************Method 3*****************************************")
         if not readHeaders:
-            self.method3Data = annotatedDataHandler.readCSVWithoutHeaders('Data/2-table-V0.2.csv')
+            self.method3Data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/2-table-V0.3.csv', True)
         else:
-            self.method3Data = annotatedDataHandler.readCSV('Data/2-table-V0.2.csv')
+            self.method3Data = annotatedDataHandler.readCSV(
+                'Data/2-table-V0.3.csv', True)
         self.log(["method3 data loaded: ", len(self.method3Data), " with readHeaders=", readHeaders])
 
         self.log(["*"] * 80)
@@ -292,6 +353,7 @@ class AnnotatedDataHandler:
         self.log('Cohen kappa score  between method2 and avg(annotators): ')
         resultAsCsvString += "method2 vs avg(annotators)," + ",".join(
             annotatedDataHandler.getKappaCorrelationScore(self.method2Data, avgAnnotatedData)) + "\r\n"
+
         self.log(["*"] * 80)
         self.log('Cohen kappa score  between method3 and avg(annotators): ')
 
@@ -362,6 +424,7 @@ class AnnotatedDataHandler:
                     continue
                 # colHeaderName = colHeadNameList[colIterator - 1]
                 # attr = self.convertAttrValue(attr)
+
                 list1d.append(attr)
 
         return list1d
@@ -375,8 +438,10 @@ class AnnotatedDataHandler:
             if rowIterator == 1:
                 for attr in row:
                     colHeadNameList.append(attr)
+
             # Even java has labeled loops. This sucks!
             if rowIterator == 1:
+                print(len(colHeadNameList))
                 continue
             # print("colHeadNameList", colHeadNameList)
             colIterator = 0
@@ -387,12 +452,15 @@ class AnnotatedDataHandler:
                     rowHeaderName = attr
                     # print(rowHeaderName)
                     continue
-                colHeaderName = colHeadNameList[colIterator - 1]
+                try:
+                    colHeaderName = colHeadNameList[colIterator - 1]
+                except:
+                    print(row)
+                    print("colIterator:", colIterator, ", size of colHeadNameList:", len(colHeadNameList))
+                    exit()
                 # attr = self.convertAttrValue(attr)
                 list1d.append([rowHeaderName, colHeaderName, attr])
-
         return list1d
-
 
     def compare1dLists(self, list2dWithHeader1, list2dWithHeader2):
         self.log(["len(list2dWithHeader1):", len(list2dWithHeader1)])
@@ -404,63 +472,111 @@ class AnnotatedDataHandler:
             for (a1Col, a2Col) in zip(row1, row2):
                 if not self.isFloat(a1Col) and not self.isFloat(a2Col) and not a1Col == a2Col:
                     countProblematicRows += 1
-                # self.log(["row1:", row1])
-                # self.log(["row2:", row2])
-                # self.log(["a1Col:",a1Col, ",a2Col:", a2Col])
+                    self.log(["row1:", row1])
+                    self.log(["row2:", row2])
+                    self.log(["a1Col:", a1Col, ",a2Col:", a2Col])
+                    exit()
         self.log(["countProblematicRows:", countProblematicRows])
 
 
 annotatedDataHandler = AnnotatedDataHandler()
-annotatedDataHandler.readAllAnnotatorsData(False)
-annotatedDataHandler.readAllComputedData(False)
-# annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
-avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators()
+# annotatedDataHandler.readAllAnnotatorsData(False)
+# annotatedDataHandler.readAllComputedData(False)
+# # annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
+# avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators()
 
 # annotatedDataHandler.log(avgAnnotatedData, "DEBUG")
-annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(avgAnnotatedData)
+# annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(avgAnnotatedData)
 
 # Now to convert the datasets into 1d
 
 annotatedDataHandler.initDataStructures()
 annotatedDataHandler.readAllAnnotatorsData(True)
 annotatedDataHandler.readAllComputedData(True)
-
-avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators(True)
+print(len(annotatedDataHandler.annotator1Data))
+print(len(annotatedDataHandler.method1Data))
+print(len(annotatedDataHandler.method2Data))
+print(len(annotatedDataHandler.method3Data))
+print("")
+# avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators(True)
 # print(avgAnnotatedData)
-flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(avgAnnotatedData)
+# flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(avgAnnotatedData)
+flatAnnotatedData1 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator1Data)
+flatAnnotatedData3 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator3Data)
 flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method1Data)
 flatMethod2Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
 flatMethod3Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method3Data)
 
-# annotatedDataHandler.compare1dLists(flatAnnotatedData, flatMethod1Data)
-# annotatedDataHandler.log(["*"] * 80)
-# annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod1Data)
-# annotatedDataHandler.log(["*"] * 80)
-# annotatedDataHandler.compare1dLists(flatMethod2Data, flatMethod3Data)
-# annotatedDataHandler.log(["*"] * 80)
-
-np.set_printoptions(precision=2)
-
+# annotatedDataHandler.log(["-"]*80)
+# flatAnnotator1DataWithHeaders = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(
+#     annotatedDataHandler.annotator4Data)
+# annotatedDataHandler.log(["-"]*80)
+# flatMethod2DataWithHeaders = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(annotatedDataHandler.method3Data)
+# annotatedDataHandler.log(["-"]*80)
+# annotatedDataHandler.compare1dLists(flatMethod2DataWithHeaders, flatAnnotator1DataWithHeaders)
 
 
-cm = confusion_matrix(flatAnnotatedData, flatMethod1Data, sample_weight=None, labels=None, normalize=None)
+print(len(flatMethod2Data))
+print(len(flatAnnotatedData1))
 
-disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-disp.plot()
+data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
+        }
 
-disp.ax_.set_title("Confusion Matrix between Averaged Anntoated Data and Method 1")
-print(disp.confusion_matrix)
-plt.show()
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+
+data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+
+data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+
+data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+
+# np.set_printoptions(precision=2)
 
 
 
+# X = ["-1","0","0.5","1","1.5"]
+# Y = [1,0.9,0.6,0.7,0.1]
 
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log(flatAnnotatedData)
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log(flatMethod1Data)
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log(flatMethod2Data)
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log(flatMethod2Data)
-# annotatedDataHandler.log(["*"]*80)
+
+
+# #cm = confusion_matrix(flatAnnotatedData, flatMethod1Data, sample_weight=None, labels=None, normalize=None)
+# cm = confusion_matrix(X, Y, sample_weight=None, labels=None, normalize=None)
+# disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=None)
+# print(disp.confusion_matrix)
+# disp.plot()
+
+# disp.ax_.set_title("Confusion Matrix between Averaged Anntoated Data and Method 1")
+
+# plt.show()
