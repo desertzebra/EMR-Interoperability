@@ -126,7 +126,7 @@ class AnnotatedDataHandler:
 
         # initializing default threshold values. Perhaps this should be in a separate function?
         if "0" not in thresholdValues or thresholdValues["0"] == "undefined":
-            thresholdValues["0"] = 0.5
+            thresholdValues["0"] = 0.6
         if "1" not in thresholdValues or thresholdValues["1"] == "undefined":
             thresholdValues["1"] = 0.8
         if "0.5" not in thresholdValues or thresholdValues["0.5"] == "undefined":
@@ -498,11 +498,13 @@ print(len(annotatedDataHandler.method1Data))
 print(len(annotatedDataHandler.method2Data))
 print(len(annotatedDataHandler.method3Data))
 print("")
-# avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators(True)
+avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators(True)
 # print(avgAnnotatedData)
-# flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(avgAnnotatedData)
+flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(avgAnnotatedData)
 flatAnnotatedData1 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator1Data)
+flatAnnotatedData2 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator2Data)
 flatAnnotatedData3 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator3Data)
+flatAnnotatedData4 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator4Data)
 flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method1Data)
 flatMethod2Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
 flatMethod3Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method3Data)
@@ -515,10 +517,18 @@ flatMethod3Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.
 # annotatedDataHandler.log(["-"]*80)
 # annotatedDataHandler.compare1dLists(flatMethod2DataWithHeaders, flatAnnotator1DataWithHeaders)
 
+annotatedDataHandler.log("Annotated Data 1 vs Method 1")
+data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
+        }
 
-print(len(flatMethod2Data))
-print(len(flatAnnotatedData1))
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
 
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Annotated Data 1 vs Method 2")
 data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
         'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
         }
@@ -529,7 +539,7 @@ confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Act
 print (confusion_matrix)
 
 annotatedDataHandler.log(["*"]*80)
-
+annotatedDataHandler.log("Annotated Data 1 vs Method 3")
 data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
         'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
         }
@@ -541,6 +551,52 @@ print (confusion_matrix)
 
 annotatedDataHandler.log(["*"]*80)
 
+annotatedDataHandler.log("Annotated Data 2 vs Method 1")
+data = {'y_Actual':    flatAnnotatedData2,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Annotated Data 2 vs Method 2")
+data = {'y_Actual':    flatAnnotatedData2,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Annotated Data 2 vs Method 3")
+data = {'y_Actual':    flatAnnotatedData2,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+
+annotatedDataHandler.log("Annotated Data 3 vs Method 1")
+data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Annotated Data 3 vs Method 2")
 data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
         'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
         }
@@ -551,7 +607,7 @@ confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Act
 print (confusion_matrix)
 
 annotatedDataHandler.log(["*"]*80)
-
+annotatedDataHandler.log("Annotated Data 3 vs Method 3")
 data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
         'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
         }
@@ -561,6 +617,77 @@ df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
 confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
 print (confusion_matrix)
 
+annotatedDataHandler.log(["*"]*80)
+
+
+annotatedDataHandler.log("Annotated Data 4 vs Method 1")
+data = {'y_Actual':    flatAnnotatedData4,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Annotated Data 4 vs Method 2")
+data = {'y_Actual':    flatAnnotatedData4,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Annotated Data 4 vs Method 3")
+data = {'y_Actual':    flatAnnotatedData4,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+
+
+annotatedDataHandler.log("Avg(Annotated Data) vs Method 1")
+data = {'y_Actual':    flatAnnotatedData,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Avg(Annotated Data) vs Method 2")
+data = {'y_Actual':    flatAnnotatedData,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
+annotatedDataHandler.log("Avg(Annotated Data) vs Method 3")
+data = {'y_Actual':    flatAnnotatedData,#["-1","0","0.5","1","1.5"],
+        'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
+        }
+
+df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
+
+confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+print (confusion_matrix)
+
+annotatedDataHandler.log(["*"]*80)
 
 # np.set_printoptions(precision=2)
 
