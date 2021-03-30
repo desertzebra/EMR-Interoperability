@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import re
 import pandas as pd
+from statistics import mode, StatisticsError
 
 
 class AnnotatedDataHandler:
@@ -337,7 +338,7 @@ class AnnotatedDataHandler:
                 self.log("Insufficient data for the annotators, have you read the files yet?")
                 return
             else:
-                avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators()
+                avgAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators()
 
         if len(self.method1Data) < 1 or len(self.method1Data) < 1 or len(self.method1Data) < 1:
             self.log("Insufficient data for the computed methods, have you read the files yet?")
@@ -364,7 +365,7 @@ class AnnotatedDataHandler:
         self.log(["*"] * 80)
         self.log(resultAsCsvString)
 
-    def calculateAverageScoreBetweenAllAnnotators(self, hasHeaders=False):
+    def calculateModeScoreBetweenAllAnnotators(self, hasHeaders=False):
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 \
                 or len(self.annotator4Data) < 1:
             self.log("Insufficient data for the annotators, have you read the files yet?")
@@ -396,8 +397,13 @@ class AnnotatedDataHandler:
                         self.log([a1Col, a2Col, a3Col, a4Col])
                         exit()
                 else:
-                    avg = (float(a1Col) + float(a2Col) + float(a3Col) + float(a4Col)) / 4
-                    cellData.append(str(avg))
+                    try:
+                        mode_val = mode([a1Col, a2Col, a3Col, a4Col])
+                    except StatisticsError:
+                        self.log([a1Col, a2Col, a3Col, a4Col])
+                        self.log("Major error: No mode found")
+                        exit()
+                    cellData.append(str(mode_val))
             averagedData.append(cellData)
         return averagedData
 
@@ -483,10 +489,10 @@ annotatedDataHandler = AnnotatedDataHandler()
 # annotatedDataHandler.readAllAnnotatorsData(False)
 # annotatedDataHandler.readAllComputedData(False)
 # # annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
-# avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators()
+# modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators()
 
-# annotatedDataHandler.log(avgAnnotatedData, "DEBUG")
-# annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(avgAnnotatedData)
+# annotatedDataHandler.log(modeAnnotatedData, "DEBUG")
+# annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(modeAnnotatedData)
 
 # Now to convert the datasets into 1d
 
@@ -498,9 +504,9 @@ print(len(annotatedDataHandler.method1Data))
 print(len(annotatedDataHandler.method2Data))
 print(len(annotatedDataHandler.method3Data))
 print("")
-avgAnnotatedData = annotatedDataHandler.calculateAverageScoreBetweenAllAnnotators(True)
-# print(avgAnnotatedData)
-flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(avgAnnotatedData)
+modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
+# print(modeAnnotatedData)
+flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 flatAnnotatedData1 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator1Data)
 flatAnnotatedData2 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator2Data)
 flatAnnotatedData3 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator3Data)
@@ -655,7 +661,7 @@ print (confusion_matrix)
 annotatedDataHandler.log(["*"]*80)
 
 
-annotatedDataHandler.log("Avg(Annotated Data) vs Method 1")
+annotatedDataHandler.log("Mode(Annotated Data) vs Method 1")
 data = {'y_Actual':    flatAnnotatedData,#["-1","0","0.5","1","1.5"],
         'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
         }
@@ -666,7 +672,7 @@ confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Act
 print (confusion_matrix)
 
 annotatedDataHandler.log(["*"]*80)
-annotatedDataHandler.log("Avg(Annotated Data) vs Method 2")
+annotatedDataHandler.log("Mode(Annotated Data) vs Method 2")
 data = {'y_Actual':    flatAnnotatedData,#["-1","0","0.5","1","1.5"],
         'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
         }
@@ -677,7 +683,7 @@ confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Act
 print (confusion_matrix)
 
 annotatedDataHandler.log(["*"]*80)
-annotatedDataHandler.log("Avg(Annotated Data) vs Method 3")
+annotatedDataHandler.log("Mode(Annotated Data) vs Method 3")
 data = {'y_Actual':    flatAnnotatedData,#["-1","0","0.5","1","1.5"],
         'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
         }
