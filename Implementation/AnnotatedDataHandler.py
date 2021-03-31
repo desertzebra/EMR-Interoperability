@@ -1,10 +1,10 @@
 import csv
 from scipy.stats import pearsonr
-from sklearn.metrics import cohen_kappa_score, confusion_matrix
+from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import re
-# import pandas as pd
+import pandas as pd
 from statistics import mode, StatisticsError
 
 
@@ -134,7 +134,9 @@ class AnnotatedDataHandler:
         attr = attr.strip()
         thresholds = self.getDefaultThresholdValues(thresholdValues)
 
-        if attr == '-1' or attr == '-' or attr == '~' or attr == '':
+        if attr == '-1' or attr == '-' or attr == '':
+            return "-2.0"
+        elif attr == '~' or attr == '':
             return "-1.0"
         elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
             return "0.0"
@@ -152,7 +154,9 @@ class AnnotatedDataHandler:
     @staticmethod
     def convertAnnotatedAttrValue(attr):
         attr = attr.strip()
-        if attr == '-' or attr == '~':
+        if attr == '-':
+            attr = "-2.0"
+        elif attr == '~':
             attr = "-1.0"
         elif attr == '0':
             attr = "0.0"
@@ -163,7 +167,7 @@ class AnnotatedDataHandler:
         elif attr == '>':
             attr = "1.5"
         elif attr == '':
-            attr = "-1.0"
+            attr = "-2.0"
 
         return attr
 
@@ -428,8 +432,8 @@ class AnnotatedDataHandler:
                     continue
                 # colHeaderName = colHeadNameList[colIterator - 1]
                 # attr = self.convertAttrValue(attr)
-
-                list1d.append(attr)
+                if not attr == "-2.0":
+                    list1d.append(attr)
 
         return list1d
 
@@ -663,9 +667,10 @@ max_accuracy = 0.0
 annotatedDataHandler.log("Mode(Annotated Data) vs Method 1")
 accuracy = 0.0
 curr_epoch = 0
-minFive = -0.01
-maxFive = 0.0
+minFive = 0.89
+maxFive = 0.9
 best_threshold = thresholdsMethod1 = {"0.0": minFive, "0.5": maxFive}
+best_report = {}
 while curr_epoch < max_epoch:
     minFive += 0.01
     maxFive += 0.01
@@ -673,36 +678,34 @@ while curr_epoch < max_epoch:
         break
     curr_epoch += 1
     thresholdsMethod1 = {"0.0": minFive, "0.5": maxFive}
-    annotatedDataHandler.readMethod1ComputedData(True, thresholdsMethod1)
-    flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method1Data)
+    annotatedDataHandler.readMethod2ComputedData(True, thresholdsMethod1)
+    flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
     data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
             'y_Predicted': flatMethod1Data  # [1,0.9,0.6,0.7,0.1]
             }
 
     # df = pd.DataFrame(data, columns=['y_Actual', 'y_Predicted'])
     # flatAnnotatedData, flatMethod1Data
-    performance = confusion_matrix(["0", "-1", "0", "1"], ["1", "1", "1", "0"], labels=["0", "-1", "1"]).ravel() #, rownames=['Actual'], colnames=['Predicted'])
-    if len(performance) == 4:
-        tn,fp,fn,tp = performance
-    else:
-        print("Too many values to unpack")
-        print(performance)
-        exit()
-    accuracy = (tp + tn)/(tn+fp+fn+tp)
+    #accuracy = accuracy_score(flatAnnotatedData, flatMethod1Data) #, rownames=['Actual'], colnames=['Predicted'])
+    target_names = ['0.0', '0.5', "1.0", "1.5"]
+    report = classification_report(flatAnnotatedData, flatMethod1Data, target_names=target_names,output_dict=False,zero_division=0) #, rownames=['Actual'], colnames=['Predicted'])
+
+    print(report)
+    exit()
+    accuracy = report['accuracy']
     #accuracy = np.diag(confusion_matrix).sum() / confusion_matrix.to_numpy().sum()
     annotatedDataHandler.log(
         ["epoch:", curr_epoch, "accuracy:", accuracy, ", threshold: ", thresholdsMethod1, "max_accuracy:", max_accuracy,
          "best_threshold:", best_threshold])
-    annotatedDataHandler.log(
-        ["tn:", tn, ", fp:", fp, ", fn:", fn, ", tp:",tp])
-
     if accuracy > max_accuracy:
         max_accuracy = accuracy
         best_threshold = thresholdsMethod1
+        best_report = report
 
 print(best_threshold)
 print(max_accuracy)
-
+print(best_report)
+exit()
 
 annotatedDataHandler.log(["*"] * 80)
 annotatedDataHandler.log("Mode(Annotated Data) vs Method 2")
