@@ -219,30 +219,30 @@ class AnnotatedDataHandler:
     def readMethod1ComputedData(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.method1Data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/0-table-V0.3.csv', True, thresholdValues)
+                'Data/0-table-V0.4.csv', True, thresholdValues)
         else:
             self.method1Data = annotatedDataHandler.readCSV(
-                'Data/0-table-V0.3.csv', True, thresholdValues)
+                'Data/0-table-V0.4.csv', True, thresholdValues)
         self.log(["method1 data loaded: ", len(self.method1Data), " with readHeaders=", readHeaders])
 
     def readMethod2ComputedData(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.method2Data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/1-table-V0.3.csv', True,
+                'Data/1-table-V0.4.csv', True,
                 thresholdValues)
         else:
             self.method2Data = annotatedDataHandler.readCSV(
-                'Data/1-table-V0.3.csv', True,
+                'Data/1-table-V0.4.csv', True,
                 thresholdValues)
         self.log(["method2 data loaded: ", len(self.method2Data), " with readHeaders=", readHeaders])
 
     def readMethod3ComputedData(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.method3Data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/2-table-V0.3.csv', True, thresholdValues)
+                'Data/2-table-V0.4.csv', True, thresholdValues)
         else:
             self.method3Data = annotatedDataHandler.readCSV(
-                'Data/2-table-V0.3.csv', True, thresholdValues)
+                'Data/2-table-V0.4.csv', True, thresholdValues)
         self.log(["method3 data loaded: ", len(self.method3Data), " with readHeaders=", readHeaders])
 
     def readAllComputedData(self, readHeaders=False, thresholdValues={}):
