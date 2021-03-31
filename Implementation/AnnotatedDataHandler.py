@@ -135,9 +135,9 @@ class AnnotatedDataHandler:
         thresholds = self.getDefaultThresholdValues(thresholdValues)
 
         if attr == '-1' or attr == '-' or attr == '':
-            return "-2.0"
-        elif attr == '~' or attr == '':
-            return "-1.0"
+            return "-"
+        # elif attr == '~' or attr == '':
+        #     return "0.0"
         elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
             return "0.0"
         elif self.isFloat(attr) and thresholds["0.0"] <= float(attr) < thresholds["0.5"]:
@@ -155,8 +155,8 @@ class AnnotatedDataHandler:
     def convertAnnotatedAttrValue(attr):
         attr = attr.strip()
         if attr == '-':
-            attr = "-2.0"
-        elif attr == '~':
+            attr = "-"
+        elif attr == '~' or attr =='':
             attr = "-1.0"
         elif attr == '0':
             attr = "0.0"
@@ -166,8 +166,6 @@ class AnnotatedDataHandler:
             attr = "1.0"
         elif attr == '>':
             attr = "1.5"
-        elif attr == '':
-            attr = "-2.0"
 
         return attr
 
@@ -396,6 +394,8 @@ class AnnotatedDataHandler:
                         cellData.append(a1Col)
                     else:
                         self.log("Major ERROR in code")
+                        self.log([a1Row, a2Row, a3Row, a4Row])
+                        self.log(["colIterator:",colIterator])
                         self.log([a1Col, a2Col, a3Col, a4Col])
                         exit()
                 else:
@@ -432,7 +432,7 @@ class AnnotatedDataHandler:
                     continue
                 # colHeaderName = colHeadNameList[colIterator - 1]
                 # attr = self.convertAttrValue(attr)
-                if not attr == "-2.0":
+                if not attr == "-":
                     list1d.append(attr)
 
         return list1d
@@ -474,8 +474,7 @@ class AnnotatedDataHandler:
         self.log(["len(list2dWithHeader1):", len(list2dWithHeader1)])
         self.log(["len(list2dWithHeader2):", len(list2dWithHeader2)])
         countProblematicRows = 0
-        self.log(["list2dWithHeader1:", list2dWithHeader1[0]])
-        self.log(["list2dWithHeader2:", list2dWithHeader2[0]])
+
         for (row1, row2) in zip(list2dWithHeader1, list2dWithHeader2):
             for (a1Col, a2Col) in zip(row1, row2):
                 if not self.isFloat(a1Col) and not self.isFloat(a2Col) and not a1Col == a2Col:
@@ -679,6 +678,7 @@ while curr_epoch < max_epoch:
     curr_epoch += 1
     thresholdsMethod1 = {"0.0": minFive, "0.5": maxFive}
     annotatedDataHandler.readMethod2ComputedData(True, thresholdsMethod1)
+    flatAnnotator1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator1Data)
     flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
     data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
             'y_Predicted': flatMethod1Data  # [1,0.9,0.6,0.7,0.1]
@@ -688,6 +688,7 @@ while curr_epoch < max_epoch:
     # flatAnnotatedData, flatMethod1Data
     #accuracy = accuracy_score(flatAnnotatedData, flatMethod1Data) #, rownames=['Actual'], colnames=['Predicted'])
     target_names = ['0.0', '0.5', "1.0", "1.5"]
+    annotatedDataHandler.compare1dLists(flatAnnotator1Data, flatMethod1Data)
     report = classification_report(flatAnnotatedData, flatMethod1Data, target_names=target_names,output_dict=False,zero_division=0) #, rownames=['Actual'], colnames=['Predicted'])
 
     print(report)
