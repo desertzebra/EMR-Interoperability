@@ -100,7 +100,7 @@ class Results:
             i += 1
 
         print("Done. Now saving it:")
-        with open("Data/"+str(confidenceIndex)+"-table-V0.2.csv", "wb") as fp:  # Pickling
+        with open("Data/"+str(confidenceIndex)+"-table-V0.4.csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         #print(table)
 
@@ -115,7 +115,7 @@ class Results:
 
 resultObj = Results()
 # data = simObj.readData('Data/dataV03.json')
-data = resultObj.readData('Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.1.txt')
+data = resultObj.readData('Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.2.txt')
 
 print('data')
 print(len(data))

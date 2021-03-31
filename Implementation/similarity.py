@@ -181,7 +181,7 @@ num_cores = multiprocessing.cpu_count() - 1
 print("num_cores:", num_cores)
 
 simObj = Similarity()
-data = simObj.readData('Data/schema_processed_1615861448988.json')
+data = simObj.readData('Data/schema_processed_1617174847206.json')
 
 
 print('data')
@@ -200,6 +200,6 @@ synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.1.txt", "wb") as fp:   #Pickling
+with open("Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.2.txt", "wb") as fp:   #Pickling
     pickle.dump(synAndSemSimilarity, fp)
 
