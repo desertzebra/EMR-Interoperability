@@ -1,35 +1,46 @@
 import csv
 from scipy.stats import pearsonr
-from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, confusion_matrix
+from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
+    confusion_matrix
 import numpy as np
-#import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import re
 import pandas as pd
 from statistics import mode, StatisticsError
+import math
+from matplotlib import pyplot as plt
+
+np.seterr('raise')
 
 
 class AnnotatedDataHandler:
-    annotator1Data = []
-    annotator2Data = []
-    annotator3Data = []
-    annotator4Data = []
-    method1Data = []
-    method2Data = []
-    method3Data = []
-
-    logLevel = ["DEBUG", "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
 
     def __init__(self):
-        pass
+        self.logLevel = ["DEBUG",
+                         "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
+        self.annotator1Data = []
+        self.annotator2Data = []
+        self.annotator3Data = []
+        self.annotator4Data = []
+        self.fuzzy_wuzzy_computed_data = []
+        self.syn_sem_computed_data = []
+        self.name_embedding_computed_data = []
+        self.classes = ["0.0", "0.5", "1.0"]
+        self.marker_set = ["o", "^", "x"]
+        self.color_set = ["blue", "red", "green"]
+        self.computed_method = ["fuzzy_wuzzy", "syn_and_sem", " name_embedding"]
+        self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
+                                        self.read_computed_data_from_syn_and_sem,
+                                        self.read_computed_data_from_name_embedding]
 
     def initDataStructures(self):
         self.annotator1Data = []
         self.annotator2Data = []
         self.annotator3Data = []
         self.annotator4Data = []
-        self.method1Data = []
-        self.method2Data = []
-        self.method3Data = []
+        self.fuzzy_wuzzy_computed_data = []
+        self.syn_sem_computed_data = []
+        self.name_embedding_computed_data = []
 
     def log(self, msg, log_at="INFO"):
         if log_at in self.logLevel:
@@ -156,16 +167,16 @@ class AnnotatedDataHandler:
         attr = attr.strip()
         if attr == '-':
             attr = "-"
-        elif attr == '~' or attr =='':
+        elif attr == '~' or attr == '':
             attr = "-1.0"
         elif attr == '0':
             attr = "0.0"
-        elif attr == '<':
+        elif attr == '<' or attr == '>':
             attr = "0.5"
         elif attr == '1':
             attr = "1.0"
-        elif attr == '>':
-            attr = "1.5"
+        # elif attr == '>':
+        #     attr = "1.5"
 
         return attr
 
@@ -176,6 +187,12 @@ class AnnotatedDataHandler:
             return True
         except ValueError:
             return False
+
+    # https://github.com/django/django/blob/main/django/utils/text.py
+    @staticmethod
+    def get_valid_filename(s):
+        s = str(s).strip().replace(' ', '_')
+        return re.sub(r'(?u)[^-\w.]', '_', s)
 
     def readAllAnnotatorsData(self, readHeaders=False):
         # log("*****************************************Annotator 1*****************************************")
@@ -216,41 +233,44 @@ class AnnotatedDataHandler:
 
         self.log(["*"] * 80)
 
-    def readMethod1ComputedData(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
-            self.method1Data = annotatedDataHandler.readCSVWithoutHeaders(
+            self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/0-table-V0.5.csv', True, thresholdValues)
         else:
-            self.method1Data = annotatedDataHandler.readCSV(
+            self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
                 'Data/0-table-V0.5.csv', True, thresholdValues)
-        self.log(["method1 data loaded: ", len(self.method1Data), " with readHeaders=", readHeaders])
+        return self.fuzzy_wuzzy_computed_data
+        # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
 
-    def readMethod2ComputedData(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
-            self.method2Data = annotatedDataHandler.readCSVWithoutHeaders(
+            self.syn_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/1-table-V0.5.csv', True,
                 thresholdValues)
         else:
-            self.method2Data = annotatedDataHandler.readCSV(
+            self.syn_sem_computed_data = annotatedDataHandler.readCSV(
                 'Data/1-table-V0.5.csv', True,
                 thresholdValues)
-        self.log(["method2 data loaded: ", len(self.method2Data), " with readHeaders=", readHeaders])
+        return self.syn_sem_computed_data
+        # self.log(["method2 data loaded: ", len(self.syn_sem_computed_data), " with readHeaders=", readHeaders])
 
-    def readMethod3ComputedData(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_name_embedding(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
-            self.method3Data = annotatedDataHandler.readCSVWithoutHeaders(
+            self.name_embedding_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/2-table-V0.5.csv', True, thresholdValues)
         else:
-            self.method3Data = annotatedDataHandler.readCSV(
+            self.name_embedding_computed_data = annotatedDataHandler.readCSV(
                 'Data/2-table-V0.5.csv', True, thresholdValues)
-        self.log(["method3 data loaded: ", len(self.method3Data), " with readHeaders=", readHeaders])
+        return self.name_embedding_computed_data
+        # self.log(["method3 data loaded: ", len(self.name_embedding_computed_data), " with readHeaders=", readHeaders])
 
     def readAllComputedData(self, readHeaders=False, thresholdValues={}):
-        self.readMethod1ComputedData(readHeaders, thresholdValues)
+        self.read_computed_data_from_fuzzy_wuzzy(readHeaders, thresholdValues)
         # self.log(["*"] * 80)
-        self.readMethod2ComputedData(readHeaders, thresholdValues)
+        self.read_computed_data_from_syn_and_sem(readHeaders, thresholdValues)
         # self.log(["*"] * 80)
-        self.readMethod3ComputedData(readHeaders, thresholdValues)
+        self.read_computed_data_from_name_embedding(readHeaders, thresholdValues)
 
         # self.log(["*"] * 80)
 
@@ -340,7 +360,8 @@ class AnnotatedDataHandler:
             else:
                 avgAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators()
 
-        if len(self.method1Data) < 1 or len(self.method1Data) < 1 or len(self.method1Data) < 1:
+        if len(self.fuzzy_wuzzy_computed_data) < 1 or len(self.fuzzy_wuzzy_computed_data) < 1 or len(
+                self.fuzzy_wuzzy_computed_data) < 1:
             self.log("Insufficient data for the computed methods, have you read the files yet?")
             return
 
@@ -348,18 +369,18 @@ class AnnotatedDataHandler:
 
         self.log('Cohen kappa score  between method1 and avg(annotators): ')
         resultAsCsvString += "method1 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.method1Data, avgAnnotatedData)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.fuzzy_wuzzy_computed_data, avgAnnotatedData)) + "\r\n"
         self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between method2 and avg(annotators): ')
         resultAsCsvString += "method2 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.method2Data, avgAnnotatedData)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.syn_sem_computed_data, avgAnnotatedData)) + "\r\n"
 
         self.log(["*"] * 80)
         self.log('Cohen kappa score  between method3 and avg(annotators): ')
 
         resultAsCsvString += "method3 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.method3Data, avgAnnotatedData)) + "\r\n"
+            annotatedDataHandler.getKappaCorrelationScore(self.name_embedding_computed_data, avgAnnotatedData)) + "\r\n"
         self.log(["*"] * 80)
 
         self.log(["*"] * 80)
@@ -395,7 +416,7 @@ class AnnotatedDataHandler:
                     else:
                         self.log("Major ERROR in code")
                         self.log([a1Row, a2Row, a3Row, a4Row])
-                        self.log(["colIterator:",colIterator])
+                        self.log(["colIterator:", colIterator])
                         self.log([a1Col, a2Col, a3Col, a4Col])
                         exit()
                 else:
@@ -485,14 +506,195 @@ class AnnotatedDataHandler:
                     exit()
         self.log(["countProblematicRows:", countProblematicRows])
 
+    def calculate_ovr_conditions(self, cm, thresholds):
+        classes = ["0.0", "0.5", "1.0"]
+        performance_dict = {}
+        performance_dict["threshold"] = thresholds
+        for pc_index, positiveClass in enumerate(classes):
+
+            performance_dict[pc_index] = {}
+            performance_dict[pc_index]["classPositive"] = positiveClass
+            performance_dict[pc_index]["classNegative"] = []
+            for c in classes:
+                if c != positiveClass:
+                    performance_dict[pc_index]["classNegative"].append(c)
+
+            performance_dict[pc_index]["tp"] = cm[pc_index][pc_index]  # 0-0, 1-1, 2,2
+
+            # must be a square matrix with rows = cols
+            total_rows_in_cm = len(cm)
+            total_cols_in_cm = len(cm[0])
+
+            performance_dict[pc_index]["fn"] = cm[pc_index][(pc_index + 1) % total_cols_in_cm] + cm[pc_index][
+                (pc_index + 2) % total_cols_in_cm]
+            performance_dict[pc_index]["fp"] = cm[(pc_index + 1) % total_rows_in_cm][pc_index] + cm[(pc_index + 1) % 3][
+                (pc_index + 2) % total_cols_in_cm]
+            performance_dict[pc_index]["tn"] = cm[(pc_index + 2) % total_rows_in_cm][
+                                                   (pc_index + 2) % total_cols_in_cm] + \
+                                               cm[(pc_index + 1) % total_rows_in_cm][
+                                                   (pc_index + 1) % total_cols_in_cm] + \
+                                               cm[(pc_index + 2) % total_rows_in_cm][
+                                                   (pc_index + 1) % total_cols_in_cm] + \
+                                               cm[(pc_index + 1) % total_rows_in_cm][(pc_index + 2) % total_cols_in_cm]
+
+            performance_dict[pc_index]["accuracy"] = (performance_dict[pc_index]["tp"] + performance_dict[pc_index][
+                "tn"]) / (
+                                                             performance_dict[pc_index]["tp"] +
+                                                             performance_dict[pc_index]["fp"] +
+                                                             performance_dict[pc_index]["fn"] +
+                                                             performance_dict[pc_index]["tn"])
+
+            if performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"] == 0:
+                performance_dict[pc_index]["sensitivity"] = 0
+            else:
+                performance_dict[pc_index]["sensitivity"] = (performance_dict[pc_index]["tp"]) / (
+                        performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"])
+
+            if performance_dict[pc_index]["tn"] + performance_dict[pc_index]["fp"] == 0:
+                performance_dict[pc_index]["specificity"] = 0
+            else:
+                performance_dict[pc_index]["specificity"] = (performance_dict[pc_index]["tn"]) / (
+                        performance_dict[pc_index]["tn"] + performance_dict[pc_index]["fp"])
+            if performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fp"] == 0:
+                performance_dict[pc_index]["precision"] = 0
+            else:
+                performance_dict[pc_index]["precision"] = (performance_dict[pc_index]["tp"]) / (
+                        performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fp"])
+
+            if performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"] == 0:
+                performance_dict[pc_index]["recall"] = 0
+            else:
+                performance_dict[pc_index]["recall"] = (performance_dict[pc_index]["tp"]) / (
+                        performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"])
+
+            performance_dict[pc_index]["f-measure"] = {}
+            for B in [0.5, 1, 2]:
+
+                f_measure_numerator = (B * B) + 1 * (
+                            performance_dict[pc_index]["sensitivity"] * performance_dict[pc_index]["precision"])
+                f_measure_denominator = (performance_dict[pc_index]["sensitivity"]) + (
+                            B * performance_dict[pc_index]["precision"])
+                if f_measure_denominator == 0:
+                    performance_dict[pc_index]["f-measure"][str(B)] = 0
+                else:
+                    performance_dict[pc_index]["f-measure"][str(B)] = f_measure_numerator / f_measure_denominator
+
+            performance_dict[pc_index]["G-mean1"] = math.sqrt(performance_dict[pc_index]["sensitivity"] * \
+                                                              performance_dict[pc_index]["precision"])
+            performance_dict[pc_index]["G-mean2"] = math.sqrt(
+                performance_dict[pc_index]["sensitivity"] * performance_dict[pc_index]["specificity"])
+
+            mcc_numerator = (performance_dict[pc_index]["tp"] * performance_dict[pc_index]["tn"]) - (
+                        performance_dict[pc_index]["fp"] * performance_dict[pc_index]["fn"])
+            mcc_denominator = math.sqrt((performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fp"]) * (
+                        performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"]) * (
+                                                    performance_dict[pc_index]["tn"] + performance_dict[pc_index][
+                                                "fp"]) * (performance_dict[pc_index]["tn"] + performance_dict[pc_index][
+                "fn"]))
+            if mcc_denominator == 0:
+                performance_dict[pc_index]["mcc"] = 0
+            else:
+                performance_dict[pc_index]["mcc"] = mcc_numerator / mcc_denominator
+
+        return performance_dict
+
+    def evaluateMethod(self, annotatedData, methodIndex=1):
+        annotatedDataHandler.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+
+        minFive = 0.0
+        # maxFive = 0.1
+        ovr_conditions = []
+        ovo_conditions = []
+        while minFive < 1:
+            maxFive = minFive
+            while maxFive <= 1:
+                thresholds = {"0.0": minFive, "0.5": maxFive}
+                conditions = {}
+                data_in_2d = self.read_computed_data_from[methodIndex](True, thresholds)
+                data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+                # data = {'y_Actual': annotatedData,  # ["-1","0","0.5","1","1.5"],
+                #         'y_Predicted': data_in_1d  # [1,0.9,0.6,0.7,0.1]
+                #         }
+                target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
+
+                cm = confusion_matrix(annotatedData, data_in_1d,
+                                      labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
+                conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
+                ovr_conditions.append(conditions["ovr"])
+                maxFive += 0.1
+            minFive += 0.1
+
+        print("Method " + self.computed_method[methodIndex] + " finished processing.")
+
+        annotatedDataHandler.plot_roc(ovr_conditions,
+                                      'ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+
+        annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
+                                                        'MCC vs F1 for Mode(Annotated Data) vs ' + self.computed_method[
+                                                            methodIndex])
+
+    def plot_roc(self, condition_from_experimental_iterations, plotTitle):
+        fig = plt.figure(figsize=(20, 10))
+        ax = fig.add_subplot(111)
+        plt.xlabel('False Positive Rate (FPR)')
+        # Labeling the Y-axis
+        plt.ylabel('sensitivity')
+        plt.title(plotTitle)
+        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+            sensitivity_from_experimental_iterations = []
+            fpr_from_experimental_iterations = []
+            thresholds_from_experimental_iterations = []
+            for cond in condition_from_experimental_iterations:
+                for index in range(0, len(self.classes)):
+                    class_result = cond[index]
+                    if class_result['classPositive'] == positive_class:
+                        sensitivity_from_experimental_iterations.append(class_result['sensitivity'])
+                        fpr_from_experimental_iterations.append(1 - class_result["specificity"])
+                        thresholds_from_experimental_iterations.append(cond["threshold"])
+
+            plt.plot(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations, linestyle='dashed',
+                     linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=4)
+            for x, y, z in zip(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
+                               thresholds_from_experimental_iterations):
+                # print(z["0.0"])
+                ax.annotate('(T_0=%.2f,T_0.5=%.2f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+        plt.grid(True)
+        plt.legend()
+        # plt.show()
+        self.log("saving plot:" + plotTitle)
+        fig.savefig(self.get_valid_filename(plotTitle), bbox_inches='tight')
+
+    def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
+        fig = plt.figure(figsize=(20, 10))
+        ax = fig.add_subplot(111)
+        plt.xlabel("MCC")
+        # Labeling the Y-axis
+        plt.ylabel("F-1 Score")
+        plt.title(plotTitle)
+        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+            sensitivity_from_experimental_iterations = []
+            fpr_from_experimental_iterations = []
+            thresholds_from_experimental_iterations = []
+            for cond in condition_from_experimental_iterations:
+                for index in range(0, len(self.classes)):
+                    class_result = cond[index]
+                    if class_result['classPositive'] == positive_class:
+                        sensitivity_from_experimental_iterations.append(class_result['mcc'])
+                        fpr_from_experimental_iterations.append(class_result['f-measure']['1'])
+                        thresholds_from_experimental_iterations.append(cond["threshold"])
+
+            plt.plot(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations, linestyle='dashed',
+                     linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=4)
+        plt.grid(True)
+        plt.legend()
+        # plt.show()
+        self.log("saving plot:" + plotTitle)
+        fig.savefig(self.get_valid_filename(plotTitle), bbox_inches='tight')
+
 
 annotatedDataHandler = AnnotatedDataHandler()
-# annotatedDataHandler.readAllAnnotatorsData(False)
-# annotatedDataHandler.readAllComputedData(False)
-# # annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
-# modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators()
-
-# annotatedDataHandler.log(modeAnnotatedData, "DEBUG")
+# annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
 # annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(modeAnnotatedData)
 
 # Now to convert the datasets into 1d
@@ -502,292 +704,85 @@ annotatedDataHandler.readAllAnnotatorsData(True)
 modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
 flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 
-# annotatedDataHandler.readAllComputedData(True)
+annotatedDataHandler.evaluateMethod(flatAnnotatedData, 0)
+annotatedDataHandler.evaluateMethod(flatAnnotatedData, 1)
+annotatedDataHandler.evaluateMethod(flatAnnotatedData, 2)
 
+# minFive = 0.0
+# maxFive = 0.1
+# ovr_conditions = []
+# ovo_conditions = []
+# while minFive < 1:
+#     maxFive = minFive
+#     while maxFive <= 1:
+#         thresholds = {"0.0": minFive, "0.5": maxFive}
+#         conditions = {}
+#         annotatedDataHandler.read_computed_data_from_fuzzy_wuzzy(True, thresholds)
+#         flatfuzzy_wuzzy_computed_data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.fuzzy_wuzzy_computed_data)
+#         data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
+#                 'y_Predicted': flatfuzzy_wuzzy_computed_data  # [1,0.9,0.6,0.7,0.1]
+#                 }
+#         target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
+#         cm = confusion_matrix(flatAnnotatedData, flatfuzzy_wuzzy_computed_data,
+#                               labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
+#         conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
+#         # conditions["ovo"] = annotatedDataHandler.calculate_ovo_conditions(cm, thresholds)
+#         ovr_conditions.append(conditions["ovr"])
+#         maxFive += 0.1
+#     minFive += 0.1
 
-# print(modeAnnotatedData)
+# annotatedDataHandler.plot_roc(ovr_conditions, 'ROC for Mode(Annotated Data) vs Method 1')
 #
-# flatAnnotatedData1 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator1Data)
-# flatAnnotatedData2 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator2Data)
-# flatAnnotatedData3 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator3Data)
-# flatAnnotatedData4 = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.annotator4Data)
-# flatMethod1Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method1Data)
-# flatMethod2Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
-# flatMethod3Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method3Data)
+# annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
+#                                                 'MCC vs F1 for Mode(Annotated Data) vs Method 2')
 
-# annotatedDataHandler.log(["-"]*80)
-# flatAnnotator1DataWithHeaders = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(
-#     annotatedDataHandler.annotator4Data)
-# annotatedDataHandler.log(["-"]*80)
-# flatMethod2DataWithHeaders = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(annotatedDataHandler.method3Data)
-# annotatedDataHandler.log(["-"]*80)
-# annotatedDataHandler.compare1dLists(flatMethod2DataWithHeaders, flatAnnotator1DataWithHeaders)
-
-# annotatedDataHandler.log("Annotated Data 1 vs Method 1")
-# data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 1 vs Method 2")
-# data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-#
-# print (np.diag(confusion_matrix).sum() / confusion_matrix.to_numpy().sum())
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 1 vs Method 3")
-# data = {'y_Actual':    flatAnnotatedData1,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-#
-# annotatedDataHandler.log("Annotated Data 2 vs Method 1")
-# data = {'y_Actual':    flatAnnotatedData2,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 2 vs Method 2")
-# data = {'y_Actual':    flatAnnotatedData2,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 2 vs Method 3")
-# data = {'y_Actual':    flatAnnotatedData2,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-#
-# annotatedDataHandler.log("Annotated Data 3 vs Method 1")
-# data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 3 vs Method 2")
-# data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 3 vs Method 3")
-# data = {'y_Actual':    flatAnnotatedData3,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-#
-#
-# annotatedDataHandler.log("Annotated Data 4 vs Method 1")
-# data = {'y_Actual':    flatAnnotatedData4,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod1Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 4 vs Method 2")
-# data = {'y_Actual':    flatAnnotatedData4,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod2Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-# annotatedDataHandler.log("Annotated Data 4 vs Method 3")
-# data = {'y_Actual':    flatAnnotatedData4,#["-1","0","0.5","1","1.5"],
-#         'y_Predicted': flatMethod3Data#[1,0.9,0.6,0.7,0.1]
-#         }
-#
-# df = pd.DataFrame(data, columns=['y_Actual','y_Predicted'])
-#
-# confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-# print (confusion_matrix)
-#
-# annotatedDataHandler.log(["*"]*80)
-max_epoch = 1000
-max_accuracy = 0.0
-
-annotatedDataHandler.log("Mode(Annotated Data) vs Method 1")
-accuracy = 0.0
-curr_epoch = 0
-minFive = 0.5
-maxFive = 0.8
-best_threshold = thresholdsMethod1 = {"0.0": minFive, "0.5": maxFive}
-best_report = {}
-while curr_epoch < max_epoch:
-    minFive += 0.01
-    maxFive += 0.01
-    if maxFive > 1:
-        break
-    curr_epoch += 1
-    thresholdsMethod1 = {"0.0": minFive, "0.5": maxFive}
-    annotatedDataHandler.readMethod2ComputedData(True, thresholdsMethod1)
-    flatMethod2Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
-    data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
-            'y_Predicted': flatMethod2Data  # [1,0.9,0.6,0.7,0.1]
-            }
-
-    # df = pd.DataFrame(data, columns=['y_Actual', 'y_Predicted'])
-    # flatAnnotatedData, flatMethod1Data
-    #accuracy = accuracy_score(flatAnnotatedData, flatMethod1Data) #, rownames=['Actual'], colnames=['Predicted'])
-    target_names = ['0.0', '0.5', "1.0", "1.5"]
-    # report = classification_report(flatAnnotatedData, flatMethod1Data, target_names=target_names,output_dict=False,zero_division=0) #, rownames=['Actual'], colnames=['Predicted'])
-    report = confusion_matrix(flatAnnotatedData, flatMethod2Data, labels=target_names) #, rownames=['Actual'], colnames=['Predicted'])
-
-    print(report)
-    exit()
-    accuracy = report['accuracy']
-    #accuracy = np.diag(confusion_matrix).sum() / confusion_matrix.to_numpy().sum()
-    annotatedDataHandler.log(
-        ["epoch:", curr_epoch, "accuracy:", accuracy, ", threshold: ", thresholdsMethod1, "max_accuracy:", max_accuracy,
-         "best_threshold:", best_threshold])
-    if accuracy > max_accuracy:
-        max_accuracy = accuracy
-        best_threshold = thresholdsMethod1
-        best_report = report
-
-print(best_threshold)
-print(max_accuracy)
-print(best_report)
-exit()
-
-annotatedDataHandler.log(["*"] * 80)
-annotatedDataHandler.log("Mode(Annotated Data) vs Method 2")
-curr_epoch = 0
-accuracy = 0.0
-minFive = -0.01
-maxFive = 0.0
-best_threshold = thresholdsMethod2 = {"0.0": minFive, "0.5": maxFive}
-while curr_epoch < max_epoch:
-    minFive += 0.01
-    maxFive += 0.01
-    if maxFive > 1:
-        break
-    curr_epoch += 1
-    thresholdsMethod2 = {"0.0": minFive, "0.5": maxFive}
-    annotatedDataHandler.readMethod2ComputedData(True, thresholdsMethod2)
-    flatMethod2Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method2Data)
-    data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
-            'y_Predicted': flatMethod2Data  # [1,0.9,0.6,0.7,0.1]
-            }
-    df = pd.DataFrame(data, columns=['y_Actual', 'y_Predicted'])
-    confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-    accuracy = np.diag(confusion_matrix).sum() / confusion_matrix.to_numpy().sum()
-    annotatedDataHandler.log(
-        ["epoch:", curr_epoch, "accuracy:", accuracy, ", threshold: ", thresholdsMethod2, "max_accuracy:", max_accuracy,
-         "best_threshold:", best_threshold])
-    if accuracy > max_accuracy:
-        max_accuracy = accuracy
-        best_threshold = thresholdsMethod2
-
-print(best_threshold)
-print(max_accuracy)
-
-
-annotatedDataHandler.log(["*"] * 80)
-annotatedDataHandler.log("Mode(Annotated Data) vs Method 3")
-curr_epoch = 0
-accuracy = 0.0
-minFive = -0.001
-maxFive = 0.0
-best_threshold = thresholdsMethod3 = {"0.0": minFive, "0.5": maxFive}
-while curr_epoch < max_epoch:
-    minFive += 0.01
-    maxFive += 0.01
-    if maxFive > 1:
-        break
-    curr_epoch += 1
-    thresholdsMethod3 = {"0.0": minFive, "0.5": maxFive}
-    annotatedDataHandler.readMethod3ComputedData(True, thresholdsMethod3)
-    flatMethod3Data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.method3Data)
-
-    data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
-            'y_Predicted': flatMethod3Data  # [1,0.9,0.6,0.7,0.1]
-            }
-
-    df = pd.DataFrame(data, columns=['y_Actual', 'y_Predicted'])
-
-    confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
-    accuracy = np.diag(confusion_matrix).sum() / confusion_matrix.to_numpy().sum()
-    annotatedDataHandler.log(
-        ["epoch:", curr_epoch, "accuracy:", accuracy, ", threshold: ", thresholdsMethod3, "max_accuracy:", max_accuracy,
-         "best_threshold:", best_threshold])
-    if accuracy > max_accuracy:
-        max_accuracy = accuracy
-        best_threshold = thresholdsMethod3
-
-print(best_threshold)
-print(max_accuracy)
-
-# np.set_printoptions(precision=2)
-
-
-# X = ["-1","0","0.5","1","1.5"]
-# Y = [1,0.9,0.6,0.7,0.1]
-
-
-# #cm = confusion_matrix(flatAnnotatedData, flatMethod1Data, sample_weight=None, labels=None, normalize=None)
-# cm = confusion_matrix(X, Y, sample_weight=None, labels=None, normalize=None)
-# disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=None)
-# print(disp.confusion_matrix)
-# disp.plot()
-
-# disp.ax_.set_title("Confusion Matrix between Averaged Anntoated Data and Method 1")
-
-# plt.show()
+# annotatedDataHandler.log("Mode(Annotated Data) vs Method 2")
+# 
+# minFive = 0.0
+# maxFive = 0.1
+# ovr_conditions = []
+# ovo_conditions = []
+# while minFive < 1:
+#     maxFive = minFive
+#     while maxFive <= 1:
+#         thresholds = {"0.0": minFive, "0.5": maxFive}
+#         conditions = {}
+#         annotatedDataHandler.read_computed_data_from_syn_and_sem(True, thresholds)
+#         flatsyn_sem_computed_data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.syn_sem_computed_data)
+#         data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
+#                 'y_Predicted': flatsyn_sem_computed_data  # [1,0.9,0.6,0.7,0.1]
+#                 }
+#         target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
+# 
+#         # df = pd.DataFrame(data, columns=['y_Actual', 'y_Predicted'])
+#         # flatAnnotatedData, flatfuzzy_wuzzy_computed_data
+#         # accuracy = accuracy_score(flatAnnotatedData, flatfuzzy_wuzzy_computed_data) #, rownames=['Actual'], colnames=['Predicted'])
+# 
+#         # report = classification_report(flatAnnotatedData, flatfuzzy_wuzzy_computed_data, target_names=target_names,output_dict=False,zero_division=0) #, rownames=['Actual'], colnames=['Predicted'])
+#         cm = confusion_matrix(flatAnnotatedData, flatsyn_sem_computed_data,
+#                               labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
+#         conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
+#         ovr_conditions.append(conditions["ovr"])
+#         # print(conditions)
+#         # exit()
+#         # accuracy = conditions
+#         # # accuracy = np.diag(confusion_matrix).sum() / confusion_matrix.to_numpy().sum()
+#         # annotatedDataHandler.log(
+#         #     ["epoch:", curr_epoch, "accuracy:", accuracy, ", threshold: ", thresholdsMethod1, "max_accuracy:",
+#         #      max_accuracy,
+#         #      "best_threshold:", best_threshold])
+#         # if accuracy > max_accuracy:
+#         #     max_accuracy = accuracy
+#         #     best_threshold = thresholdsMethod1
+#         #     best_report = report
+#         maxFive += 0.1
+#     minFive += 0.1
+# # print(best_threshold)
+# # print(max_accuracy)
+# # print(best_report)
+# print("Method 2 finished")
+# 
+# annotatedDataHandler.plot_roc(ovr_conditions, 'ROC for Mode(Annotated Data) vs Method 2')
+# 
+# annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
+#                                                 'MCC vs F1 for Mode(Annotated Data) vs Method 2')
