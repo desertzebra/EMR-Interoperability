@@ -9,6 +9,7 @@ import pandas as pd
 from statistics import mode, StatisticsError
 import math
 from matplotlib import pyplot as plt
+from decimal import Decimal
 
 np.seterr('raise')
 
@@ -570,13 +571,15 @@ class AnnotatedDataHandler:
             performance_dict[pc_index]["f-measure"] = {}
             for B in [0.5, 1, 2]:
 
-                f_measure_numerator = (B * B) + 1 * (
-                            performance_dict[pc_index]["sensitivity"] * performance_dict[pc_index]["precision"])
-                f_measure_denominator = (performance_dict[pc_index]["sensitivity"]) + (
-                            B * performance_dict[pc_index]["precision"])
+                f_measure_numerator = (1 + (B * B)) * (
+                    performance_dict[pc_index]["tp"])
+                f_measure_denominator = ((1 + (B * B)) * (performance_dict[pc_index]["tp"])) + (
+                        (B * B) * performance_dict[pc_index]["fn"]) + (performance_dict[pc_index]["fp"])
                 if f_measure_denominator == 0:
                     performance_dict[pc_index]["f-measure"][str(B)] = 0
                 else:
+                    if f_measure_numerator / f_measure_denominator > 1:
+                        print(f_measure_numerator, "/", f_measure_denominator)
                     performance_dict[pc_index]["f-measure"][str(B)] = f_measure_numerator / f_measure_denominator
 
             performance_dict[pc_index]["G-mean1"] = math.sqrt(performance_dict[pc_index]["sensitivity"] * \
@@ -585,11 +588,11 @@ class AnnotatedDataHandler:
                 performance_dict[pc_index]["sensitivity"] * performance_dict[pc_index]["specificity"])
 
             mcc_numerator = (performance_dict[pc_index]["tp"] * performance_dict[pc_index]["tn"]) - (
-                        performance_dict[pc_index]["fp"] * performance_dict[pc_index]["fn"])
+                    performance_dict[pc_index]["fp"] * performance_dict[pc_index]["fn"])
             mcc_denominator = math.sqrt((performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fp"]) * (
-                        performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"]) * (
-                                                    performance_dict[pc_index]["tn"] + performance_dict[pc_index][
-                                                "fp"]) * (performance_dict[pc_index]["tn"] + performance_dict[pc_index][
+                    performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"]) * (
+                                                performance_dict[pc_index]["tn"] + performance_dict[pc_index][
+                                            "fp"]) * (performance_dict[pc_index]["tn"] + performance_dict[pc_index][
                 "fn"]))
             if mcc_denominator == 0:
                 performance_dict[pc_index]["mcc"] = 0
@@ -600,14 +603,15 @@ class AnnotatedDataHandler:
 
     def evaluateMethod(self, annotatedData, methodIndex=1):
         annotatedDataHandler.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
-
-        minFive = 0.0
+        minFive = float(0.0)
         # maxFive = 0.1
         ovr_conditions = []
         ovo_conditions = []
-        while minFive < 1:
+        while minFive < float(0.91):
+            if minFive == 1:
+                print(minFive)
             maxFive = minFive
-            while maxFive <= 1:
+            while maxFive <= float(1.0):
                 thresholds = {"0.0": minFive, "0.5": maxFive}
                 conditions = {}
                 data_in_2d = self.read_computed_data_from[methodIndex](True, thresholds)
@@ -620,9 +624,10 @@ class AnnotatedDataHandler:
                 cm = confusion_matrix(annotatedData, data_in_1d,
                                       labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
                 conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
+                print(thresholds)
                 ovr_conditions.append(conditions["ovr"])
-                maxFive += 0.1
-            minFive += 0.1
+                maxFive = float(Decimal(maxFive) + Decimal('.1'))
+            minFive = float(Decimal(minFive) + Decimal('.1'))
 
         print("Method " + self.computed_method[methodIndex] + " finished processing.")
 
@@ -632,6 +637,10 @@ class AnnotatedDataHandler:
         annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
                                                         'MCC vs F1 for Mode(Annotated Data) vs ' + self.computed_method[
                                                             methodIndex])
+
+        annotatedDataHandler.plot_pr(ovr_conditions,
+                                     'Precision vs Recall for Mode(Annotated Data) vs ' + self.computed_method[
+                                         methodIndex])
 
     def plot_roc(self, condition_from_experimental_iterations, plotTitle):
         fig = plt.figure(figsize=(20, 10))
@@ -652,18 +661,55 @@ class AnnotatedDataHandler:
                         fpr_from_experimental_iterations.append(1 - class_result["specificity"])
                         thresholds_from_experimental_iterations.append(cond["threshold"])
 
-            plt.plot(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations, linestyle='dashed',
-                     linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=4)
-            for x, y, z in zip(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
-                               thresholds_from_experimental_iterations):
-                # print(z["0.0"])
-                ax.annotate('(T_0=%.2f,T_0.5=%.2f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+            # plt.plot(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations, linestyle='dashed', linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=4)
+            plt.scatter(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
+                        label=positive_class, marker=marker)
+            # for x, y, z in zip(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
+            #                    thresholds_from_experimental_iterations):
+            #     # print(z["0.0"])
+            #     ax.annotate('(T_0=%.2f,T_0.5=%.2f)' % (z["0.0"], z["0.5"]), xy=(x, y))
         ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        plt.grid(True)
+        plt.xticks(np.arange(0, 1, step=0.02), rotation=45)
+        plt.yticks(np.arange(0, 1, step=0.02))
+        # plt.grid(True)
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/"+self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+
+    # Plot precision vs recall
+    def plot_pr(self, condition_from_experimental_iterations, plotTitle):
+        fig = plt.figure(figsize=(20, 20))
+        ax = fig.add_subplot(111)
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title(plotTitle)
+        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+            recall_from_experimental_iterations = []
+            precision_from_experimental_iterations = []
+            thresholds_from_experimental_iterations = []
+            for cond in condition_from_experimental_iterations:
+                for index in range(0, len(self.classes)):
+                    class_result = cond[index]
+                    if class_result['classPositive'] == positive_class:
+                        precision_from_experimental_iterations.append(class_result['precision'])
+                        recall_from_experimental_iterations.append(class_result["recall"])
+                        thresholds_from_experimental_iterations.append(cond["threshold"])
+
+            plt.plot(recall_from_experimental_iterations, precision_from_experimental_iterations, linestyle='dashed',
+                     linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
+            for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
+                               thresholds_from_experimental_iterations):
+                # print(z["0.0"])
+                ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+        plt.xticks(np.arange(0, 1, step=0.02), rotation=45)
+        plt.yticks(np.arange(0, 1, step=0.02))
+        # plt.grid(True)
+        plt.legend()
+        # plt.show()
+        self.log("saving plot:" + plotTitle)
+        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
 
     def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
         fig = plt.figure(figsize=(20, 10))
@@ -684,13 +730,15 @@ class AnnotatedDataHandler:
                         fpr_from_experimental_iterations.append(class_result['f-measure']['1'])
                         thresholds_from_experimental_iterations.append(cond["threshold"])
 
-            plt.plot(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations, linestyle='dashed',
-                     linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=4)
-        plt.grid(True)
+            plt.scatter(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
+                        label=positive_class, marker=marker)
+        # plt.grid(True)
+        plt.xticks(np.arange(-1, 1, step=0.05), rotation=45)
+        plt.yticks(np.arange(0, 1.02, step=0.02))
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/"+self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
 
 
 annotatedDataHandler = AnnotatedDataHandler()
@@ -707,82 +755,3 @@ flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 annotatedDataHandler.evaluateMethod(flatAnnotatedData, 0)
 annotatedDataHandler.evaluateMethod(flatAnnotatedData, 1)
 annotatedDataHandler.evaluateMethod(flatAnnotatedData, 2)
-
-# minFive = 0.0
-# maxFive = 0.1
-# ovr_conditions = []
-# ovo_conditions = []
-# while minFive < 1:
-#     maxFive = minFive
-#     while maxFive <= 1:
-#         thresholds = {"0.0": minFive, "0.5": maxFive}
-#         conditions = {}
-#         annotatedDataHandler.read_computed_data_from_fuzzy_wuzzy(True, thresholds)
-#         flatfuzzy_wuzzy_computed_data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.fuzzy_wuzzy_computed_data)
-#         data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
-#                 'y_Predicted': flatfuzzy_wuzzy_computed_data  # [1,0.9,0.6,0.7,0.1]
-#                 }
-#         target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
-#         cm = confusion_matrix(flatAnnotatedData, flatfuzzy_wuzzy_computed_data,
-#                               labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
-#         conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
-#         # conditions["ovo"] = annotatedDataHandler.calculate_ovo_conditions(cm, thresholds)
-#         ovr_conditions.append(conditions["ovr"])
-#         maxFive += 0.1
-#     minFive += 0.1
-
-# annotatedDataHandler.plot_roc(ovr_conditions, 'ROC for Mode(Annotated Data) vs Method 1')
-#
-# annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
-#                                                 'MCC vs F1 for Mode(Annotated Data) vs Method 2')
-
-# annotatedDataHandler.log("Mode(Annotated Data) vs Method 2")
-# 
-# minFive = 0.0
-# maxFive = 0.1
-# ovr_conditions = []
-# ovo_conditions = []
-# while minFive < 1:
-#     maxFive = minFive
-#     while maxFive <= 1:
-#         thresholds = {"0.0": minFive, "0.5": maxFive}
-#         conditions = {}
-#         annotatedDataHandler.read_computed_data_from_syn_and_sem(True, thresholds)
-#         flatsyn_sem_computed_data = annotatedDataHandler.collapseDataSetTo1d(annotatedDataHandler.syn_sem_computed_data)
-#         data = {'y_Actual': flatAnnotatedData,  # ["-1","0","0.5","1","1.5"],
-#                 'y_Predicted': flatsyn_sem_computed_data  # [1,0.9,0.6,0.7,0.1]
-#                 }
-#         target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
-# 
-#         # df = pd.DataFrame(data, columns=['y_Actual', 'y_Predicted'])
-#         # flatAnnotatedData, flatfuzzy_wuzzy_computed_data
-#         # accuracy = accuracy_score(flatAnnotatedData, flatfuzzy_wuzzy_computed_data) #, rownames=['Actual'], colnames=['Predicted'])
-# 
-#         # report = classification_report(flatAnnotatedData, flatfuzzy_wuzzy_computed_data, target_names=target_names,output_dict=False,zero_division=0) #, rownames=['Actual'], colnames=['Predicted'])
-#         cm = confusion_matrix(flatAnnotatedData, flatsyn_sem_computed_data,
-#                               labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
-#         conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
-#         ovr_conditions.append(conditions["ovr"])
-#         # print(conditions)
-#         # exit()
-#         # accuracy = conditions
-#         # # accuracy = np.diag(confusion_matrix).sum() / confusion_matrix.to_numpy().sum()
-#         # annotatedDataHandler.log(
-#         #     ["epoch:", curr_epoch, "accuracy:", accuracy, ", threshold: ", thresholdsMethod1, "max_accuracy:",
-#         #      max_accuracy,
-#         #      "best_threshold:", best_threshold])
-#         # if accuracy > max_accuracy:
-#         #     max_accuracy = accuracy
-#         #     best_threshold = thresholdsMethod1
-#         #     best_report = report
-#         maxFive += 0.1
-#     minFive += 0.1
-# # print(best_threshold)
-# # print(max_accuracy)
-# # print(best_report)
-# print("Method 2 finished")
-# 
-# annotatedDataHandler.plot_roc(ovr_conditions, 'ROC for Mode(Annotated Data) vs Method 2')
-# 
-# annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
-#                                                 'MCC vs F1 for Mode(Annotated Data) vs Method 2')
