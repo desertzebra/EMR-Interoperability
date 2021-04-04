@@ -663,7 +663,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig(self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig("Results/charts/"+self.get_valid_filename(plotTitle), bbox_inches='tight')
 
     def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
         fig = plt.figure(figsize=(20, 10))
@@ -690,7 +690,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig(self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig("Results/charts/"+self.get_valid_filename(plotTitle), bbox_inches='tight')
 
 
 annotatedDataHandler = AnnotatedDataHandler()
