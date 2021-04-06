@@ -56,7 +56,8 @@ class Results:
                 'name']
             rightKey = attr['nodeRight']['schemaName'] + "_" + attr['nodeRight']['tableName'] + "_" + attr['nodeRight'][
                 'name']
-
+            leftKey = leftKey.strip()
+            rightKey = rightKey.strip()
             # print('leftKey: ', leftKey)
             # print('rightKey: ', rightKey)
             #
@@ -107,10 +108,8 @@ class Results:
             while (j < colSize):
                 # print("rowHeaderNodes[i]=", rowHeaderNodes[i], ", columnHeaderNodes[j]=", columnHeaderNodes[j])
                 # print("matrix[rowHeaderNodes[i]][columnHeaderNodes[j]]=", matrix[rowHeaderNodes[i]][columnHeaderNodes[j]])
-                leftSchema = (rowHeaderNodes[i].split('_')[0])
-                leftSchema = leftSchema.strip()
-                rightSchema = (columnHeaderNodes[j].split('_')[0])
-                rightSchema = rightSchema.strip()
+                leftSchema = (rowHeaderNodes[i].split('_')[0]).strip()
+                rightSchema = (columnHeaderNodes[j].split('_')[0]).strip()
 
                 if leftSchema == rightSchema:
                     table += "-" + ","
@@ -126,7 +125,8 @@ class Results:
             i += 1
         print()
         print("Done. Now saving it:")
-        with open("Data/" + str(confidenceIndex) + "-table-V1.0.csv", "wb") as fp:  # Pickling
+        with open("Data/" + str(
+                confidenceIndex) + "-table-V1.1.csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         # print(table)
 
@@ -143,7 +143,7 @@ print(len(data))
 
 #resultObj.generateCSV(data)
 
-resultObj.printBaseHeatMap(data,resultObj.SYN_AND_SEM_SIM_INDEX)
+#resultObj.printBaseHeatMap(data,resultObj.SYN_AND_SEM_SIM_INDEX)
 resultObj.printBaseHeatMap(data,resultObj.FUZZY_WUZZY_INDEX)
 resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_Mean_TOKENS_INDEX)
 resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_Mean_TOKENS_SYN_AND_SEM_INDEX)
