@@ -3,9 +3,19 @@ import csv
 
 
 class Results:
-    BASE_INDEX = 2
-    FUZZY_WUZZY_INDEX = 1
+
+    # BASE_INDEX = 2
+    # FUZZY_WUZZY_INDEX = 1
+    # SYN_AND_SEM_SIM_INDEX = 0
+
     SYN_AND_SEM_SIM_INDEX = 0
+    FUZZY_WUZZY_INDEX = 1
+    BERT_BASE_Mean_TOKENS_INDEX = 2
+    BERT_BASE_Mean_TOKENS_SYN_AND_SEM_INDEX = 3
+    BERT_BASE_STS_Mean_TOKENS_INDEX = 4
+    BERT_BASE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX = 5
+    BERT_LARGE_STS_Mean_TOKENS_INDEX = 6
+    BERT_LARGE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX = 7
 
     def readData(self, url):
         data = []
@@ -116,7 +126,7 @@ class Results:
             i += 1
         print()
         print("Done. Now saving it:")
-        with open("Data/" + str(confidenceIndex) + "-table-V0.4.csv", "wb") as fp:  # Pickling
+        with open("Data/" + str(confidenceIndex) + "-table-V1.0.csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         # print(table)
 
@@ -126,12 +136,19 @@ class Results:
 
 resultObj = Results()
 # data = simObj.readData('Data/dataV03.json')
-data = resultObj.readData('Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.2.txt')
+data = resultObj.readData('Data/AmplifiedSimilarity-V0.1.txt')
 
 print('data')
 print(len(data))
 
 #resultObj.generateCSV(data)
-resultObj.printBaseHeatMap(data,resultObj.BASE_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.FUZZY_WUZZY_INDEX)
+
 resultObj.printBaseHeatMap(data,resultObj.SYN_AND_SEM_SIM_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.FUZZY_WUZZY_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_Mean_TOKENS_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_Mean_TOKENS_SYN_AND_SEM_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_STS_Mean_TOKENS_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_STS_Mean_TOKENS_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX)
+

@@ -10,6 +10,7 @@ class Similarity:
 
     def __init__(self):
         self.embeddingVectors = {}
+        self.models = ['bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens', 'bert-large-nli-stsb-mean-tokens']
 
     def readData(self, url):
 
@@ -32,18 +33,19 @@ class Similarity:
 
         return data
 
-    def calcualteBaseLineSimilarity(self, attributes):
+    def calcualteBaseLineSimilarity(self, attributes, modelName):
 
         print('len(attributes)')
         print(len(attributes))
 
         attributeSimilarities = []
 
-        model = SentenceTransformer('bert-base-nli-mean-tokens')
+       # model = SentenceTransformer('bert-base-nli-stsb-mean-tokens')
+        model = SentenceTransformer(modelName)
 
         for i, attr in enumerate(attributes):
 
-            print('base line i: ', i)
+            print(modelName, ' line i: ', i)
 
             formatedAttr = copy.deepcopy(attr)
 
@@ -53,7 +55,7 @@ class Similarity:
             similarity = util.pytorch_cos_sim(embedding1, embedding2)
             similarity = "{:.4f}".format(similarity[0][0])
 
-            formatedAttr['relationshipList'].append({'type': '', 'method': 'BERT_BASE', 'comments': None, 'confidence': similarity})
+            formatedAttr['relationshipList'].append({'type': '', 'method': modelName, 'comments': None, 'confidence': similarity})
 
             attributeSimilarities.append(formatedAttr)
 
@@ -102,16 +104,19 @@ class Similarity:
 
         return similarity
 
-    def calculateAmplifiedSimilarity(self, attributes):
+    def calculateAmplifiedSimilarity(self, attributes, modelName):
 
         attributeSimilarities = []
 
         print('len(attributes)')
         print(len(attributes))
 
-        model = SentenceTransformer('bert-base-nli-mean-tokens')
+        model = SentenceTransformer(modelName)
 
         for index, attrPair in enumerate(attributes):
+
+            formatedAttr = copy.deepcopy(attrPair)
+
             syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
             semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
 
@@ -120,13 +125,10 @@ class Similarity:
 
             similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
 
-            i = 0
-            while i < len(attributes[index]['relationshipList']):
-                if attributes[index]['relationshipList'][i]['method'] == 'SYN_AND_SEM_MATCH':
-                    attributes[index]['relationshipList'][i]['confidence'] = similarity
-                    break
+            formatedAttr['relationshipList'].append({'type': '', 'method': modelName+'_SYN_AND_SEM_MATCH', 'comments': None, 'confidence': similarity})
+            attributeSimilarities.append(formatedAttr)
 
-        return attributes
+        return attributeSimilarities
 
     def createSentenceForAA(self, node):
         amplifiedWordList = []
@@ -176,6 +178,22 @@ class Similarity:
 
         return attrPair
 
+    def calculateSimilarity(self, attributes):
+
+        for model in self.models:
+
+            print('model: ', model)
+
+            attributes = self.calcualteBaseLineSimilarity(attributes, model)
+            attributes = self.calculateAmplifiedSimilarity(attributes, model)
+
+        return attributes
+
+
+
+
+
+
 
 num_cores = multiprocessing.cpu_count() - 1
 print("num_cores:", num_cores)
@@ -187,12 +205,15 @@ data = simObj.readData('Data/schema_processed_1617174847206.json')
 print('data')
 print(len(data))
 
-data = simObj.calcualteBaseLineSimilarity(data)
+#data = simObj.calcualteBaseLineSimilarity(data)
 
-print('data')
-print(len(data))
 
-synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
+similarity = simObj.calculateSimilarity(data)
+
+
+
+
+#synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
@@ -200,6 +221,6 @@ synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-bert-base-nli-mean-tokensV0.2.txt", "wb") as fp:   #Pickling
-    pickle.dump(synAndSemSimilarity, fp)
+with open("Data/AmplifiedSimilarity-V0.1.txt", "wb") as fp:   #Pickling
+    pickle.dump(similarity, fp)
 
