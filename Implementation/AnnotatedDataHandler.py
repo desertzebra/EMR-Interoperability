@@ -431,11 +431,11 @@ class AnnotatedDataHandler:
             averagedData.append(cellData)
         return averagedData
 
-    def collapseDataSetTo1d(self, list2dWithHeaders):
+    def collapseDataSetTo1d(self, list2dWithoutHeaders):
         list1d = []
         rowIterator = 0
         colHeadNameList = []
-        for row in list2dWithHeaders:
+        for row in list2dWithoutHeaders:
             rowIterator += 1
             # if rowIterator == 1:
             #     for attr in row:
@@ -607,10 +607,8 @@ class AnnotatedDataHandler:
         # maxFive = 0.1
         ovr_conditions = []
         ovo_conditions = []
-        while minFive < float(0.91):
-            if minFive == 1:
-                print(minFive)
-            maxFive = minFive
+        while minFive < float(0.991):
+            maxFive = minFive + float(0.01)
             while maxFive <= float(1.0):
                 thresholds = {"0.0": minFive, "0.5": maxFive}
                 conditions = {}
@@ -624,10 +622,10 @@ class AnnotatedDataHandler:
                 cm = confusion_matrix(annotatedData, data_in_1d,
                                       labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
                 conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
-                print(thresholds)
+                # print(thresholds)
                 ovr_conditions.append(conditions["ovr"])
-                maxFive = float(Decimal(maxFive) + Decimal('.1'))
-            minFive = float(Decimal(minFive) + Decimal('.1'))
+                maxFive = float(Decimal(maxFive) + Decimal('.01'))
+            minFive = float(Decimal(minFive) + Decimal('.01'))
 
         print("Method " + self.computed_method[methodIndex] + " finished processing.")
 
@@ -679,7 +677,7 @@ class AnnotatedDataHandler:
 
     # Plot precision vs recall
     def plot_pr(self, condition_from_experimental_iterations, plotTitle):
-        fig = plt.figure(figsize=(20, 20))
+        fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('Recall')
         plt.ylabel('Precision')
@@ -698,10 +696,10 @@ class AnnotatedDataHandler:
 
             plt.plot(recall_from_experimental_iterations, precision_from_experimental_iterations, linestyle='dashed',
                      linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
-            for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
-                               thresholds_from_experimental_iterations):
-                # print(z["0.0"])
-                ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+            # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
+            #                    thresholds_from_experimental_iterations):
+            #     # print(z["0.0"])
+            #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
         ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
         plt.xticks(np.arange(0, 1, step=0.02), rotation=45)
         plt.yticks(np.arange(0, 1, step=0.02))
@@ -740,8 +738,8 @@ class AnnotatedDataHandler:
         self.log("saving plot:" + plotTitle)
         fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
 
-
 annotatedDataHandler = AnnotatedDataHandler()
+
 # annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
 # annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(modeAnnotatedData)
 
