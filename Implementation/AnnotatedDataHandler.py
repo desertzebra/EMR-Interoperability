@@ -17,22 +17,45 @@ np.seterr('raise')
 class AnnotatedDataHandler:
 
     def __init__(self):
+
         self.logLevel = ["DEBUG",
                          "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
+
+        # Annotations
         self.annotator1Data = []
         self.annotator2Data = []
         self.annotator3Data = []
         self.annotator4Data = []
+
+        # Computational accessories
+        self.result_file_index = 1.0
+        self.computed_method = ["fuzzy_wuzzy", "bert_base_mean_tokens",
+                                "bert_base_mean_tokens_syn_and_sem", "bert_base_sts_mean_tokens",
+                                "bert_base_sts_mean_tokens_syn_and_sem", "bert_large_sts_mean_tokens",
+                                "bert_large_sts_mean_tokens_syn_and_sem" ]
+        self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
+                                        self.read_computed_data_from_bert_base_mean_tokens,
+                                        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem,
+                                        self.read_computed_data_from_bert_base_sts_mean_tokens,
+                                        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem,
+                                        self.read_computed_data_from_bert_large_sts_mean_tokens,
+                                        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem
+                                        ]
+
+        # Computed Data Structures
         self.fuzzy_wuzzy_computed_data = []
-        self.syn_sem_computed_data = []
-        self.name_embedding_computed_data = []
+        self.bert_base_mean_tokens_computed_data = []
+        self.bert_base_mean_tokens_syn_and_sem_computed_data = []
+        self.bert_base_sts_mean_tokens_computed_data = []
+        self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
+        self.bert_large_sts_mean_tokens_computed_data = []
+        self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
+
+        # Plot accessories
         self.classes = ["0.0", "0.5", "1.0"]
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
-        self.computed_method = ["fuzzy_wuzzy", "syn_and_sem", " name_embedding"]
-        self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
-                                        self.read_computed_data_from_syn_and_sem,
-                                        self.read_computed_data_from_name_embedding]
+
 
     def initDataStructures(self):
         self.annotator1Data = []
@@ -40,8 +63,13 @@ class AnnotatedDataHandler:
         self.annotator3Data = []
         self.annotator4Data = []
         self.fuzzy_wuzzy_computed_data = []
-        self.syn_sem_computed_data = []
-        self.name_embedding_computed_data = []
+        self.bert_base_mean_tokens_computed_data = []
+        self.bert_base_mean_tokens_syn_and_sem_computed_data = []
+        self.bert_base_sts_mean_tokens_computed_data = []
+        self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
+        self.bert_large_sts_mean_tokens_computed_data = []
+        self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
+
 
     def log(self, msg, log_at="INFO"):
         if log_at in self.logLevel:
@@ -237,43 +265,84 @@ class AnnotatedDataHandler:
     def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/0-table-V0.5.csv', True, thresholdValues)
+                'Data/1-table-V'+str(self.result_file_index)+'0.5''.csv', True, thresholdValues)
         else:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
-                'Data/0-table-V0.5.csv', True, thresholdValues)
+                'Data/1-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
         return self.fuzzy_wuzzy_computed_data
         # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
 
-    def read_computed_data_from_syn_and_sem(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
-            self.syn_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/1-table-V0.5.csv', True,
-                thresholdValues)
+            self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/2-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
         else:
-            self.syn_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/1-table-V0.5.csv', True,
-                thresholdValues)
-        return self.syn_sem_computed_data
-        # self.log(["method2 data loaded: ", len(self.syn_sem_computed_data), " with readHeaders=", readHeaders])
+            self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
+                'Data/2-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        return self.bert_base_mean_tokens_computed_data
 
-    def read_computed_data_from_name_embedding(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
-            self.name_embedding_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/2-table-V0.5.csv', True, thresholdValues)
+            self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/3-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
         else:
-            self.name_embedding_computed_data = annotatedDataHandler.readCSV(
-                'Data/2-table-V0.5.csv', True, thresholdValues)
-        return self.name_embedding_computed_data
-        # self.log(["method3 data loaded: ", len(self.name_embedding_computed_data), " with readHeaders=", readHeaders])
+            self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
+                'Data/3-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        return self.bert_base_mean_tokens_syn_and_sem_computed_data
+
+    def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
+        if not readHeaders:
+            self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/4-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        else:
+            self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
+                'Data/4-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        return self.bert_base_sts_mean_tokens_computed_data
+
+    def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
+        if not readHeaders:
+            self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/5-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        else:
+            self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
+                'Data/5-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
+
+    def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
+        if not readHeaders:
+            self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/6-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        else:
+            self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
+                'Data/6-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        return self.bert_large_sts_mean_tokens_computed_data
+
+    def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
+        if not readHeaders:
+            self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+                'Data/7-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        else:
+            self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
+                'Data/7-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+        return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
 
     def readAllComputedData(self, readHeaders=False, thresholdValues={}):
         self.read_computed_data_from_fuzzy_wuzzy(readHeaders, thresholdValues)
-        # self.log(["*"] * 80)
+        self.log(["*"] * 80)
         self.read_computed_data_from_syn_and_sem(readHeaders, thresholdValues)
-        # self.log(["*"] * 80)
-        self.read_computed_data_from_name_embedding(readHeaders, thresholdValues)
-
-        # self.log(["*"] * 80)
+        self.log(["*"] * 80)
+        self.read_computed_data_from_bert_base_mean_tokens(readHeaders, thresholdValues)
+        self.log(["*"] * 80)
+        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem(readHeaders, thresholdValues)
+        self.log(["*"] * 80)
+        self.read_computed_data_from_bert_base_sts_mean_tokens(readHeaders, thresholdValues)
+        self.log(["*"] * 80)
+        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(readHeaders, thresholdValues)
+        self.log(["*"] * 80)
+        self.read_computed_data_from_bert_large_sts_mean_tokens(readHeaders, thresholdValues)
+        self.log(["*"] * 80)
+        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(readHeaders, thresholdValues)
+        self.log(["*"] * 80)
 
     def calculatePearsonScoreBetweenAnnotators(self):
         allAnnotatedDataHandlers = ""
@@ -614,6 +683,7 @@ class AnnotatedDataHandler:
                 conditions = {}
                 data_in_2d = self.read_computed_data_from[methodIndex](True, thresholds)
                 data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+
                 # data = {'y_Actual': annotatedData,  # ["-1","0","0.5","1","1.5"],
                 #         'y_Predicted': data_in_1d  # [1,0.9,0.6,0.7,0.1]
                 #         }
@@ -750,6 +820,5 @@ annotatedDataHandler.readAllAnnotatorsData(True)
 modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
 flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 
-annotatedDataHandler.evaluateMethod(flatAnnotatedData, 0)
-annotatedDataHandler.evaluateMethod(flatAnnotatedData, 1)
-annotatedDataHandler.evaluateMethod(flatAnnotatedData, 2)
+for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
+    annotatedDataHandler.evaluateMethod(flatAnnotatedData, method_index)
