@@ -28,11 +28,11 @@ class AnnotatedDataHandler:
         self.annotator4Data = []
 
         # Computational accessories
-        self.result_file_index = 1.0
+        self.result_file_index = 1.1
         self.computed_method = ["fuzzy_wuzzy", "bert_base_mean_tokens",
                                 "bert_base_mean_tokens_syn_and_sem", "bert_base_sts_mean_tokens",
                                 "bert_base_sts_mean_tokens_syn_and_sem", "bert_large_sts_mean_tokens",
-                                "bert_large_sts_mean_tokens_syn_and_sem" ]
+                                "bert_large_sts_mean_tokens_syn_and_sem"]
         self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
                                         self.read_computed_data_from_bert_base_mean_tokens,
                                         self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem,
@@ -56,7 +56,6 @@ class AnnotatedDataHandler:
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
 
-
     def initDataStructures(self):
         self.annotator1Data = []
         self.annotator2Data = []
@@ -69,7 +68,6 @@ class AnnotatedDataHandler:
         self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
         self.bert_large_sts_mean_tokens_computed_data = []
         self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
-
 
     def log(self, msg, log_at="INFO"):
         if log_at in self.logLevel:
@@ -187,7 +185,7 @@ class AnnotatedDataHandler:
 
         # check if some float value was missed
         if self.isFloat(attr):
-            self.log([attr], "DEBUG")
+            self.log(["attr:",attr], "DEBUG")
 
         return attr
 
@@ -265,65 +263,65 @@ class AnnotatedDataHandler:
     def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/1-table-V'+str(self.result_file_index)+'0.5''.csv', True, thresholdValues)
+                'Data/1-table-V' + str(self.result_file_index) + '0.5''.csv', True, thresholdValues)
         else:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
-                'Data/1-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/1-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         return self.fuzzy_wuzzy_computed_data
         # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
 
     def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/2-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/2-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/2-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/2-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_base_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/3-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/3-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/3-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/3-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_base_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/4-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/4-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/4-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/4-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_base_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/5-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/5-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/5-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/5-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/6-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/6-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/6-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/6-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_large_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/7-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/7-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/7-table-V'+str(self.result_file_index)+'.csv', True, thresholdValues)
+                'Data/7-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
 
     def readAllComputedData(self, readHeaders=False, thresholdValues={}):
@@ -540,7 +538,7 @@ class AnnotatedDataHandler:
 
             # Even java has labeled loops. This sucks!
             if rowIterator == 1:
-                print(len(colHeadNameList))
+                print("collapseDataSetTo1dArrayWithHeaders:",len(colHeadNameList))
                 continue
             # print("colHeadNameList", colHeadNameList)
             colIterator = 0
@@ -554,8 +552,8 @@ class AnnotatedDataHandler:
                 try:
                     colHeaderName = colHeadNameList[colIterator - 1]
                 except:
-                    print(row)
-                    print("colIterator:", colIterator, ", size of colHeadNameList:", len(colHeadNameList))
+                    print("collapseDataSetTo1dArrayWithHeaders except:",row)
+                    print("collapseDataSetTo1dArrayWithHeaders except:colIterator:", colIterator, ", size of colHeadNameList:", len(colHeadNameList))
                     exit()
                 # attr = self.convertAttrValue(attr)
                 list1d.append([rowHeaderName, colHeaderName, attr])
@@ -648,7 +646,7 @@ class AnnotatedDataHandler:
                     performance_dict[pc_index]["f-measure"][str(B)] = 0
                 else:
                     if f_measure_numerator / f_measure_denominator > 1:
-                        print(f_measure_numerator, "/", f_measure_denominator)
+                        print("calculate_ovr_conditions:", f_measure_numerator, "/", f_measure_denominator)
                     performance_dict[pc_index]["f-measure"][str(B)] = f_measure_numerator / f_measure_denominator
 
             performance_dict[pc_index]["G-mean1"] = math.sqrt(performance_dict[pc_index]["sensitivity"] * \
@@ -671,7 +669,7 @@ class AnnotatedDataHandler:
         return performance_dict
 
     def evaluateMethod(self, annotatedData, methodIndex=1):
-        annotatedDataHandler.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+        self.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
         minFive = float(0.0)
         # maxFive = 0.1
         ovr_conditions = []
@@ -683,7 +681,7 @@ class AnnotatedDataHandler:
                 conditions = {}
                 data_in_2d = self.read_computed_data_from[methodIndex](True, thresholds)
                 data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-
+                self.log("converted to 1 d")
                 # data = {'y_Actual': annotatedData,  # ["-1","0","0.5","1","1.5"],
                 #         'y_Predicted': data_in_1d  # [1,0.9,0.6,0.7,0.1]
                 #         }
@@ -744,6 +742,7 @@ class AnnotatedDataHandler:
         # plt.show()
         self.log("saving plot:" + plotTitle)
         fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        plt.close(fig)
 
     # Plot precision vs recall
     def plot_pr(self, condition_from_experimental_iterations, plotTitle):
@@ -778,6 +777,7 @@ class AnnotatedDataHandler:
         # plt.show()
         self.log("saving plot:" + plotTitle)
         fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        plt.close(fig)
 
     def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
         fig = plt.figure(figsize=(20, 10))
@@ -807,6 +807,8 @@ class AnnotatedDataHandler:
         # plt.show()
         self.log("saving plot:" + plotTitle)
         fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        plt.close(fig)
+
 
 annotatedDataHandler = AnnotatedDataHandler()
 
