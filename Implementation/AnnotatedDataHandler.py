@@ -28,7 +28,7 @@ class AnnotatedDataHandler:
         self.annotator4Data = []
 
         # Computational accessories
-        self.result_file_index = 1.1
+        self.result_file_index = 1.2
         self.computed_method = ["fuzzy_wuzzy", "bert_base_mean_tokens",
                                 "bert_base_mean_tokens_syn_and_sem", "bert_base_sts_mean_tokens",
                                 "bert_base_sts_mean_tokens_syn_and_sem", "bert_large_sts_mean_tokens",
