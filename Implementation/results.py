@@ -51,7 +51,7 @@ class Results:
         for attrIndex, attr in enumerate(attributes):
 
             # print('attrIndex: ', attrIndex)
-            # print(attr)
+
             leftKey = attr['nodeLeft']['schemaName'] + "_" + attr['nodeLeft']['tableName'] + "_" + attr['nodeLeft'][
                 'name']
             rightKey = attr['nodeRight']['schemaName'] + "_" + attr['nodeRight']['tableName'] + "_" + attr['nodeRight'][
@@ -126,7 +126,7 @@ class Results:
         print()
         print("Done. Now saving it:")
         with open("Data/" + str(
-                confidenceIndex) + "-table-V1.1.csv", "wb") as fp:  # Pickling
+                confidenceIndex) + "-table-V1.2.csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         # print(table)
 
@@ -136,7 +136,7 @@ class Results:
 
 resultObj = Results()
 # data = simObj.readData('Data/dataV03.json')
-data = resultObj.readData('Data/AmplifiedSimilarity-V0.1.txt')
+data = resultObj.readData('Data/AmplifiedSimilarity-V0.2.txt')
 
 print('data')
 print(len(data))

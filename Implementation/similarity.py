@@ -11,6 +11,7 @@ class Similarity:
     def __init__(self):
         self.embeddingVectors = {}
         self.models = ['bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens', 'bert-large-nli-stsb-mean-tokens']
+        #self.models = ['bert-base-nli-stsb-mean-tokens']
 
     def readData(self, url):
 
@@ -117,13 +118,14 @@ class Similarity:
 
             formatedAttr = copy.deepcopy(attrPair)
 
-            syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
-            semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
+            #syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
+            #semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
+            similarity = self.getSemanticSimilarity(attrPair, model)
 
             # print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
             print('Semantic index: ', index)
 
-            similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
+            #similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
 
             formatedAttr['relationshipList'].append({'type': '', 'method': modelName+'_SYN_AND_SEM_MATCH', 'comments': None, 'confidence': similarity})
             attributeSimilarities.append(formatedAttr)
@@ -221,6 +223,6 @@ similarity = simObj.calculateSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-V0.1.txt", "wb") as fp:   #Pickling
+with open("Data/AmplifiedSimilarity-V0.2.txt", "wb") as fp:   #Pickling
     pickle.dump(similarity, fp)
 
