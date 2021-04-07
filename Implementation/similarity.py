@@ -10,7 +10,7 @@ class Similarity:
 
     def __init__(self):
         self.embeddingVectors = {}
-        self.models = ['bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens', 'bert-large-nli-stsb-mean-tokens']
+        self.models = ['bert-large-nli-stsb-mean-tokens'] # 'bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens',
         # self.models = ['bert-base-nli-stsb-mean-tokens']
 
     def readData(self, url):
@@ -42,7 +42,7 @@ class Similarity:
         attributeSimilarities = []
 
         # model = SentenceTransformer('bert-base-nli-stsb-mean-tokens')
-        model = SentenceTransformer(modelName)
+        model = SentenceTransformer(modelName, device='cuda')
 
         for i, attr in enumerate(attributes):
             print(modelName, ' line i: ', i)
@@ -94,16 +94,30 @@ class Similarity:
         self.embeddingVectors[nodeLeftIdentifier] = self.createSentenceForAA(attrPair['nodeLeft'])
         self.embeddingVectors[nodeRightIdentifier] = self.createSentenceForAA(attrPair['nodeRight'])
 
-        nodeLeftContext = self.embeddingVectors[nodeLeftIdentifier]
-        nodeRightContext = self.embeddingVectors[nodeRightIdentifier]
+        max_similarity = 0.0
+        max_sentence_left = ""
+        max_sentence_right = ""
+        for sentence_left in self.embeddingVectors[nodeLeftIdentifier]:
+            for sentence_right in self.embeddingVectors[nodeRightIdentifier]:
+                embedding1 = model.encode(sentence_left, convert_to_tensor=True)
+                embedding2 = model.encode(sentence_right, convert_to_tensor=True)
+                similarity = util.pytorch_cos_sim(embedding1, embedding2)
+                similarity = "{:.4f}".format(similarity[0][0])
+                if float(similarity) > max_similarity:
+                    max_similarity = float(similarity)
+                    max_sentence_left = sentence_left
+                    max_sentence_right = max_sentence_right
 
-        embedding1 = model.encode(nodeLeftContext, convert_to_tensor=True)
-        embedding2 = model.encode(nodeRightContext, convert_to_tensor=True)
+        # nodeLeftContext = self.embeddingVectors[nodeLeftIdentifier]
+        # nodeRightContext = self.embeddingVectors[nodeRightIdentifier]
 
-        similarity = util.pytorch_cos_sim(embedding1, embedding2)
-        similarity = "{:.4f}".format(similarity[0][0])
+        # embedding1 = model.encode(nodeLeftContext, convert_to_tensor=True)
+        # embedding2 = model.encode(nodeRightContext, convert_to_tensor=True)
+        #
+        # similarity = util.pytorch_cos_sim(embedding1, embedding2)
+        # similarity = "{:.4f}".format(similarity[0][0])
 
-        return similarity
+        return (max_similarity, max_sentence_left, max_sentence_right)
 
     def calculateAmplifiedSimilarity(self, attributes, modelName):
 
@@ -118,7 +132,7 @@ class Similarity:
             formatedAttr = copy.deepcopy(attrPair)
 
             syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
-            semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
+            (semanticSimilarity, left_sentence, right_sentence) = self.getSemanticSimilarity(attrPair, model)
             # similarity = self.getSemanticSimilarity(attrPair, model)
 
             print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
@@ -127,7 +141,7 @@ class Similarity:
             similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
 
             formatedAttr['relationshipList'].append(
-                {'type': '', 'method': modelName + '_SYN_AND_SEM_MATCH', 'comments': None, 'confidence': similarity})
+                {'type': '', 'method': modelName + '_SYN_AND_SEM_MATCH', 'comments': left_sentence+"=="+right_sentence, 'confidence': similarity})
             attributeSimilarities.append(formatedAttr)
 
         return attributeSimilarities
@@ -149,44 +163,44 @@ class Similarity:
 
         return amplified_sentences
 
-    def processSchemaMapNode(self, attrPair, model):
-        # formatedattrPair = copy.deepcopy(attrPair)
-        nodeLeftIdentifier = "_".join([attrPair['nodeLeft']['schemaName'], attrPair['nodeLeft']['tableName'],
-                                       attrPair['nodeLeft']['name'], attrPair['nodeLeft']['schemaVersion']])
-        nodeRightIdentifier = "_".join([attrPair['nodeRight']['schemaName'], attrPair['nodeRight']['tableName'],
-                                        attrPair['nodeRight']['name'], attrPair['nodeRight']['schemaVersion']])
-
-        self.embeddingVectors[nodeLeftIdentifier] = self.createSentenceForAA(attrPair['nodeLeft'])
-        self.embeddingVectors[nodeRightIdentifier] = self.createSentenceForAA(attrPair['nodeRight'])
-
-        # if nodeLeftIdentifier not in self.embeddingVectors:
-        #     self.embeddingVectors[nodeLeftIdentifier] = self.createSentenceForAA(attrPair['nodeLeft'])
-        #
-        # if nodeRightIdentifier not in self.embeddingVectors:
-        #     self.embeddingVectors[nodeRightIdentifier] = self.createSentenceForAA(attrPair['nodeRight'])
-        max_similarity = 0.0
-        max_sentence_left = ""
-        max_sentence_right = ""
-        for sentence_left in self.embeddingVectors[nodeLeftIdentifier]:
-            for sentence_right in self.embeddingVectors[nodeRightIdentifier]:
-                embedding1 = model.encode(sentence_left, convert_to_tensor=True)
-                embedding2 = model.encode(sentence_right, convert_to_tensor=True)
-                similarity = util.pytorch_cos_sim(embedding1, embedding2)
-                similarity = "{:.4f}".format(similarity[0][0])
-                if float(similarity) > max_similarity:
-                    max_similarity = float(similarity)
-                    max_sentence_left = sentence_left
-                    max_sentence_right = max_sentence_right
-
-        i = 0
-        while i < len(attrPair['relationshipList']):
-            if attrPair['relationshipList'][i]['method'] == 'SYN_AND_SEM_MATCH':
-                attrPair['relationshipList'][i]['sentence_left'] = max_sentence_left
-                attrPair['relationshipList'][i]['sentence_right'] = max_sentence_right
-                attrPair['relationshipList'][i]['confidence'] = max_similarity
-                break
-
-        return attrPair
+    # def processSchemaMapNode(self, attrPair, model):
+    #     # formatedattrPair = copy.deepcopy(attrPair)
+    #     nodeLeftIdentifier = "_".join([attrPair['nodeLeft']['schemaName'], attrPair['nodeLeft']['tableName'],
+    #                                    attrPair['nodeLeft']['name'], attrPair['nodeLeft']['schemaVersion']])
+    #     nodeRightIdentifier = "_".join([attrPair['nodeRight']['schemaName'], attrPair['nodeRight']['tableName'],
+    #                                     attrPair['nodeRight']['name'], attrPair['nodeRight']['schemaVersion']])
+    #
+    #     self.embeddingVectors[nodeLeftIdentifier] = self.createSentenceForAA(attrPair['nodeLeft'])
+    #     self.embeddingVectors[nodeRightIdentifier] = self.createSentenceForAA(attrPair['nodeRight'])
+    #
+    #     # if nodeLeftIdentifier not in self.embeddingVectors:
+    #     #     self.embeddingVectors[nodeLeftIdentifier] = self.createSentenceForAA(attrPair['nodeLeft'])
+    #     #
+    #     # if nodeRightIdentifier not in self.embeddingVectors:
+    #     #     self.embeddingVectors[nodeRightIdentifier] = self.createSentenceForAA(attrPair['nodeRight'])
+    #     max_similarity = 0.0
+    #     max_sentence_left = ""
+    #     max_sentence_right = ""
+    #     for sentence_left in self.embeddingVectors[nodeLeftIdentifier]:
+    #         for sentence_right in self.embeddingVectors[nodeRightIdentifier]:
+    #             embedding1 = model.encode(sentence_left, convert_to_tensor=True)
+    #             embedding2 = model.encode(sentence_right, convert_to_tensor=True)
+    #             similarity = util.pytorch_cos_sim(embedding1, embedding2)
+    #             similarity = "{:.4f}".format(similarity[0][0])
+    #             if float(similarity) > max_similarity:
+    #                 max_similarity = float(similarity)
+    #                 max_sentence_left = sentence_left
+    #                 max_sentence_right = max_sentence_right
+    #
+    #     i = 0
+    #     while i < len(attrPair['relationshipList']):
+    #         if attrPair['relationshipList'][i]['method'] == 'SYN_AND_SEM_MATCH':
+    #             attrPair['relationshipList'][i]['sentence_left'] = max_sentence_left
+    #             attrPair['relationshipList'][i]['sentence_right'] = max_sentence_right
+    #             attrPair['relationshipList'][i]['confidence'] = max_similarity
+    #             break
+    #
+    #     return attrPair
 
     def calculateSimilarity(self, attributes):
 
