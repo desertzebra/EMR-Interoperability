@@ -176,7 +176,8 @@ class AnnotatedDataHandler:
             return "-"
         # elif attr == '~' or attr == '':
         #     return "0.0"
-        elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
+        #elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
+        elif self.isFloat(attr) and float(attr) < thresholds["0.0"]:
             return "0.0"
         elif self.isFloat(attr) and thresholds["0.0"] <= float(attr) < thresholds["0.5"]:
             return "0.5"
@@ -681,7 +682,7 @@ class AnnotatedDataHandler:
                 conditions = {}
                 data_in_2d = self.read_computed_data_from[methodIndex](True, thresholds)
                 data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-                self.log("converted to 1 d")
+                # self.log("converted to 1 d")
                 # data = {'y_Actual': annotatedData,  # ["-1","0","0.5","1","1.5"],
                 #         'y_Predicted': data_in_1d  # [1,0.9,0.6,0.7,0.1]
                 #         }
