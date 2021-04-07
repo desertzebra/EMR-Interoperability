@@ -11,7 +11,7 @@ class Similarity:
     def __init__(self):
         self.embeddingVectors = {}
         self.models = ['bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens', 'bert-large-nli-stsb-mean-tokens']
-        #self.models = ['bert-base-nli-stsb-mean-tokens']
+        # self.models = ['bert-base-nli-stsb-mean-tokens']
 
     def readData(self, url):
 
@@ -41,11 +41,10 @@ class Similarity:
 
         attributeSimilarities = []
 
-       # model = SentenceTransformer('bert-base-nli-stsb-mean-tokens')
+        # model = SentenceTransformer('bert-base-nli-stsb-mean-tokens')
         model = SentenceTransformer(modelName)
 
         for i, attr in enumerate(attributes):
-
             print(modelName, ' line i: ', i)
 
             formatedAttr = copy.deepcopy(attr)
@@ -56,10 +55,10 @@ class Similarity:
             similarity = util.pytorch_cos_sim(embedding1, embedding2)
             similarity = "{:.4f}".format(similarity[0][0])
 
-            formatedAttr['relationshipList'].append({'type': '', 'method': modelName, 'comments': None, 'confidence': similarity})
+            formatedAttr['relationshipList'].append(
+                {'type': '', 'method': modelName, 'comments': None, 'confidence': similarity})
 
             attributeSimilarities.append(formatedAttr)
-
 
         return attributeSimilarities
 
@@ -67,18 +66,19 @@ class Similarity:
 
         result = False
 
-        if((type1 == 'Long' and type2 == 'Double') or (type1 == 'Double' and type2 == 'Long')):
+        if ((type1 == 'Long' and type2 == 'Double') or (type1 == 'Double' and type2 == 'Long')):
             result = True
-        elif((type1 == 'Date' and type2 == 'DateTime') or (type1 == 'DateTime' and type2 == 'Date')):
+        elif ((type1 == 'Date' and type2 == 'DateTime') or (type1 == 'DateTime' and type2 == 'Date')):
             result = True
 
-        return  result
+        return result
 
     def getSyntacticSimilarity(self, attr):
 
         similarity = 0
 
-        if( (attr['nodeLeft']['dataType'] == attr['nodeRight']['dataType']) or (self.isDataTypeConvertable(attr['nodeLeft']['dataType'], attr['nodeRight']['dataType']))):
+        if ((attr['nodeLeft']['dataType'] == attr['nodeRight']['dataType']) or (
+        self.isDataTypeConvertable(attr['nodeLeft']['dataType'], attr['nodeRight']['dataType']))):
             similarity = 1
 
         return similarity
@@ -115,36 +115,55 @@ class Similarity:
         model = SentenceTransformer(modelName)
 
         for index, attrPair in enumerate(attributes):
-
             formatedAttr = copy.deepcopy(attrPair)
 
-            #syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
-            #semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
-            similarity = self.getSemanticSimilarity(attrPair, model)
+            syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
+            semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
+            # similarity = self.getSemanticSimilarity(attrPair, model)
 
-            # print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
-            print('Semantic index: ', index)
+            print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
+            # print('Semantic index: ', index)
 
-            #similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
+            similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
 
-            formatedAttr['relationshipList'].append({'type': '', 'method': modelName+'_SYN_AND_SEM_MATCH', 'comments': None, 'confidence': similarity})
+            formatedAttr['relationshipList'].append(
+                {'type': '', 'method': modelName + '_SYN_AND_SEM_MATCH', 'comments': None, 'confidence': similarity})
             attributeSimilarities.append(formatedAttr)
 
         return attributeSimilarities
 
     def createSentenceForAA(self, node):
-        amplifiedWordList = []
-        result = ''
+        amplified_sentences = []
+        word_concept_map = {}
+        # for word in node['suffixArray']:
+        #     word_concept_map["word"] = []
+        for concept in node['conceptArray']:
+            if concept['token'] not in word_concept_map:
+                word_concept_map[concept['token']] = []
+            word_concept_map[concept['token']].append(concept['name'])
+        amplified_sentences.append(" ".join(node['suffixArray']))
+        for word in node['suffixArray']:
+            for concept in word_concept_map[word]:
+
+        print(word_concept_map)
+        exit()
+        amplifiedSentenceList = []
+        usedConcept = []
+        # amplifiedWordList = []
+        # result = ''
         for word in node['suffixArray']:
             wordWithItsConcept = word
             for concept in node['conceptArray']:
-                if word == concept["token"]:
+                if word == concept["token"] and concept["id"] not in usedConcept:
+                    usedConcept = concept["id"]
                     wordWithItsConcept = " ".join([wordWithItsConcept, ",", concept["name"]])
             amplifiedWordList.append(wordWithItsConcept)
 
-        result = " ".join([node['name'], "<", ";".join(amplifiedWordList), ">"])
+        # result = " ".join([node['name'], "<", "; ".join(amplifiedWordList), ">"])
+        result = ". ".join(amplifiedWordList)
 
-
+        print(result)
+        exit()
         return result
 
     def processSchemaMapNode(self, attrPair, model):
@@ -183,18 +202,11 @@ class Similarity:
     def calculateSimilarity(self, attributes):
 
         for model in self.models:
-
             print('model: ', model)
-
-            attributes = self.calcualteBaseLineSimilarity(attributes, model)
             attributes = self.calculateAmplifiedSimilarity(attributes, model)
+            attributes = self.calcualteBaseLineSimilarity(attributes, model)
 
         return attributes
-
-
-
-
-
 
 
 num_cores = multiprocessing.cpu_count() - 1
@@ -203,19 +215,15 @@ print("num_cores:", num_cores)
 simObj = Similarity()
 data = simObj.readData('Data/schema_processed_1617174847206.json')
 
-
 print('data')
 print(len(data))
 
-#data = simObj.calcualteBaseLineSimilarity(data)
+# data = simObj.calcualteBaseLineSimilarity(data)
 
 
 similarity = simObj.calculateSimilarity(data)
 
-
-
-
-#synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
+# synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
@@ -223,6 +231,5 @@ similarity = simObj.calculateSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-V0.2.txt", "wb") as fp:   #Pickling
+with open("Data/AmplifiedSimilarity-V0.2.txt", "wb") as fp:  # Pickling
     pickle.dump(similarity, fp)
-
