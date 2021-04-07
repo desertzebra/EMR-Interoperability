@@ -4,7 +4,7 @@ import pickle
 from sentence_transformers import SentenceTransformer, util
 from joblib import Parallel, delayed
 import multiprocessing
-
+import itertools
 
 class Similarity:
 
@@ -137,34 +137,17 @@ class Similarity:
         word_concept_map = {}
         # for word in node['suffixArray']:
         #     word_concept_map["word"] = []
+        amplified_sentences.append(" ".join(node['suffixArray']))
         for concept in node['conceptArray']:
             if concept['token'] not in word_concept_map:
                 word_concept_map[concept['token']] = []
             word_concept_map[concept['token']].append(concept['name'])
-        amplified_sentences.append(" ".join(node['suffixArray']))
-        for word in node['suffixArray']:
-            for concept in word_concept_map[word]:
+        conceptset = word_concept_map.values()
+        product_concepts = list(itertools.product(*conceptset))
+        for concept_product_tuple in product_concepts:
+            amplified_sentences.append(" ".join(concept_product_tuple))
 
-        print(word_concept_map)
-        exit()
-        amplifiedSentenceList = []
-        usedConcept = []
-        # amplifiedWordList = []
-        # result = ''
-        for word in node['suffixArray']:
-            wordWithItsConcept = word
-            for concept in node['conceptArray']:
-                if word == concept["token"] and concept["id"] not in usedConcept:
-                    usedConcept = concept["id"]
-                    wordWithItsConcept = " ".join([wordWithItsConcept, ",", concept["name"]])
-            amplifiedWordList.append(wordWithItsConcept)
-
-        # result = " ".join([node['name'], "<", "; ".join(amplifiedWordList), ">"])
-        result = ". ".join(amplifiedWordList)
-
-        print(result)
-        exit()
-        return result
+        return amplified_sentences
 
     def processSchemaMapNode(self, attrPair, model):
         # formatedattrPair = copy.deepcopy(attrPair)
@@ -181,20 +164,26 @@ class Similarity:
         #
         # if nodeRightIdentifier not in self.embeddingVectors:
         #     self.embeddingVectors[nodeRightIdentifier] = self.createSentenceForAA(attrPair['nodeRight'])
-
-        nodeLeftContext = self.embeddingVectors[nodeLeftIdentifier]
-        nodeRightContext = self.embeddingVectors[nodeRightIdentifier]
-
-        embedding1 = model.encode(nodeLeftContext, convert_to_tensor=True)
-        embedding2 = model.encode(nodeRightContext, convert_to_tensor=True)
-
-        similarity = util.pytorch_cos_sim(embedding1, embedding2)
-        similarity = "{:.4f}".format(similarity[0][0])
+        max_similarity = 0.0
+        max_sentence_left = ""
+        max_sentence_right = ""
+        for sentence_left in self.embeddingVectors[nodeLeftIdentifier]:
+            for sentence_right in self.embeddingVectors[nodeRightIdentifier]:
+                embedding1 = model.encode(sentence_left, convert_to_tensor=True)
+                embedding2 = model.encode(sentence_right, convert_to_tensor=True)
+                similarity = util.pytorch_cos_sim(embedding1, embedding2)
+                similarity = "{:.4f}".format(similarity[0][0])
+                if float(similarity) > max_similarity:
+                    max_similarity = float(similarity)
+                    max_sentence_left = sentence_left
+                    max_sentence_right = max_sentence_right
 
         i = 0
         while i < len(attrPair['relationshipList']):
             if attrPair['relationshipList'][i]['method'] == 'SYN_AND_SEM_MATCH':
-                attrPair['relationshipList'][i]['confidence'] = similarity
+                attrPair['relationshipList'][i]['sentence_left'] = max_sentence_left
+                attrPair['relationshipList'][i]['sentence_right'] = max_sentence_right
+                attrPair['relationshipList'][i]['confidence'] = max_similarity
                 break
 
         return attrPair
