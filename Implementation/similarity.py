@@ -11,7 +11,7 @@ class Similarity:
 
     def __init__(self):
         self.embeddingVectors = {}
-        self.models = ['bert-large-nli-stsb-mean-tokens'] # 'bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens',
+        self.models = ['bert-large-nli-stsb-mean-tokens', 'bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens']
         # self.models = ['bert-base-nli-stsb-mean-tokens']
 
     def readData(self, url):
