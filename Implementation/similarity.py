@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer, util
 from joblib import Parallel, delayed
 import multiprocessing
 import itertools
-from numba import njit
+
 
 class Similarity:
 

@@ -10,12 +10,13 @@ class Results:
 
     SYN_AND_SEM_SIM_INDEX = 0
     FUZZY_WUZZY_INDEX = 1
-    BERT_BASE_Mean_TOKENS_INDEX = 2
-    BERT_BASE_Mean_TOKENS_SYN_AND_SEM_INDEX = 3
-    BERT_BASE_STS_Mean_TOKENS_INDEX = 4
-    BERT_BASE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX = 5
-    BERT_LARGE_STS_Mean_TOKENS_INDEX = 6
-    BERT_LARGE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX = 7
+    BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = 2
+    BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = 3
+    BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = 4
+    BERT_BASE_NLI_MEAN_TOKENS_INDEX = 5
+    BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = 6
+    BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = 7
+
 
     def readData(self, url):
         data = []
@@ -49,8 +50,6 @@ class Results:
         matrix = {}
 
         for attrIndex, attr in enumerate(attributes):
-
-            # print('attrIndex: ', attrIndex)
 
             leftKey = attr['nodeLeft']['schemaName'] + "_" + attr['nodeLeft']['tableName'] + "_" + attr['nodeLeft'][
                 'name']
@@ -126,7 +125,7 @@ class Results:
         print()
         print("Done. Now saving it:")
         with open("Data/" + str(
-                confidenceIndex) + "-table-V1.2.csv", "wb") as fp:  # Pickling
+                confidenceIndex) + "-table-V1.3.csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         # print(table)
 
@@ -143,12 +142,13 @@ print(len(data))
 
 #resultObj.generateCSV(data)
 
+
 #resultObj.printBaseHeatMap(data,resultObj.SYN_AND_SEM_SIM_INDEX)
 resultObj.printBaseHeatMap(data,resultObj.FUZZY_WUZZY_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_Mean_TOKENS_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_Mean_TOKENS_SYN_AND_SEM_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_STS_Mean_TOKENS_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_STS_Mean_TOKENS_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_STS_Mean_TOKENS_SYN_AND_SEM_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_MEAN_TOKENS_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX)
+resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX)
 
