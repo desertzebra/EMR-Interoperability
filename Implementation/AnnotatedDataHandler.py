@@ -10,8 +10,32 @@ from statistics import mode, StatisticsError
 import math
 from matplotlib import pyplot as plt
 from decimal import Decimal
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.dummy import DummyClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_auc_score
+from matplotlib import pyplot
 
 np.seterr('raise')
+
+
+# plot no skill and model roc curves
+def plot_roc_curve(test_y, naive_probs, model_probs):
+    # plot naive skill roc curve
+    fpr, tpr, _ = roc_curve(test_y, naive_probs)
+    pyplot.plot(fpr, tpr, linestyle='--', label='No Skill')
+    # plot model roc curve
+    fpr, tpr, _ = roc_curve(test_y, model_probs)
+    pyplot.plot(fpr, tpr, marker='.', label='Logistic')
+    # axis labels
+    pyplot.xlabel('False Positive Rate')
+    pyplot.ylabel('True Positive Rate')
+    # show the legend
+    pyplot.legend()
+    # show the plot
+    pyplot.show()
 
 
 class AnnotatedDataHandler:
@@ -20,7 +44,13 @@ class AnnotatedDataHandler:
 
         self.logLevel = ["DEBUG",
                          "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
-
+        self.FUZZY_WUZZY_INDEX = 1
+        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = 2
+        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = 3
+        self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = 4
+        self.BERT_BASE_NLI_MEAN_TOKENS_INDEX = 5
+        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = 6
+        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = 7
         # Annotations
         self.annotator1Data = []
         self.annotator2Data = []
@@ -28,18 +58,20 @@ class AnnotatedDataHandler:
         self.annotator4Data = []
 
         # Computational accessories
-        self.result_file_index = 1.2
-        self.computed_method = ["fuzzy_wuzzy", "bert_base_mean_tokens",
-                                "bert_base_mean_tokens_syn_and_sem", "bert_base_sts_mean_tokens",
-                                "bert_base_sts_mean_tokens_syn_and_sem", "bert_large_sts_mean_tokens",
-                                "bert_large_sts_mean_tokens_syn_and_sem"]
+        self.result_file_index = 1.3
+        1
+        self.computed_method = ["fuzzy_wuzzy", "bert_large_nli_sts_mean_tokens_syn_and_sem",
+                                "bert_large_nli_sts_mean_tokens",
+                                "bert_base_nli_mean_tokens_syn_and_sem", "bert_base_nli_mean_tokens",
+                                "bert_base_nli_sts_mean_tokens_syn_and_sem", "bert_base_nli_sts_mean_tokens"
+                                ]
         self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
-                                        self.read_computed_data_from_bert_base_mean_tokens,
-                                        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem,
-                                        self.read_computed_data_from_bert_base_sts_mean_tokens,
-                                        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem,
+                                        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem,
                                         self.read_computed_data_from_bert_large_sts_mean_tokens,
-                                        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem
+                                        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem,
+                                        self.read_computed_data_from_bert_base_mean_tokens,
+                                        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem,
+                                        self.read_computed_data_from_bert_base_sts_mean_tokens
                                         ]
 
         # Computed Data Structures
@@ -176,7 +208,7 @@ class AnnotatedDataHandler:
             return "-"
         # elif attr == '~' or attr == '':
         #     return "0.0"
-        #elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
+        # elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
         elif self.isFloat(attr) and float(attr) < thresholds["0.0"]:
             return "0.0"
         elif self.isFloat(attr) and thresholds["0.0"] <= float(attr) < thresholds["0.5"]:
@@ -186,7 +218,7 @@ class AnnotatedDataHandler:
 
         # check if some float value was missed
         if self.isFloat(attr):
-            self.log(["attr:",attr], "DEBUG")
+            self.log(["attr:", attr], "DEBUG")
 
         return attr
 
@@ -264,65 +296,79 @@ class AnnotatedDataHandler:
     def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/1-table-V' + str(self.result_file_index) + '0.5''.csv', True, thresholdValues)
+                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True,
+                thresholdValues)
         else:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
-                'Data/1-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True,
+                thresholdValues)
         return self.fuzzy_wuzzy_computed_data
         # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
 
     def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/2-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
+                True, thresholdValues)
         else:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/2-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
+                True, thresholdValues)
         return self.bert_base_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/3-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/3-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_base_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/4-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/4-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_base_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/5-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/5-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/6-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/6-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_large_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/7-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         else:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/7-table-V' + str(self.result_file_index) + '.csv', True, thresholdValues)
+                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                    self.result_file_index) + '.csv', True, thresholdValues)
         return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
 
     def readAllComputedData(self, readHeaders=False, thresholdValues={}):
@@ -539,7 +585,7 @@ class AnnotatedDataHandler:
 
             # Even java has labeled loops. This sucks!
             if rowIterator == 1:
-                print("collapseDataSetTo1dArrayWithHeaders:",len(colHeadNameList))
+                print("collapseDataSetTo1dArrayWithHeaders:", len(colHeadNameList))
                 continue
             # print("colHeadNameList", colHeadNameList)
             colIterator = 0
@@ -553,8 +599,9 @@ class AnnotatedDataHandler:
                 try:
                     colHeaderName = colHeadNameList[colIterator - 1]
                 except:
-                    print("collapseDataSetTo1dArrayWithHeaders except:",row)
-                    print("collapseDataSetTo1dArrayWithHeaders except:colIterator:", colIterator, ", size of colHeadNameList:", len(colHeadNameList))
+                    print("collapseDataSetTo1dArrayWithHeaders except:", row)
+                    print("collapseDataSetTo1dArrayWithHeaders except:colIterator:", colIterator,
+                          ", size of colHeadNameList:", len(colHeadNameList))
                     exit()
                 # attr = self.convertAttrValue(attr)
                 list1d.append([rowHeaderName, colHeaderName, attr])
@@ -669,14 +716,134 @@ class AnnotatedDataHandler:
 
         return performance_dict
 
+    # def evaluateDefaultMethod(self, annotatedData, methodIndex=1):
+    #     self.log("Some default method Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+    #     self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
+    #         'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
+    #         False, {})
+    #
+    #     data_in_2d = self.bert_base_mean_tokens_computed_data
+    #     data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+    #     # print(data_in_1d)
+    #     # print(annotatedData)
+    #     trainX, testX, trainY, testY = train_test_split([float(d) for d in data_in_1d], annotatedData, test_size=0.5)
+    #     print("trainY:", len(trainY))
+    #     print('Train: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in trainY if t == "0.0"]),
+    #                                                       len([t for t in trainY if t == "0.5"]),
+    #                                                       len([t for t in trainY if t == "1.0"])))
+    #
+    #     print('Train: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in testY if t == "0.0"]),
+    #                                                       len([t for t in testY if t == "0.5"]),
+    #                                                       len([t for t in testY if t == "1.0"])))
+    #
+    #     model = LogisticRegression(solver='lbfgs')
+    #     # model.fit(trainX, trainY)
+    #     model.fit(np.reshape(trainX, (-1, 1)), trainY)
+    #     yhat = model.predict_proba(np.reshape(testX, (-1, 1)))
+    #     model_probs = yhat[:, 1]
+    #     print(model_probs)
+    #     # calculate roc auc
+    #     print("\nLogistic Regression")
+    #     # assuming your already have a list of actual_class and predicted_class from the logistic regression classifier
+    #     lr_roc_auc_multiclass = roc_auc_score_multiclass(actual_class, predicted_class)
+    #     print(lr_roc_auc_multiclass)
+        #
+        # roc_auc = roc_auc_score(testY, model_probs, multi_class="ovr", )
+        # print('Logistic ROC AUC %.3f' % roc_auc)
+        # # plot roc curves
+        # plot_roc_curve(testy, naive_probs, model_probs)
+
+        # 
+        # #minFive = float(0.0)
+        # # maxFive = 0.1
+        # #ovr_conditions = []
+        # ovo_conditions = []
+        # #while minFive < float(0.91):
+        #     #maxFive = minFive + float(0.1)
+        #     #while maxFive <= float(1.0):
+        #         thresholds = {"0.0": minFive, "0.5": maxFive}
+        #         conditions = {}
+        # 
+        #         # self.log("converted to 1 d")
+        #         # data = {'y_Actual': annotatedData,  # ["-1","0","0.5","1","1.5"],
+        #         #         'y_Predicted': data_in_1d  # [1,0.9,0.6,0.7,0.1]
+        #         #         }
+        #         target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
+        # 
+        #         cm = confusion_matrix(annotatedData, data_in_1d,
+        #                               labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
+        #         conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
+        #         # print(thresholds)
+        #         ovr_conditions.append(conditions["ovr"])
+        #         maxFive = float(Decimal(maxFive) + Decimal('.1'))
+        #     minFive = float(Decimal(minFive) + Decimal('.1'))
+        # 
+        # print("Method " + self.computed_method[methodIndex] + " finished processing.")
+        # 
+        # annotatedDataHandler.plot_roc(ovr_conditions,
+        #                               'ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+        # 
+        # annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
+        #                                                 'MCC vs F1 for Mode(Annotated Data) vs ' + self.computed_method[
+        #                                                     methodIndex])
+        # 
+        # annotatedDataHandler.plot_pr(ovr_conditions,
+        #                              'Precision vs Recall for Mode(Annotated Data) vs ' + self.computed_method[
+        #                                  methodIndex])
+        # 
+        # annotatedDataHandler.plot_precision_plot(ovr_conditions, 'Precision Plot for ' + self.computed_method[
+        #     methodIndex])
+        # annotatedDataHandler.plot_recall_plot(ovr_conditions, 'Recall Plot for ' + self.computed_method[
+        #     methodIndex])
+
+    # plot no skill and model roc curves
+    def plot_roc_curve(self, test_y, model_probs):
+        # plot model roc curve
+        fpr, tpr, _ = roc_curve(test_y, model_probs)
+        pyplot.plot(fpr, tpr, marker='.', label='BERRRRTT')
+        # axis labels
+        pyplot.xlabel('False Positive Rate')
+        pyplot.ylabel('True Positive Rate')
+        # show the legend
+        pyplot.legend()
+        # show the plot
+        pyplot.show()
+
+    def roc_auc_score_multiclass(self, actual_class, pred_class, average="macro"):
+        # creating a set of all the unique classes using the actual class list
+        unique_class = set(actual_class)
+        roc_auc_dict = {}
+        for per_class in unique_class:
+            # creating a list of all the classes except the current class
+            other_class = [x for x in unique_class if x != per_class]
+
+            # marking the current class as 1 and all other classes as 0
+            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
+            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
+
+            # using the sklearn metrics method to calculate the roc_auc_score
+            roc_auc = roc_auc_score(new_actual_class, new_pred_class, average=average)
+            # calculate roc curves
+            fpr, tpr, thresholds = roc_curve(new_actual_class, new_pred_class)
+            # get the best threshold
+            J = tpr - fpr
+            ix = np.argmax(J)
+            best_thresh = thresholds[ix]
+            print('Best Threshold for %s=%f at %i' % (per_class, best_thresh, ix))
+            roc_auc_dict[per_class] = roc_auc
+            # self.plot_roc_curve(new_actual_class, new_pred_class)
+        return roc_auc_dict
+
+
     def evaluateMethod(self, annotatedData, methodIndex=1):
         self.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
         minFive = float(0.0)
         # maxFive = 0.1
         ovr_conditions = []
         ovo_conditions = []
-        while minFive < float(0.991):
-            maxFive = minFive + float(0.01)
+        lr_roc_auc_multiclass = []
+        while minFive < float(0.91):
+            maxFive = minFive + float(0.1)
             while maxFive <= float(1.0):
                 thresholds = {"0.0": minFive, "0.5": maxFive}
                 conditions = {}
@@ -688,16 +855,22 @@ class AnnotatedDataHandler:
                 #         }
                 target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
 
+                print("\nLogistic Regression")
+                # assuming your already have a list of actual_class and predicted_class from the logistic regression classifier
+                lr_roc_auc_multiclass.append(self.roc_auc_score_multiclass(annotatedData, data_in_1d))
+
                 cm = confusion_matrix(annotatedData, data_in_1d,
                                       labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
                 conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
                 # print(thresholds)
                 ovr_conditions.append(conditions["ovr"])
-                maxFive = float(Decimal(maxFive) + Decimal('.01'))
-            minFive = float(Decimal(minFive) + Decimal('.01'))
+                maxFive = float(Decimal(maxFive) + Decimal('.1'))
+            minFive = float(Decimal(minFive) + Decimal('.1'))
 
         print("Method " + self.computed_method[methodIndex] + " finished processing.")
 
+        print("lr_roc_auc_multiclass:"+str(lr_roc_auc_multiclass))
+        self.plot_roc_curve()
         annotatedDataHandler.plot_roc(ovr_conditions,
                                       'ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
@@ -708,6 +881,11 @@ class AnnotatedDataHandler:
         annotatedDataHandler.plot_pr(ovr_conditions,
                                      'Precision vs Recall for Mode(Annotated Data) vs ' + self.computed_method[
                                          methodIndex])
+
+        annotatedDataHandler.plot_precision_plot(ovr_conditions, 'Precision Plot for ' + self.computed_method[
+            methodIndex])
+        annotatedDataHandler.plot_recall_plot(ovr_conditions, 'Recall Plot for ' + self.computed_method[
+            methodIndex])
 
     def plot_roc(self, condition_from_experimental_iterations, plotTitle):
         fig = plt.figure(figsize=(20, 10))
@@ -745,6 +923,103 @@ class AnnotatedDataHandler:
         fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
 
+    # Plot precision
+    def plot_precision_plot(self, condition_from_experimental_iterations, plotTitle):
+        fig = plt.figure(figsize=(20, 10))
+        ax = fig.add_subplot(111)
+        plt.xlabel('Thresholds')
+        plt.ylabel('Precision')
+        plt.title(plotTitle)
+        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+            recall_from_experimental_iterations = []
+            precision_from_experimental_iterations = []
+            thresholds_from_experimental_iterations = []
+            for cond_i, cond in enumerate(condition_from_experimental_iterations):
+                for index in range(0, len(self.classes)):
+                    class_result = cond[index]
+                    if class_result['classPositive'] == positive_class:
+                        precision_from_experimental_iterations.append(class_result['precision'])
+                        # recall_from_experimental_iterations.append(class_result["recall"])
+                        thresholds_from_experimental_iterations.append(
+                            str([round(float(v), 1) for k, v in cond["threshold"].items()]))
+
+            X_axis = np.arange(len(thresholds_from_experimental_iterations))
+            if positive_class == "0.0":
+                plt.bar(X_axis - 0.3, precision_from_experimental_iterations,
+                        label=positive_class, color=color, align='center', width=0.2)
+            elif positive_class == "0.5":
+                plt.bar(X_axis, precision_from_experimental_iterations,
+                        label=positive_class, color=color, align='center', width=0.2)
+            else:
+                plt.bar(X_axis + 0.3, precision_from_experimental_iterations,
+                        label=positive_class, color=color, align='center', width=0.2)
+            plt.xticks(X_axis, thresholds_from_experimental_iterations,
+                       size='small', rotation=90)
+
+            # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
+            #                    thresholds_from_experimental_iterations):
+            #     # print(z["0.0"])
+            #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+        # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+        # ax.set_xticks()
+        # plt.xticks(str(cond["threshold"]), rotation=45)
+        plt.yticks(np.arange(0, 1, step=0.02))
+        # plt.grid(True)
+        plt.legend()
+        # plt.show()
+        self.log("saving plot:" + plotTitle)
+        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        plt.close(fig)
+
+    # Plot precision
+    def plot_recall_plot(self, condition_from_experimental_iterations, plotTitle):
+        fig = plt.figure(figsize=(20, 10))
+        ax = fig.add_subplot(111)
+        plt.xlabel('Thresholds')
+        plt.ylabel('Precision')
+        plt.title(plotTitle)
+        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+            recall_from_experimental_iterations = []
+            precision_from_experimental_iterations = []
+            thresholds_from_experimental_iterations = []
+            for cond_i, cond in enumerate(condition_from_experimental_iterations):
+                for index in range(0, len(self.classes)):
+                    class_result = cond[index]
+                    if class_result['classPositive'] == positive_class:
+                        # precision_from_experimental_iterations.append(class_result['precision'])
+                        recall_from_experimental_iterations.append(class_result["recall"])
+                        thresholds_from_experimental_iterations.append(
+                            str([round(float(v), 1) for k, v in cond["threshold"].items()]))
+
+            X_axis = np.arange(len(thresholds_from_experimental_iterations))
+            if positive_class == "0.0":
+                plt.bar(X_axis - 0.2, recall_from_experimental_iterations,
+                        label=positive_class, color=color, align='center', width=0.2)
+            elif positive_class == "0.5":
+                plt.bar(X_axis, recall_from_experimental_iterations,
+                        label=positive_class, color=color, align='center', width=0.2)
+            else:
+                plt.bar(X_axis + 0.2, recall_from_experimental_iterations,
+                        label=positive_class, color=color, align='center', width=0.2)
+            plt.xticks(X_axis, thresholds_from_experimental_iterations,
+                       size='small', rotation=90)
+            # plt.plot(recall_from_experimental_iterations,
+            #          linestyle='dashed',
+            #          linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
+            # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
+            #                    thresholds_from_experimental_iterations):
+            #     # print(z["0.0"])
+            #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+        # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+        # plt.xticks(cond["threshold"], rotation=45)
+        plt.yticks(np.arange(0, 1, step=0.02))
+        # plt.grid(True)
+        plt.legend()
+        # plt.show()
+        self.log("saving plot:" + plotTitle)
+        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        plt.close(fig)
+
     # Plot precision vs recall
     def plot_pr(self, condition_from_experimental_iterations, plotTitle):
         fig = plt.figure(figsize=(20, 10))
@@ -764,7 +1039,8 @@ class AnnotatedDataHandler:
                         recall_from_experimental_iterations.append(class_result["recall"])
                         thresholds_from_experimental_iterations.append(cond["threshold"])
 
-            plt.plot(recall_from_experimental_iterations, precision_from_experimental_iterations, linestyle='dashed',
+            plt.plot(recall_from_experimental_iterations, precision_from_experimental_iterations,
+                     linestyle='dashed',
                      linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
             # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
             #                    thresholds_from_experimental_iterations):
@@ -825,3 +1101,4 @@ flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 
 for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
     annotatedDataHandler.evaluateMethod(flatAnnotatedData, method_index)
+    # annotatedDataHandler.evaluateDefaultMethod(flatAnnotatedData, method_index)
