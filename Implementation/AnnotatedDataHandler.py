@@ -1,7 +1,7 @@
 import csv
 from scipy.stats import pearsonr
 from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
-    confusion_matrix
+    confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve
 import numpy as np
 # import matplotlib.pyplot as plt
 import re
@@ -11,12 +11,8 @@ import math
 from matplotlib import pyplot as plt
 from decimal import Decimal
 from sklearn.datasets import make_classification
-from sklearn.linear_model import LogisticRegression
-from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_curve
-from sklearn.metrics import roc_auc_score
-from matplotlib import pyplot
+
 
 np.seterr('raise')
 
@@ -82,9 +78,11 @@ class AnnotatedDataHandler:
         self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
         self.bert_large_sts_mean_tokens_computed_data = []
         self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
-
+        self.class_equal = "1.0"
+        self.class_related = "0.5"
+        self.class_unrelated = "0.0"
         # Plot accessories
-        self.classes = ["0.0", "0.5", "1.0"]
+        self.classes = [self.class_unrelated, self.class_related, self.class_equal]
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
 
@@ -118,7 +116,8 @@ class AnnotatedDataHandler:
                     if not isComputed:
                         attr = self.convertAnnotatedAttrValue(attr)
                     else:
-                        attr = self.convertComputedAttrValue(attr, thresholds)
+                        # attr = self.convertComputedAttrValue(attr, thresholds)
+                        attr = attr.strip()
                     cellData.append(attr)
                 if len(cellData) > 0:
                     data.append(cellData)
@@ -144,7 +143,8 @@ class AnnotatedDataHandler:
                     if not isComputed:
                         attr = self.convertAnnotatedAttrValue(attr)
                     else:
-                        attr = self.convertComputedAttrValue(attr, thresholds)
+                        # attr = self.convertComputedAttrValue(attr, thresholds)
+                        attr = attr.strip()
 
                     if attr == '':
                         self.log(["rowIterator:", rowIterator, ",colIterator:", colIterator, ",attr:", attr], "DEBUG")
@@ -192,29 +192,33 @@ class AnnotatedDataHandler:
     def getDefaultThresholdValues(self, thresholdValues={}):
 
         # initializing default threshold values. Perhaps this should be in a separate function?
-        if "0.0" not in thresholdValues or thresholdValues["0.0"] == "undefined":
+        if self.class_unrelated not in thresholdValues or thresholdValues[self.class_unrelated] == "undefined":
             print("setting default value for 0.0", thresholdValues)
-            thresholdValues["0"] = 0.6
-        if "0.5" not in thresholdValues or thresholdValues["0.5"] == "undefined":
+            thresholdValues[self.class_unrelated] = 0.6
+        if self.class_related not in thresholdValues or thresholdValues[self.class_related] == "undefined":
             print("setting default value for 0.5", thresholdValues)
-            thresholdValues["0.5"] = 0.8
+            thresholdValues[self.class_related] = 0.8
         return thresholdValues
 
     def convertComputedAttrValue(self, attr, thresholdValues={}):
-        attr = attr.strip()
+        if not self.isFloat(attr):
+            attr = attr.strip()
+
         thresholds = self.getDefaultThresholdValues(thresholdValues)
 
         if attr == '-1' or attr == '-' or attr == '':
             return "-"
+        elif self.isFloat(attr) and float(attr) < 0.0:
+            return "-"
         # elif attr == '~' or attr == '':
         #     return "0.0"
         # elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
-        elif self.isFloat(attr) and float(attr) < thresholds["0.0"]:
-            return "0.0"
-        elif self.isFloat(attr) and thresholds["0.0"] <= float(attr) < thresholds["0.5"]:
-            return "0.5"
-        elif self.isFloat(attr) and thresholds["0.5"] <= float(attr):
-            return "1.0"
+        elif self.isFloat(attr) and float(attr) < thresholds[self.class_unrelated]:
+            return self.class_unrelated
+        elif self.isFloat(attr) and thresholds[self.class_unrelated] <= float(attr) < thresholds[self.class_related]:
+            return self.class_related
+        elif self.isFloat(attr) and thresholds[self.class_related] <= float(attr):
+            return self.class_equal
 
         # check if some float value was missed
         if self.isFloat(attr):
@@ -222,19 +226,18 @@ class AnnotatedDataHandler:
 
         return attr
 
-    @staticmethod
-    def convertAnnotatedAttrValue(attr):
+    def convertAnnotatedAttrValue(self, attr):
         attr = attr.strip()
         if attr == '-':
             attr = "-"
         elif attr == '~' or attr == '':
             attr = "-1.0"
         elif attr == '0':
-            attr = "0.0"
+            attr = self.class_unrelated
         elif attr == '<' or attr == '>':
-            attr = "0.5"
+            attr = self.class_related
         elif attr == '1':
-            attr = "1.0"
+            attr = self.class_equal
         # elif attr == '>':
         #     attr = "1.5"
 
@@ -252,7 +255,8 @@ class AnnotatedDataHandler:
     @staticmethod
     def get_valid_filename(s):
         s = str(s).strip().replace(' ', '_')
-        return re.sub(r'(?u)[^-\w.]', '_', s)
+        filename = re.sub(r'(?u)[^-\w.]', '_', s)
+        return filename + ".png"
 
     def readAllAnnotatorsData(self, readHeaders=False):
         # log("*****************************************Annotator 1*****************************************")
@@ -623,10 +627,9 @@ class AnnotatedDataHandler:
         self.log(["countProblematicRows:", countProblematicRows])
 
     def calculate_ovr_conditions(self, cm, thresholds):
-        classes = ["0.0", "0.5", "1.0"]
         performance_dict = {}
         performance_dict["threshold"] = thresholds
-        for pc_index, positiveClass in enumerate(classes):
+        for pc_index, positiveClass in enumerate(self.classes):
 
             performance_dict[pc_index] = {}
             performance_dict[pc_index]["classPositive"] = positiveClass
@@ -716,106 +719,13 @@ class AnnotatedDataHandler:
 
         return performance_dict
 
-    # def evaluateDefaultMethod(self, annotatedData, methodIndex=1):
-    #     self.log("Some default method Mode(Annotated Data) vs " + self.computed_method[methodIndex])
-    #     self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-    #         'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
-    #         False, {})
-    #
-    #     data_in_2d = self.bert_base_mean_tokens_computed_data
-    #     data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-    #     # print(data_in_1d)
-    #     # print(annotatedData)
-    #     trainX, testX, trainY, testY = train_test_split([float(d) for d in data_in_1d], annotatedData, test_size=0.5)
-    #     print("trainY:", len(trainY))
-    #     print('Train: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in trainY if t == "0.0"]),
-    #                                                       len([t for t in trainY if t == "0.5"]),
-    #                                                       len([t for t in trainY if t == "1.0"])))
-    #
-    #     print('Train: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in testY if t == "0.0"]),
-    #                                                       len([t for t in testY if t == "0.5"]),
-    #                                                       len([t for t in testY if t == "1.0"])))
-    #
-    #     model = LogisticRegression(solver='lbfgs')
-    #     # model.fit(trainX, trainY)
-    #     model.fit(np.reshape(trainX, (-1, 1)), trainY)
-    #     yhat = model.predict_proba(np.reshape(testX, (-1, 1)))
-    #     model_probs = yhat[:, 1]
-    #     print(model_probs)
-    #     # calculate roc auc
-    #     print("\nLogistic Regression")
-    #     # assuming your already have a list of actual_class and predicted_class from the logistic regression classifier
-    #     lr_roc_auc_multiclass = roc_auc_score_multiclass(actual_class, predicted_class)
-    #     print(lr_roc_auc_multiclass)
-        #
-        # roc_auc = roc_auc_score(testY, model_probs, multi_class="ovr", )
-        # print('Logistic ROC AUC %.3f' % roc_auc)
-        # # plot roc curves
-        # plot_roc_curve(testy, naive_probs, model_probs)
-
-        # 
-        # #minFive = float(0.0)
-        # # maxFive = 0.1
-        # #ovr_conditions = []
-        # ovo_conditions = []
-        # #while minFive < float(0.91):
-        #     #maxFive = minFive + float(0.1)
-        #     #while maxFive <= float(1.0):
-        #         thresholds = {"0.0": minFive, "0.5": maxFive}
-        #         conditions = {}
-        # 
-        #         # self.log("converted to 1 d")
-        #         # data = {'y_Actual': annotatedData,  # ["-1","0","0.5","1","1.5"],
-        #         #         'y_Predicted': data_in_1d  # [1,0.9,0.6,0.7,0.1]
-        #         #         }
-        #         target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
-        # 
-        #         cm = confusion_matrix(annotatedData, data_in_1d,
-        #                               labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
-        #         conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
-        #         # print(thresholds)
-        #         ovr_conditions.append(conditions["ovr"])
-        #         maxFive = float(Decimal(maxFive) + Decimal('.1'))
-        #     minFive = float(Decimal(minFive) + Decimal('.1'))
-        # 
-        # print("Method " + self.computed_method[methodIndex] + " finished processing.")
-        # 
-        # annotatedDataHandler.plot_roc(ovr_conditions,
-        #                               'ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-        # 
-        # annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
-        #                                                 'MCC vs F1 for Mode(Annotated Data) vs ' + self.computed_method[
-        #                                                     methodIndex])
-        # 
-        # annotatedDataHandler.plot_pr(ovr_conditions,
-        #                              'Precision vs Recall for Mode(Annotated Data) vs ' + self.computed_method[
-        #                                  methodIndex])
-        # 
-        # annotatedDataHandler.plot_precision_plot(ovr_conditions, 'Precision Plot for ' + self.computed_method[
-        #     methodIndex])
-        # annotatedDataHandler.plot_recall_plot(ovr_conditions, 'Recall Plot for ' + self.computed_method[
-        #     methodIndex])
-
-    # plot no skill and model roc curves
-    def plot_roc_curve(self, test_y, model_probs):
-        # plot model roc curve
-        fpr, tpr, _ = roc_curve(test_y, model_probs)
-        pyplot.plot(fpr, tpr, marker='.', label='BERRRRTT')
-        # axis labels
-        pyplot.xlabel('False Positive Rate')
-        pyplot.ylabel('True Positive Rate')
-        # show the legend
-        pyplot.legend()
-        # show the plot
-        pyplot.show()
-
+    # https://stackoverflow.com/questions/39685740/calculate-sklearn-roc-auc-score-for-multi-class/52750599#52750599
     def roc_auc_score_multiclass(self, actual_class, pred_class, average="macro"):
         # creating a set of all the unique classes using the actual class list
-        unique_class = set(actual_class)
         roc_auc_dict = {}
-        for per_class in unique_class:
+        for per_class in self.classes:
             # creating a list of all the classes except the current class
-            other_class = [x for x in unique_class if x != per_class]
+            other_class = [x for x in self.classes if x != per_class]
 
             # marking the current class as 1 and all other classes as 0
             new_actual_class = [0 if x in other_class else 1 for x in actual_class]
@@ -823,105 +733,165 @@ class AnnotatedDataHandler:
 
             # using the sklearn metrics method to calculate the roc_auc_score
             roc_auc = roc_auc_score(new_actual_class, new_pred_class, average=average)
-            # calculate roc curves
-            fpr, tpr, thresholds = roc_curve(new_actual_class, new_pred_class)
-            # get the best threshold
-            J = tpr - fpr
-            ix = np.argmax(J)
-            best_thresh = thresholds[ix]
-            print('Best Threshold for %s=%f at %i' % (per_class, best_thresh, ix))
             roc_auc_dict[per_class] = roc_auc
-            # self.plot_roc_curve(new_actual_class, new_pred_class)
-        return roc_auc_dict
 
+        return roc_auc_dict
 
     def evaluateMethod(self, annotatedData, methodIndex=1):
         self.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+        # read all data produced by the computed method in 1 go
+        data_in_2d = self.read_computed_data_from[methodIndex](True)
+        data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+
+        print(set(annotatedData))
+
+        # Split the data into development and test set
+        development_x, test_x, development_y, test_y = train_test_split(
+            [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
+        # Split the test set into threshold selection and final test sets
+        # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
+        #     [float(d) for d in test_x], test_y, test_size=0.5)
+        print('Development: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in development_y if t == self.class_unrelated]),
+                                                                len([t for t in development_y if t == self.class_related]),
+                                                                len([t for t in development_y if t == self.class_equal])))
+
+        # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
+        #       (len([t for t in threshold_selection_y if t == "0.0"]),
+        #        len([t for t in threshold_selection_y if t == "0.5"]),
+        #        len([t for t in threshold_selection_y if t == self.class_equal])))
+
+        print('Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
+            len([t for t in test_y if t == self.class_unrelated]),
+            len([t for t in test_y if t == self.class_related]),
+            len([t for t in test_y if t == self.class_equal])))
+
+        # convert similarity score to class labels
         minFive = float(0.0)
-        # maxFive = 0.1
         ovr_conditions = []
-        ovo_conditions = []
-        lr_roc_auc_multiclass = []
+        max_roc_dict = {}
+        max_roc_threshold = {}
         while minFive < float(0.91):
             maxFive = minFive + float(0.1)
             while maxFive <= float(1.0):
-                thresholds = {"0.0": minFive, "0.5": maxFive}
+                thresholds = {self.class_unrelated: minFive, self.class_related: maxFive}
                 conditions = {}
-                data_in_2d = self.read_computed_data_from[methodIndex](True, thresholds)
-                data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-                # self.log("converted to 1 d")
-                # data = {'y_Actual': annotatedData,  # ["-1","0","0.5","1","1.5"],
-                #         'y_Predicted': data_in_1d  # [1,0.9,0.6,0.7,0.1]
-                #         }
-                target_names = ['0.0', '0.5', "1.0"]  # , "1.5"]
 
-                print("\nLogistic Regression")
-                # assuming your already have a list of actual_class and predicted_class from the logistic regression classifier
-                lr_roc_auc_multiclass.append(self.roc_auc_score_multiclass(annotatedData, data_in_1d))
+                # convert the simialrity score into predicted class labels
+                predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for similarity_score in development_x]
+                roc_auc_dict = self.roc_auc_score_multiclass(development_y, predicted_development_x)
 
-                cm = confusion_matrix(annotatedData, data_in_1d,
-                                      labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
-                conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
+                # Find the max roc_auc score which maximizes class 1.0, then 0.5, and finally 0.0
+                if self.class_equal not in max_roc_dict:
+                    max_roc_dict = roc_auc_dict
+                    max_roc_threshold = thresholds
+                else:
+                    # print(roc_auc_dict)
+                    # print(max_roc_dict)
+                    if max_roc_dict[self.class_equal] < roc_auc_dict[self.class_equal]:
+                        max_roc_dict = roc_auc_dict
+                        max_roc_threshold = thresholds
+                    elif max_roc_dict[self.class_equal] == roc_auc_dict[self.class_equal]:
+                        if max_roc_dict[self.class_related] < roc_auc_dict[self.class_related]:
+                            max_roc_dict = roc_auc_dict
+                            max_roc_threshold = thresholds
+                        elif max_roc_dict[self.class_related] == roc_auc_dict[self.class_related]:
+                            if max_roc_dict[self.class_unrelated] < roc_auc_dict[self.class_unrelated]:
+                                max_roc_dict = roc_auc_dict
+                                max_roc_threshold = thresholds
+
+                # print(roc_auc_dict)
+                # calculating the confusion matrix for the current threshold.
+                # cm = confusion_matrix(annotatedData, data_in_1d,
+                #                       labels=target_names)  # , rownames=['Actual'], colnames=['Predicted'])
+                # conditions["ovr"] = annotatedDataHandler.calculate_ovr_conditions(cm, thresholds)
                 # print(thresholds)
-                ovr_conditions.append(conditions["ovr"])
+                # ovr_conditions.append(conditions["ovr"])
                 maxFive = float(Decimal(maxFive) + Decimal('.1'))
             minFive = float(Decimal(minFive) + Decimal('.1'))
 
         print("Method " + self.computed_method[methodIndex] + " finished processing.")
+        print("Max AUROC achieved:", max_roc_dict, " at threshold:",max_roc_threshold)
 
-        print("lr_roc_auc_multiclass:"+str(lr_roc_auc_multiclass))
-        self.plot_roc_curve()
-        annotatedDataHandler.plot_roc(ovr_conditions,
-                                      'ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+        predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_roc_threshold) for similarity_score in
+                                   test_x]
 
-        annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions,
-                                                        'MCC vs F1 for Mode(Annotated Data) vs ' + self.computed_method[
-                                                            methodIndex])
+        self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold) +
+                      ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
-        annotatedDataHandler.plot_pr(ovr_conditions,
-                                     'Precision vs Recall for Mode(Annotated Data) vs ' + self.computed_method[
-                                         methodIndex])
+        self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + str(max_roc_threshold) +
+                      ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
-        annotatedDataHandler.plot_precision_plot(ovr_conditions, 'Precision Plot for ' + self.computed_method[
-            methodIndex])
-        annotatedDataHandler.plot_recall_plot(ovr_conditions, 'Recall Plot for ' + self.computed_method[
-            methodIndex])
+        # annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions, 'MCC vs F1 for Mode(Annotated Data) vs ' +
+        #                                                 self.computed_method[methodIndex])
+        # annotatedDataHandler.plot_precision_plot(ovr_conditions, 'Precision Plot for ' +
+        #                                          self.computed_method[methodIndex])
+        # annotatedDataHandler.plot_recall_plot(ovr_conditions, 'Recall Plot for ' +
+        #                                       self.computed_method[methodIndex])
 
-    def plot_roc(self, condition_from_experimental_iterations, plotTitle):
+
+    def plot_roc(self, actual_class, pred_class, plotTitle):
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
-        plt.xlabel('False Positive Rate (FPR)')
-        # Labeling the Y-axis
-        plt.ylabel('sensitivity')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
         plt.title(plotTitle)
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            sensitivity_from_experimental_iterations = []
-            fpr_from_experimental_iterations = []
-            thresholds_from_experimental_iterations = []
-            for cond in condition_from_experimental_iterations:
-                for index in range(0, len(self.classes)):
-                    class_result = cond[index]
-                    if class_result['classPositive'] == positive_class:
-                        sensitivity_from_experimental_iterations.append(class_result['sensitivity'])
-                        fpr_from_experimental_iterations.append(1 - class_result["specificity"])
-                        thresholds_from_experimental_iterations.append(cond["threshold"])
 
-            # plt.plot(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations, linestyle='dashed', linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=4)
-            plt.scatter(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
-                        label=positive_class, marker=marker)
-            # for x, y, z in zip(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
-            #                    thresholds_from_experimental_iterations):
-            #     # print(z["0.0"])
-            #     ax.annotate('(T_0=%.2f,T_0.5=%.2f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+            # creating a list of all the classes except the current class
+            other_class = [x for x in self.classes if x != positive_class]
+
+            # marking the current class as 1 and all other classes as 0
+            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
+            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
+            # self.plot_roc_curve()
+            # plot model roc curve
+            fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_class)
+            plt.plot(fpr, tpr, marker=marker, label=positive_class, color=color)
+            # axis labels
         ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        plt.xticks(np.arange(0, 1, step=0.02), rotation=45)
-        plt.yticks(np.arange(0, 1, step=0.02))
-        # plt.grid(True)
+        # plt.yticks(np.arange(0, 1, step=0.02))
+        # # plt.grid(True)
         plt.legend()
-        # plt.show()
+        # # plt.show()
         self.log("saving plot:" + plotTitle)
         fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
+        # show the legend
+        # pyplot.legend()
+        # # show the plot
+        # pyplot.show()
+
+    def plot_prc(self, actual_class, pred_class, plotTitle):
+        fig = plt.figure(figsize=(20, 10))
+        ax = fig.add_subplot(111)
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title(plotTitle)
+
+        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+            # creating a list of all the classes except the current class
+            other_class = [x for x in self.classes if x != positive_class]
+
+            # marking the current class as 1 and all other classes as 0
+            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
+            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
+            # self.plot_roc_curve()
+            # plot model roc curve
+            precision, recall, _ = precision_recall_curve(new_actual_class, new_pred_class)
+            plt.plot(recall, precision, marker=marker, label=positive_class, color=color)
+            # axis labels
+        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+        # plt.yticks(np.arange(0, 1, step=0.02))
+        # # plt.grid(True)
+        plt.legend()
+        # # plt.show()
+        self.log("saving plot:" + plotTitle)
+        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        plt.close(fig)
+        # show the legend
+        # pyplot.legend()
+        # # show the plot
+        # pyplot.show()
 
     # Plot precision
     def plot_precision_plot(self, condition_from_experimental_iterations, plotTitle):
@@ -944,10 +914,10 @@ class AnnotatedDataHandler:
                             str([round(float(v), 1) for k, v in cond["threshold"].items()]))
 
             X_axis = np.arange(len(thresholds_from_experimental_iterations))
-            if positive_class == "0.0":
+            if positive_class == self.class_unrelated:
                 plt.bar(X_axis - 0.3, precision_from_experimental_iterations,
                         label=positive_class, color=color, align='center', width=0.2)
-            elif positive_class == "0.5":
+            elif positive_class == self.class_related:
                 plt.bar(X_axis, precision_from_experimental_iterations,
                         label=positive_class, color=color, align='center', width=0.2)
             else:
@@ -992,10 +962,10 @@ class AnnotatedDataHandler:
                             str([round(float(v), 1) for k, v in cond["threshold"].items()]))
 
             X_axis = np.arange(len(thresholds_from_experimental_iterations))
-            if positive_class == "0.0":
+            if positive_class == self.class_unrelated:
                 plt.bar(X_axis - 0.2, recall_from_experimental_iterations,
                         label=positive_class, color=color, align='center', width=0.2)
-            elif positive_class == "0.5":
+            elif positive_class == self.class_related:
                 plt.bar(X_axis, recall_from_experimental_iterations,
                         label=positive_class, color=color, align='center', width=0.2)
             else:
@@ -1098,6 +1068,11 @@ annotatedDataHandler.initDataStructures()
 annotatedDataHandler.readAllAnnotatorsData(True)
 modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
 flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
+
+annotatedDataHandler.readAllAnnotatorsData(True)
+
+development_x, test_x, development_y, test_y = train_test_split(
+            [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
 
 for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
     annotatedDataHandler.evaluateMethod(flatAnnotatedData, method_index)
