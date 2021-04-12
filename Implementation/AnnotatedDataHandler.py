@@ -297,100 +297,98 @@ class AnnotatedDataHandler:
 
         self.log(["*"] * 80)
 
-    def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False):
         if not readHeaders:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True,
-                thresholdValues)
+                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True)
         else:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True,
-                thresholdValues)
+                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True)
         return self.fuzzy_wuzzy_computed_data
         # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
 
-    def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
-                True, thresholdValues)
+                True)
         else:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
                 'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
-                True, thresholdValues)
+                True)
         return self.bert_base_mean_tokens_computed_data
 
-    def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         else:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
                 'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         return self.bert_base_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
                 'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_computed_data
 
-    def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
                 'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
 
-    def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
                 'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_computed_data
 
-    def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False, thresholdValues={}):
+    def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
                 'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
-                    self.result_file_index) + '.csv', True, thresholdValues)
+                    self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
 
-    def readAllComputedData(self, readHeaders=False, thresholdValues={}):
-        self.read_computed_data_from_fuzzy_wuzzy(readHeaders, thresholdValues)
+    def readAllComputedData(self, readHeaders=False):
+        self.read_computed_data_from_fuzzy_wuzzy(readHeaders)
         self.log(["*"] * 80)
-        self.read_computed_data_from_syn_and_sem(readHeaders, thresholdValues)
+        self.read_computed_data_from_syn_and_sem(readHeaders)
         self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_mean_tokens(readHeaders, thresholdValues)
+        self.read_computed_data_from_bert_base_mean_tokens(readHeaders)
         self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem(readHeaders, thresholdValues)
+        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem(readHeaders)
         self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_sts_mean_tokens(readHeaders, thresholdValues)
+        self.read_computed_data_from_bert_base_sts_mean_tokens(readHeaders)
         self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(readHeaders, thresholdValues)
+        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(readHeaders)
         self.log(["*"] * 80)
-        self.read_computed_data_from_bert_large_sts_mean_tokens(readHeaders, thresholdValues)
+        self.read_computed_data_from_bert_large_sts_mean_tokens(readHeaders)
         self.log(["*"] * 80)
-        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(readHeaders, thresholdValues)
+        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(readHeaders)
         self.log(["*"] * 80)
 
     def calculatePearsonScoreBetweenAnnotators(self):
@@ -737,17 +735,20 @@ class AnnotatedDataHandler:
 
         return roc_auc_dict
 
-    def evaluateMethod(self, annotatedData, methodIndex=1):
+    def evaluateMethod(self, dataset, methodIndex=1):
         self.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
-        # read all data produced by the computed method in 1 go
+        # # read all data produced by the computed method in 1 go
         data_in_2d = self.read_computed_data_from[methodIndex](True)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
-        print(set(annotatedData))
+        development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
+        test_x = [float(data_in_1d[i]) for i in dataset['test_x_index']]
+        development_y = dataset['dev_y']
+        test_y = dataset['test_y']
 
         # Split the data into development and test set
-        development_x, test_x, development_y, test_y = train_test_split(
-            [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
+        # development_x, test_x, development_y, test_y = train_test_split(
+        #     [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
         # Split the test set into threshold selection and final test sets
         # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
         #     [float(d) for d in test_x], test_y, test_size=0.5)
@@ -1069,11 +1070,13 @@ annotatedDataHandler.readAllAnnotatorsData(True)
 modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
 flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 
-annotatedDataHandler.readAllAnnotatorsData(True)
-
-development_x, test_x, development_y, test_y = train_test_split(
-            [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
+dataset = {}
+dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
+            range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
 for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
-    annotatedDataHandler.evaluateMethod(flatAnnotatedData, method_index)
+    # data_in_2d = self.read_computed_data_from[methodIndex](True)
+    # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+
+    annotatedDataHandler.evaluateMethod(dataset, method_index)
     # annotatedDataHandler.evaluateDefaultMethod(flatAnnotatedData, method_index)
