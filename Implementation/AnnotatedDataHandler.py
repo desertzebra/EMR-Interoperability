@@ -40,13 +40,13 @@ class AnnotatedDataHandler:
 
         self.logLevel = ["DEBUG",
                          "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
-        self.FUZZY_WUZZY_INDEX = 1
-        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = 2
-        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = 3
-        self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = 4
-        self.BERT_BASE_NLI_MEAN_TOKENS_INDEX = 5
-        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = 6
-        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = 7
+        self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
+        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-large-nli-stsb-mean-tokens-Syn-SEM"
+        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-large-nli-stsb-mean-tokens"
+        self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-mean-tokens-Syn-SEM"
+        self.BERT_BASE_NLI_MEAN_TOKENS_INDEX = "bert-base-nli-mean-tokens"
+        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
+        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
         # Annotations
         self.annotator1Data = []
         self.annotator2Data = []
@@ -54,8 +54,8 @@ class AnnotatedDataHandler:
         self.annotator4Data = []
 
         # Computational accessories
-        self.result_file_index = 1.3
-        1
+        self.result_file_index = "0.0-1.0"
+        self.computational_iteration = "1.4"
         self.computed_method = ["fuzzy_wuzzy", "bert_large_nli_sts_mean_tokens_syn_and_sem",
                                 "bert_large_nli_sts_mean_tokens",
                                 "bert_base_nli_mean_tokens_syn_and_sem", "bert_base_nli_mean_tokens",
@@ -111,6 +111,8 @@ class AnnotatedDataHandler:
         with open(url) as csvFile:
             csvReader = csv.reader(csvFile, delimiter=',')
             for row in csvReader:
+                if len(row) == 0:
+                    continue
                 cellData = []
                 for attr in row:
                     if not isComputed:
@@ -129,6 +131,8 @@ class AnnotatedDataHandler:
             csvReader = csv.reader(csvFile, delimiter=',')
             rowIterator = 0
             for row in csvReader:
+                if len(row) == 0:
+                    continue
                 rowIterator += 1
                 if rowIterator == 1:
                     continue
@@ -300,10 +304,10 @@ class AnnotatedDataHandler:
     def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False):
         if not readHeaders:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True)
+                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
         else:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V' + str(self.result_file_index) + '.csv', True)
+                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
         return self.fuzzy_wuzzy_computed_data
         # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
 
@@ -855,7 +859,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig("Results/charts/"+ str(self.result_file_index) +"/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
         # show the legend
         # pyplot.legend()
