@@ -164,7 +164,7 @@ class Results:
         if isourMethod:
             fileName += '-Syn-SEM'
 
-        with open("Data/" + str(
+        with open("Data/1.4/" + str(
                 fileName) + "-table-V" + "-" + str(syn)+"-"+str(sem)+".csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         # print(table)
@@ -190,7 +190,7 @@ for syn in numpy.arange(0, 1, 0.1):
 
     sem = 1 - syn
 
-    #resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
+    resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
     resultObj.printBaseHeatMap(data, 'bert-large-nli-stsb-mean-tokens', True, syn, sem)
     resultObj.printBaseHeatMap(data,'bert-large-nli-stsb-mean-tokens', False,  syn, sem)
     resultObj.printBaseHeatMap(data, 'bert-base-nli-mean-tokens', True, syn, sem)
