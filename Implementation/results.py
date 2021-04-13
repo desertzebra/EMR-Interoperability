@@ -1,5 +1,6 @@
 import pickle
 import csv
+import numpy
 
 
 class Results:
@@ -44,12 +45,16 @@ class Results:
             writer = csv.writer(file, delimiter=',')
             writer.writerows(data)
 
-    def printBaseHeatMap(self, attributes, confidenceIndex):
+    def printBaseHeatMap(self, attributes, modelName, isourMethod= False, syn =0, sem = 0):
         rowHeaderNodes = []
         columnHeaderNodes = []
         matrix = {}
 
         for attrIndex, attr in enumerate(attributes):
+
+            #print('attr')
+            #print(attr)
+
 
             leftKey = attr['nodeLeft']['schemaName'] + "_" + attr['nodeLeft']['tableName'] + "_" + attr['nodeLeft'][
                 'name']
@@ -82,14 +87,43 @@ class Results:
                 matrix[rightKey] = {}
                 rowHeaderNodes.append(rightKey)
 
-            if (confidenceIndex == 1):
-                matrix[leftKey][rightKey] = str(float(attr['relationshipList'][confidenceIndex]['confidence']) / 100)
-                matrix[rightKey][leftKey] = str(float(attr['relationshipList'][confidenceIndex]['confidence']) / 100)
-            else:
-                matrix[leftKey][rightKey] = attr['relationshipList'][confidenceIndex]['confidence']
-                matrix[rightKey][leftKey] = attr['relationshipList'][confidenceIndex]['confidence']
+            synConfidence = 0
+            semConfidence = 0
+            confidence = 0
 
-        print("Building the " + str(confidenceIndex) + " table")
+            for relation in attr['relationshipList']:
+                if isourMethod:
+                    if relation['method'] == modelName+'_SYN_MATCH':
+                        synConfidence = relation['confidence']
+                    elif relation['method'] == modelName + '_SEM_MATCH':
+                        semConfidence = relation['confidence']
+                else:
+                    if relation['method'] == modelName and modelName == 'FUZZY_MATCH':
+                        confidence = float(relation['confidence']/100)
+                    elif(relation['method'] == modelName):
+                        confidence = relation['confidence']
+
+
+
+            if(isourMethod):
+                similarity = (syn * synConfidence) + (sem * semConfidence)
+            else:
+                similarity = confidence
+
+            matrix[leftKey][rightKey] = str(similarity)
+            matrix[rightKey][leftKey] = str(similarity)
+
+
+
+
+            # if (confidenceIndex == 1):
+            #     matrix[leftKey][rightKey] = str(float(attr['relationshipList'][confidenceIndex]['confidence']) / 100)
+            #     matrix[rightKey][leftKey] = str(float(attr['relationshipList'][confidenceIndex]['confidence']) / 100)
+            # else:
+            #     matrix[leftKey][rightKey] = attr['relationshipList'][confidenceIndex]['confidence']
+            #     matrix[rightKey][leftKey] = attr['relationshipList'][confidenceIndex]['confidence']
+
+        #print("Building the " + str(confidenceIndex) + " table")
 
         rowHeaderNodes.sort()
         columnHeaderNodes.sort()
@@ -124,8 +158,14 @@ class Results:
             i += 1
         print()
         print("Done. Now saving it:")
+
+        fileName = modelName
+
+        if isourMethod:
+            fileName += '-Syn-SEM'
+
         with open("Data/" + str(
-                confidenceIndex) + "-table-V1.3.csv", "wb") as fp:  # Pickling
+                fileName) + "-table-V" + "-" + str(syn)+"-"+str(sem)+".csv", "wb") as fp:  # Pickling
             pickle.dump(table, fp)
         # print(table)
 
@@ -135,7 +175,7 @@ class Results:
 
 resultObj = Results()
 # data = simObj.readData('Data/dataV03.json')
-data = resultObj.readData('Data/AmplifiedSimilarity-V0.2.txt')
+data = resultObj.readData('Data/AmplifiedSimilarity-V0.3.txt')
 
 print('data')
 print(len(data))
@@ -144,11 +184,18 @@ print(len(data))
 
 
 #resultObj.printBaseHeatMap(data,resultObj.SYN_AND_SEM_SIM_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.FUZZY_WUZZY_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_MEAN_TOKENS_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX)
-resultObj.printBaseHeatMap(data,resultObj.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX)
+
+#for syn in frange(0.1, 0.9, 0.1):
+for syn in numpy.arange(0, 1, 0.1):
+
+    sem = 1 - syn
+
+    #resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
+    resultObj.printBaseHeatMap(data, 'bert-large-nli-stsb-mean-tokens', True, syn, sem)
+    resultObj.printBaseHeatMap(data,'bert-large-nli-stsb-mean-tokens', False,  syn, sem)
+    resultObj.printBaseHeatMap(data, 'bert-base-nli-mean-tokens', True, syn, sem)
+    resultObj.printBaseHeatMap(data, 'bert-base-nli-mean-tokens', False, syn, sem)
+    resultObj.printBaseHeatMap(data, 'bert-base-nli-stsb-mean-tokens', True, syn, sem)
+    resultObj.printBaseHeatMap(data, 'bert-base-nli-stsb-mean-tokens', False, syn, sem)
+
 

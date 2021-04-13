@@ -132,6 +132,7 @@ class Similarity:
         # memoization to save time on calculating the embedding vector
         sentence_encoding_map = {}
         max_left_term_similarity = 0.0
+
         for term_left in self.embeddingVectors[nodeLeftIdentifier]:
             if term_left not in sentence_encoding_map:
                 embedding1 = model.encode(term_left, convert_to_tensor=True)
@@ -141,16 +142,22 @@ class Similarity:
             max_right_term_similarity = 0.0
             # this similarity is between 0 and 1
             for term_right in self.embeddingVectors[nodeRightIdentifier]:
+                if term_left == term_right:
+                    max_right_term_similarity == float(1.0)
+                    break
                 if term_right not in sentence_encoding_map:
                     embedding2 = model.encode(term_right, convert_to_tensor=True)
                     sentence_encoding_map[term_right] = embedding2
                 else:
+
                     embedding2 = sentence_encoding_map[term_right]
 
                 term_similarity = util.pytorch_cos_sim(embedding1, embedding2)
-
+                if float(term_similarity[0][0]) == float(1.0):
+                    max_right_term_similarity == float(1.0)
+                    break
                 if float(term_similarity[0][0]) > max_right_term_similarity:
-                    max_right_term_similarity = float("{:.4f}".format(term_similarity[0][0]))
+                    max_right_term_similarity = round(float(term_similarity[0][0]), 4)
             max_left_term_similarity += max_right_term_similarity
 
         # calculate the average similarity of the disjoint union of two sets
@@ -190,7 +197,9 @@ class Similarity:
             similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
 
             formatedAttr['relationshipList'].append(
-                {'type': '', 'method': modelName + '_SYN_AND_SEM_MATCH', 'comments': None, 'confidence': similarity})
+                {'type': '', 'method': modelName + '_SYN_MATCH', 'comments': None, 'confidence': syntacticSimilarity})
+            formatedAttr['relationshipList'].append(
+                {'type': '', 'method': modelName + '_SEM_MATCH', 'comments': None, 'confidence': semanticSimilarity})
             attributeSimilarities.append(formatedAttr)
 
         return attributeSimilarities
@@ -269,5 +278,5 @@ similarity = simObj.calculateSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-V0.2.txt", "wb") as fp:  # Pickling
+with open("Data/AmplifiedSimilarity-V0.3.txt", "wb") as fp:  # Pickling
     pickle.dump(similarity, fp)
