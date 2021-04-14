@@ -304,76 +304,76 @@ class AnnotatedDataHandler:
     def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False):
         if not readHeaders:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
+                'Data/' + self.computational_iteration + "/" + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
         else:
             self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
+                'Data/' + self.computational_iteration + "/" + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
         return self.fuzzy_wuzzy_computed_data
         # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
 
     def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
                 True)
         else:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
                 True)
         return self.bert_base_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
 
