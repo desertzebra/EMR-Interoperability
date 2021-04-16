@@ -1,4 +1,5 @@
 import csv
+import os
 from scipy.stats import pearsonr
 from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
     confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve
@@ -54,6 +55,7 @@ class AnnotatedDataHandler:
         self.annotator4Data = []
 
         # Computational accessories
+        self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3", "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
         self.computational_iteration = "1.4"
         self.computed_method = ["fuzzy_wuzzy", "bert_large_nli_sts_mean_tokens_syn_and_sem",
@@ -85,6 +87,8 @@ class AnnotatedDataHandler:
         self.classes = [self.class_unrelated, self.class_related, self.class_equal]
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
+        # Directories
+        self.resultDir = "Results/charts/" + str(self.computational_iteration) +"/"
 
     def initDataStructures(self):
         self.annotator1Data = []
@@ -314,66 +318,66 @@ class AnnotatedDataHandler:
     def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
                 True)
         else:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V' + str(self.result_file_index) + '.csv',
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
                 True)
         return self.bert_base_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V' + str(
+                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
 
@@ -745,8 +749,9 @@ class AnnotatedDataHandler:
         data_in_2d = self.read_computed_data_from[methodIndex](True)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
-        development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
-        test_x = [float(data_in_1d[i]) for i in dataset['test_x_index']]
+        # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
+        development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+        test_x = [data_in_1d[i] for i in dataset['test_x_index']]
         development_y = dataset['dev_y']
         test_y = dataset['test_y']
 
@@ -820,10 +825,12 @@ class AnnotatedDataHandler:
         predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_roc_threshold) for similarity_score in
                                    test_x]
 
-        self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold) +
+        self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) +
+                        + "_" + str(max_roc_threshold[self.class_related]) +
                       ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
-        self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + str(max_roc_threshold) +
+        self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + str(max_roc_threshold['0.1']) +
+                        + "_" + str(max_roc_threshold['0.5']) +
                       ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
         # annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions, 'MCC vs F1 for Mode(Annotated Data) vs ' +
@@ -859,7 +866,8 @@ class AnnotatedDataHandler:
         plt.legend()
         # # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/"+ str(self.result_file_index) +"/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+
+        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
         # show the legend
         # pyplot.legend()
@@ -891,7 +899,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
         # show the legend
         # pyplot.legend()
@@ -943,7 +951,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
 
     # Plot precision
@@ -992,7 +1000,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
 
     # Plot precision vs recall
@@ -1028,7 +1036,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
 
     def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
@@ -1058,7 +1066,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig("Results/charts/" + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
 
 
@@ -1078,9 +1086,18 @@ dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
             range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
-for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
-    # data_in_2d = self.read_computed_data_from[methodIndex](True)
-    # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+resultParentDir = annotatedDataHandler.resultDir
 
-    annotatedDataHandler.evaluateMethod(dataset, method_index)
-    # annotatedDataHandler.evaluateDefaultMethod(flatAnnotatedData, method_index)
+for syn_sem_threshold in annotatedDataHandler.result_indexes:
+    annotatedDataHandler.log(["Now processing:", syn_sem_threshold])
+    annotatedDataHandler.result_file_index = syn_sem_threshold
+    annotatedDataHandler.resultDir = resultParentDir + str(syn_sem_threshold) + "/"
+    # Make sure the folder for results exists
+    if not os.path.exists(annotatedDataHandler.resultDir):
+        os.makedirs(annotatedDataHandler.resultDir)
+
+    for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
+        # data_in_2d = self.read_computed_data_from[methodIndex](True)
+        # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+        annotatedDataHandler.evaluateMethod(dataset, method_index)
+        # annotatedDataHandler.evaluateDefaultMethod(flatAnnotatedData, method_index)
