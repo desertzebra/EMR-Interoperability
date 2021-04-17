@@ -2,7 +2,7 @@ import csv
 import os
 from scipy.stats import pearsonr
 from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
-    confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve
+    confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, auc
 import numpy as np
 # import matplotlib.pyplot as plt
 import re
@@ -38,7 +38,9 @@ def plot_roc_curve(test_y, naive_probs, model_probs):
 class AnnotatedDataHandler:
 
     def __init__(self):
-
+        self.logDEBUG = "DEBUG"
+        self.logINFO = "INFO"
+        self.logTRACE = "TRACE"
         self.logLevel = ["DEBUG",
                          "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
         self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
@@ -83,12 +85,18 @@ class AnnotatedDataHandler:
         self.class_equal = "1.0"
         self.class_related = "0.5"
         self.class_unrelated = "0.0"
+        self.roc_dict = {}
+        self.max_roc_dict = {}
+        self.prc_dict = {}
+        self.max_prc_dict = {}
         # Plot accessories
         self.classes = [self.class_unrelated, self.class_related, self.class_equal]
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
         # Directories
         self.resultDir = "Results/charts/" + str(self.computational_iteration) +"/"
+        self.roc_result_dir = self.resultDir + "/roc/"
+        self.prc_result_dir = self.resultDir + "/prc/"
 
     def initDataStructures(self):
         self.annotator1Data = []
@@ -743,8 +751,30 @@ class AnnotatedDataHandler:
 
         return roc_auc_dict
 
-    def evaluateMethod(self, dataset, methodIndex=1):
-        self.log("Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+    def prc_auc_score_multiclass(self, actual_class, pred_class, average="macro"):
+        # creating a set of all the unique classes using the actual class list
+        prc_auc_dict = {}
+        for per_class in self.classes:
+            # creating a list of all the classes except the current class
+            other_class = [x for x in self.classes if x != per_class]
+
+            # marking the current class as 1 and all other classes as 0
+            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
+            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
+
+            # using the sklearn metrics method to calculate the roc_auc_score
+            precision, recall, thresholds = precision_recall_curve(new_actual_class, new_pred_class)
+            # print("precision:", precision, "| recall:", recall)
+            precision, recall = zip(*sorted(zip(precision, recall)))
+            # print("precision:",precision, "| recall:",recall)
+            prc_auc = auc(precision, recall)
+            # print('computed AUC using sklearn.metrics.auc: {}'.format(prc_auc))
+            prc_auc_dict[per_class] = prc_auc
+        return prc_auc_dict
+
+    # Calculate the max value for Area under the Precision Recall Curve to identify the class thresholds
+    def calculate_threshold_using_auprc(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
+        self.log("AUPRC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
         # # read all data produced by the computed method in 1 go
         data_in_2d = self.read_computed_data_from[methodIndex](True)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
@@ -778,8 +808,94 @@ class AnnotatedDataHandler:
         # convert similarity score to class labels
         minFive = float(0.0)
         ovr_conditions = []
-        max_roc_dict = {}
+        _max_prc_dict = {}
+        max_prc_threshold = {}
+        self.prc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]:[]}
+        self.max_prc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]: None}
+        while minFive < float(0.91):
+            maxFive = minFive + float(0.1)
+            while maxFive <= float(1.0):
+                thresholds = {self.class_unrelated: minFive, self.class_related: maxFive}
+                conditions = {}
+
+                # convert the simialrity score into predicted class labels
+                predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for similarity_score in development_x]
+                prc_auc_dict = self.prc_auc_score_multiclass(development_y, predicted_development_x)
+                self.prc_dict[syn_sem_threshold][self.computed_method[methodIndex]].append(prc_auc_dict)
+                # Find the max roc_auc score which maximizes class 1.0, then 0.5, and finally 0.0
+                if self.class_equal not in _max_prc_dict:
+                    _max_prc_dict = prc_auc_dict
+                    max_prc_threshold = thresholds
+                else:
+                    # print(prc_auc_dict)
+                    # print(_max_prc_dict)
+                    if _max_prc_dict[self.class_equal] < prc_auc_dict[self.class_equal]:
+                        _max_prc_dict = prc_auc_dict
+                        max_prc_threshold = thresholds
+                    elif _max_prc_dict[self.class_equal] == prc_auc_dict[self.class_equal]:
+                        if _max_prc_dict[self.class_related] < prc_auc_dict[self.class_related]:
+                            _max_prc_dict = prc_auc_dict
+                            max_prc_threshold = thresholds
+                        elif _max_prc_dict[self.class_related] == prc_auc_dict[self.class_related]:
+                            if _max_prc_dict[self.class_unrelated] < prc_auc_dict[self.class_unrelated]:
+                                _max_prc_dict = prc_auc_dict
+                                max_prc_threshold = thresholds
+
+                maxFive = float(Decimal(maxFive) + Decimal('.1'))
+            minFive = float(Decimal(minFive) + Decimal('.1'))
+
+        self.log(["Method ", self.computed_method[methodIndex], " finished processing."], self.logDEBUG)
+        self.log(["Max AUPRC achieved:", _max_prc_dict, " at threshold:", max_prc_threshold], self.logDEBUG)
+        self.max_prc_dict[syn_sem_threshold][ self.computed_method[methodIndex] ]= max_prc_threshold
+
+        predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_prc_threshold) for similarity_score in
+                                   test_x]
+
+        self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + \
+                      str(max_prc_threshold[self.class_unrelated]) + "_" + str(max_prc_threshold[self.class_related]) +
+                      ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+
+
+    # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
+    def calculate_threshold_using_auroc(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
+        self.log("AUROC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+        # # read all data produced by the computed method in 1 go
+        data_in_2d = self.read_computed_data_from[methodIndex](True)
+        data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+
+        # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
+        development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+        test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+        development_y = dataset['dev_y']
+        test_y = dataset['test_y']
+
+        # Split the data into development and test set
+        # development_x, test_x, development_y, test_y = train_test_split(
+        #     [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
+        # Split the test set into threshold selection and final test sets
+        # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
+        #     [float(d) for d in test_x], test_y, test_size=0.5)
+        self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in development_y if t == self.class_unrelated]),
+                                                                len([t for t in development_y if t == self.class_related]),
+                                                                len([t for t in development_y if t == self.class_equal]))], self.logTRACE)
+
+        # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
+        #       (len([t for t in threshold_selection_y if t == "0.0"]),
+        #        len([t for t in threshold_selection_y if t == "0.5"]),
+        #        len([t for t in threshold_selection_y if t == self.class_equal])))
+
+        self.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
+            len([t for t in test_y if t == self.class_unrelated]),
+            len([t for t in test_y if t == self.class_related]),
+            len([t for t in test_y if t == self.class_equal]))], self.logTRACE)
+
+        # convert similarity score to class labels
+        minFive = float(0.0)
+        ovr_conditions = []
+        _max_roc_dict = {}
         max_roc_threshold = {}
+        self.roc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]:[]}
+        self.max_roc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]:None}
         while minFive < float(0.91):
             maxFive = minFive + float(0.1)
             while maxFive <= float(1.0):
@@ -789,24 +905,24 @@ class AnnotatedDataHandler:
                 # convert the simialrity score into predicted class labels
                 predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for similarity_score in development_x]
                 roc_auc_dict = self.roc_auc_score_multiclass(development_y, predicted_development_x)
-
+                self.roc_dict[syn_sem_threshold][self.computed_method[methodIndex]].append(roc_auc_dict)
                 # Find the max roc_auc score which maximizes class 1.0, then 0.5, and finally 0.0
-                if self.class_equal not in max_roc_dict:
-                    max_roc_dict = roc_auc_dict
+                if self.class_equal not in _max_roc_dict:
+                    _max_roc_dict = roc_auc_dict
                     max_roc_threshold = thresholds
                 else:
                     # print(roc_auc_dict)
-                    # print(max_roc_dict)
-                    if max_roc_dict[self.class_equal] < roc_auc_dict[self.class_equal]:
-                        max_roc_dict = roc_auc_dict
+                    # print(_max_roc_dict)
+                    if _max_roc_dict[self.class_equal] < roc_auc_dict[self.class_equal]:
+                        _max_roc_dict = roc_auc_dict
                         max_roc_threshold = thresholds
-                    elif max_roc_dict[self.class_equal] == roc_auc_dict[self.class_equal]:
-                        if max_roc_dict[self.class_related] < roc_auc_dict[self.class_related]:
-                            max_roc_dict = roc_auc_dict
+                    elif _max_roc_dict[self.class_equal] == roc_auc_dict[self.class_equal]:
+                        if _max_roc_dict[self.class_related] < roc_auc_dict[self.class_related]:
+                            _max_roc_dict = roc_auc_dict
                             max_roc_threshold = thresholds
-                        elif max_roc_dict[self.class_related] == roc_auc_dict[self.class_related]:
-                            if max_roc_dict[self.class_unrelated] < roc_auc_dict[self.class_unrelated]:
-                                max_roc_dict = roc_auc_dict
+                        elif _max_roc_dict[self.class_related] == roc_auc_dict[self.class_related]:
+                            if _max_roc_dict[self.class_unrelated] < roc_auc_dict[self.class_unrelated]:
+                                _max_roc_dict = roc_auc_dict
                                 max_roc_threshold = thresholds
 
                 # print(roc_auc_dict)
@@ -819,26 +935,16 @@ class AnnotatedDataHandler:
                 maxFive = float(Decimal(maxFive) + Decimal('.1'))
             minFive = float(Decimal(minFive) + Decimal('.1'))
 
-        print("Method " + self.computed_method[methodIndex] + " finished processing.")
-        print("Max AUROC achieved:", max_roc_dict, " at threshold:",max_roc_threshold)
+        self.log(["Method ", self.computed_method[methodIndex] , " finished processing."], self.logDEBUG)
+        self.log(["Max AUROC achieved:", _max_roc_dict, " at threshold:",max_roc_threshold], self.logDEBUG)
+        self.max_roc_dict[syn_sem_threshold][ self.computed_method[methodIndex] ]= max_roc_threshold
 
         predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_roc_threshold) for similarity_score in
                                    test_x]
 
-        self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) +
-                        + "_" + str(max_roc_threshold[self.class_related]) +
+        self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
+                      + "_" + str(max_roc_threshold[self.class_related]) + \
                       ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-
-        self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + str(max_roc_threshold['0.1']) +
-                        + "_" + str(max_roc_threshold['0.5']) +
-                      ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-
-        # annotatedDataHandler.plot_scatter_for_mcc_vs_f1(ovr_conditions, 'MCC vs F1 for Mode(Annotated Data) vs ' +
-        #                                                 self.computed_method[methodIndex])
-        # annotatedDataHandler.plot_precision_plot(ovr_conditions, 'Precision Plot for ' +
-        #                                          self.computed_method[methodIndex])
-        # annotatedDataHandler.plot_recall_plot(ovr_conditions, 'Recall Plot for ' +
-        #                                       self.computed_method[methodIndex])
 
 
     def plot_roc(self, actual_class, pred_class, plotTitle):
@@ -867,7 +973,7 @@ class AnnotatedDataHandler:
         # # plt.show()
         self.log("saving plot:" + plotTitle)
 
-        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
         # show the legend
         # pyplot.legend()
@@ -899,7 +1005,7 @@ class AnnotatedDataHandler:
         plt.legend()
         # # plt.show()
         self.log("saving plot:" + plotTitle)
-        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+        fig.savefig(self.prc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
         # show the legend
         # pyplot.legend()
@@ -1087,17 +1193,33 @@ dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test
             range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
 resultParentDir = annotatedDataHandler.resultDir
+_result_roc_parentdir = annotatedDataHandler.roc_result_dir
+_result_prc_parentdir = annotatedDataHandler.prc_result_dir
+
 
 for syn_sem_threshold in annotatedDataHandler.result_indexes:
     annotatedDataHandler.log(["Now processing:", syn_sem_threshold])
     annotatedDataHandler.result_file_index = syn_sem_threshold
+
+    annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
+    annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
     annotatedDataHandler.resultDir = resultParentDir + str(syn_sem_threshold) + "/"
     # Make sure the folder for results exists
     if not os.path.exists(annotatedDataHandler.resultDir):
         os.makedirs(annotatedDataHandler.resultDir)
+    if not os.path.exists(annotatedDataHandler.roc_result_dir):
+        os.makedirs(annotatedDataHandler.roc_result_dir)
+    if not os.path.exists(annotatedDataHandler.prc_result_dir):
+        os.makedirs(annotatedDataHandler.prc_result_dir)
 
     for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
         # data_in_2d = self.read_computed_data_from[methodIndex](True)
         # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-        annotatedDataHandler.evaluateMethod(dataset, method_index)
+        annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_index, syn_sem_threshold)
+        annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_index, syn_sem_threshold)
         # annotatedDataHandler.evaluateDefaultMethod(flatAnnotatedData, method_index)
+
+annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
+annotatedDataHandler.log(["roc_dict",annotatedDataHandler.roc_dict])
+annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
+annotatedDataHandler.log(["max_roc_dict",annotatedDataHandler.max_roc_dict])
