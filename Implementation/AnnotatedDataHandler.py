@@ -1216,10 +1216,12 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
         # data_in_2d = self.read_computed_data_from[methodIndex](True)
         # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
         annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_index, syn_sem_threshold)
+        annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
+        annotatedDataHandler.log(["max_roc_dict", annotatedDataHandler.max_roc_dict])
+
         annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_index, syn_sem_threshold)
         # annotatedDataHandler.evaluateDefaultMethod(flatAnnotatedData, method_index)
 
 annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
-annotatedDataHandler.log(["roc_dict",annotatedDataHandler.roc_dict])
+
 annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
-annotatedDataHandler.log(["max_roc_dict",annotatedDataHandler.max_roc_dict])
