@@ -94,6 +94,7 @@ class AnnotatedDataHandler:
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
         # Directories
+        self.raw_dict_result_dir = "Results/raw_dicts/" + str(self.computational_iteration) + "/"
         self.resultDir = "Results/charts/" + str(self.computational_iteration) +"/"
         self.roc_result_dir = self.resultDir + "/roc/"
         self.prc_result_dir = self.resultDir + "/prc/"
@@ -935,8 +936,8 @@ class AnnotatedDataHandler:
                 maxFive = float(Decimal(maxFive) + Decimal('.1'))
             minFive = float(Decimal(minFive) + Decimal('.1'))
 
-        self.log(["Method ", self.computed_method[methodIndex] , " finished processing."], self.logDEBUG)
-        self.log(["Max AUROC achieved:", _max_roc_dict, " at threshold:",max_roc_threshold], self.logDEBUG)
+        self.log(["Method ", self.computed_method[methodIndex] , " finished processing."], self.logTRACE)
+        self.log(["Max AUROC achieved:", _max_roc_dict, " at threshold:",max_roc_threshold], self.logTRACE)
         self.max_roc_dict[syn_sem_threshold][ self.computed_method[methodIndex] ]= max_roc_threshold
 
         predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_roc_threshold) for similarity_score in
@@ -946,6 +947,30 @@ class AnnotatedDataHandler:
                       + "_" + str(max_roc_threshold[self.class_related]) + \
                       ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
+    def writeDetailedDictToCsv(self, dict={}, dict_name="result", is_max_score=False):
+        file_name = self.raw_dict_result_dir + "" + dict_name
+        dict_table = []
+        with open(file_name, 'w') as csv_file:
+            self.log("Saving CSV data file for: " + method_name)
+            csv_writer = csv.writer(csv_file, delimiter=',')
+            #pd.DataFrame(annotatedDataHandler.roc_dict).to_csv('roc_dict')
+            if not is_max_score:
+                csv_writer.writerow(["Outer Threshold", "Method name", "0.0", "0.5", "1.0"])
+            else:
+                csv_writer.writerow(["Outer Threshold", "Method name", "0.0", "0.5"])
+
+            for k_outer_threshold, v_outer_threshold in dict.items():
+                for k_method_name, k_method_value in v_outer_threshold.items():
+                    if isinstance(k_method_value, list):
+                        for auc_object_classes in k_method_value:
+                                csv_writer.writerow(
+                                    [k_outer_threshold, k_method_name, auc_object_classes["0.0"],
+                                     auc_object_classes["0.5"]
+                                        , auc_object_classes["1.0"]])
+                    else:
+                        csv_writer.writerow([k_outer_threshold, k_method_name, k_method_value[self.class_unrelated], k_method_value[self.class_related]])
+
+            print("done")
 
     def plot_roc(self, actual_class, pred_class, plotTitle):
         fig = plt.figure(figsize=(20, 10))
@@ -1211,17 +1236,29 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
         os.makedirs(annotatedDataHandler.roc_result_dir)
     if not os.path.exists(annotatedDataHandler.prc_result_dir):
         os.makedirs(annotatedDataHandler.prc_result_dir)
+    if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
+        os.makedirs(annotatedDataHandler.raw_dict_result_dir)
 
     for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
         # data_in_2d = self.read_computed_data_from[methodIndex](True)
         # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
         annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_index, syn_sem_threshold)
-        annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
-        annotatedDataHandler.log(["max_roc_dict", annotatedDataHandler.max_roc_dict])
+
+        #annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
+        #annotatedDataHandler.log(["max_roc_dict", annotatedDataHandler.max_roc_dict])
+
+        #pd.DataFrame(annotatedDataHandler.max_roc_dict).to_csv('max_roc_dict')
 
         annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_index, syn_sem_threshold)
-        # annotatedDataHandler.evaluateDefaultMethod(flatAnnotatedData, method_index)
 
-annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
 
-annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
+        #annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
+        # annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
+        # pd.DataFrame(annotatedDataHandler.prc_dict).to_csv('prc_dict')
+        # pd.DataFrame(annotatedDataHandler.max_prc_dict).to_csv('max_prc_dict')
+
+
+annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.roc_dict, "roc_dict")
+annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_roc_dict, "max_roc_dict", True)
+annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.prc_dict, "prc_dict")
+annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_prc_dict, "max_prc_dict", True)
