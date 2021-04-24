@@ -649,7 +649,7 @@ class AnnotatedDataHandler:
             performance_dict[pc_index] = {}
             performance_dict[pc_index]["classPositive"] = positiveClass
             performance_dict[pc_index]["classNegative"] = []
-            for c in classes:
+            for c in self.classes:
                 if c != positiveClass:
                     performance_dict[pc_index]["classNegative"].append(c)
 
@@ -852,6 +852,12 @@ class AnnotatedDataHandler:
         predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_prc_threshold) for similarity_score in
                                    test_x]
 
+        # Confusion matrix for the test set
+        # cm = confusion_matrix(test_y, predicted_test_x, labels=self.classes)
+        # print(cm)
+        # conditions = self.calculate_ovr_conditions(cm, max_prc_threshold)
+        # self.log(conditions)
+
         self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + \
                       str(max_prc_threshold[self.class_unrelated]) + "_" + str(max_prc_threshold[self.class_related]) +
                       ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
@@ -940,8 +946,17 @@ class AnnotatedDataHandler:
         self.log(["Max AUROC achieved:", _max_roc_dict, " at threshold:",max_roc_threshold], self.logTRACE)
         self.max_roc_dict[syn_sem_threshold][ self.computed_method[methodIndex] ]= max_roc_threshold
 
+        # Calculate the predicted class labels for the test set, using max_roc_threshold
         predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_roc_threshold) for similarity_score in
                                    test_x]
+        # Confusion matrix for the test set
+        # cm = confusion_matrix(test_y, predicted_test_x, labels=self.classes)
+        # conditions = self.calculate_ovr_conditions(cm, max_roc_threshold)
+        # self.log(conditions)
+        # self.plot_pr(conditions, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
+        #               + "_" + str(max_roc_threshold[self.class_related]) + \
+        #               ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+
 
         self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
                       + "_" + str(max_roc_threshold[self.class_related]) + \
@@ -951,7 +966,7 @@ class AnnotatedDataHandler:
         file_name = self.raw_dict_result_dir + "" + dict_name
         dict_table = []
         with open(file_name, 'w') as csv_file:
-            self.log("Saving CSV data file for: " + method_name)
+            self.log("Saving CSV data file for: " + dict_name)
             csv_writer = csv.writer(csv_file, delimiter=',')
             #pd.DataFrame(annotatedDataHandler.roc_dict).to_csv('roc_dict')
             if not is_max_score:
@@ -960,7 +975,9 @@ class AnnotatedDataHandler:
                 csv_writer.writerow(["Outer Threshold", "Method name", "0.0", "0.5"])
 
             for k_outer_threshold, v_outer_threshold in dict.items():
+                print("k_outer_threshold:", k_outer_threshold, ", items: ", len(v_outer_threshold.items()))
                 for k_method_name, k_method_value in v_outer_threshold.items():
+                    print("k_method_name:",k_method_name)
                     if isinstance(k_method_value, list):
                         for auc_object_classes in k_method_value:
                                 csv_writer.writerow(
@@ -1257,6 +1274,7 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
         # pd.DataFrame(annotatedDataHandler.prc_dict).to_csv('prc_dict')
         # pd.DataFrame(annotatedDataHandler.max_prc_dict).to_csv('max_prc_dict')
 
+annotatedDataHandler.log(["annotatedDataHandler.max_roc_dict:",annotatedDataHandler.max_roc_dict])
 
 annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.roc_dict, "roc_dict")
 annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_roc_dict, "max_roc_dict", True)
