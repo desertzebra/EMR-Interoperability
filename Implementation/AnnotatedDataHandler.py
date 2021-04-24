@@ -811,8 +811,8 @@ class AnnotatedDataHandler:
         ovr_conditions = []
         _max_prc_dict = {}
         max_prc_threshold = {}
-        self.prc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]:[]}
-        self.max_prc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]: None}
+        self.prc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = []
+        self.max_prc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = None
         while minFive < float(0.91):
             maxFive = minFive + float(0.1)
             while maxFive <= float(1.0):
@@ -901,8 +901,9 @@ class AnnotatedDataHandler:
         ovr_conditions = []
         _max_roc_dict = {}
         max_roc_threshold = {}
-        self.roc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]:[]}
-        self.max_roc_dict[syn_sem_threshold] = {self.computed_method[methodIndex]:None}
+
+        self.roc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = []
+        self.max_roc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = None
         while minFive < float(0.91):
             maxFive = minFive + float(0.1)
             while maxFive <= float(1.0):
@@ -1240,7 +1241,15 @@ _result_prc_parentdir = annotatedDataHandler.prc_result_dir
 
 
 for syn_sem_threshold in annotatedDataHandler.result_indexes:
+
     annotatedDataHandler.log(["Now processing:", syn_sem_threshold])
+
+    # init threshold holder for this syn_sem key
+    annotatedDataHandler.roc_dict[syn_sem_threshold] = {}
+    annotatedDataHandler.max_roc_dict[syn_sem_threshold] = {}
+    annotatedDataHandler.prc_dict[syn_sem_threshold] = {}
+    annotatedDataHandler.max_prc_dict[syn_sem_threshold] = {}
+
     annotatedDataHandler.result_file_index = syn_sem_threshold
 
     annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
@@ -1259,6 +1268,7 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
     for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
         # data_in_2d = self.read_computed_data_from[methodIndex](True)
         # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
+
         annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_index, syn_sem_threshold)
 
         #annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
