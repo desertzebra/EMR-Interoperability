@@ -14,7 +14,6 @@ from decimal import Decimal
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
-
 np.seterr('raise')
 
 
@@ -57,7 +56,8 @@ class AnnotatedDataHandler:
         self.annotator4Data = []
 
         # Computational accessories
-        self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3", "0.8-0.2", "0.9-0.1"]
+        self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3",
+                               "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
         self.computational_iteration = "1.4"
         self.computed_method = ["fuzzy_wuzzy", "bert_large_nli_sts_mean_tokens_syn_and_sem",
@@ -95,7 +95,7 @@ class AnnotatedDataHandler:
         self.color_set = ["blue", "red", "green"]
         # Directories
         self.raw_dict_result_dir = "Results/raw_dicts/" + str(self.computational_iteration) + "/"
-        self.resultDir = "Results/charts/" + str(self.computational_iteration) +"/"
+        self.resultDir = "Results/charts/" + str(self.computational_iteration) + "/"
         self.roc_result_dir = self.resultDir + "/roc/"
         self.prc_result_dir = self.resultDir + "/prc/"
 
@@ -327,66 +327,78 @@ class AnnotatedDataHandler:
     def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
                 True)
         else:
             self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
                 True)
         return self.bert_base_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_computed_data
 
     def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
         if not readHeaders:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         else:
             self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
+                'Data/' + self.computational_iteration + "/" + str(
+                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
                     self.result_file_index) + '.csv', True)
         return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
 
@@ -792,9 +804,10 @@ class AnnotatedDataHandler:
         # Split the test set into threshold selection and final test sets
         # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
         #     [float(d) for d in test_x], test_y, test_size=0.5)
-        print('Development: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in development_y if t == self.class_unrelated]),
-                                                                len([t for t in development_y if t == self.class_related]),
-                                                                len([t for t in development_y if t == self.class_equal])))
+        print('Development: Class0=%d, Class1=%d, Class2=%d' % (
+            len([t for t in development_y if t == self.class_unrelated]),
+            len([t for t in development_y if t == self.class_related]),
+            len([t for t in development_y if t == self.class_equal])))
 
         # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
         #       (len([t for t in threshold_selection_y if t == "0.0"]),
@@ -820,7 +833,8 @@ class AnnotatedDataHandler:
                 conditions = {}
 
                 # convert the simialrity score into predicted class labels
-                predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for similarity_score in development_x]
+                predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for
+                                           similarity_score in development_x]
                 prc_auc_dict = self.prc_auc_score_multiclass(development_y, predicted_development_x)
                 self.prc_dict[syn_sem_threshold][self.computed_method[methodIndex]].append(prc_auc_dict)
                 # Find the max roc_auc score which maximizes class 1.0, then 0.5, and finally 0.0
@@ -845,23 +859,25 @@ class AnnotatedDataHandler:
                 maxFive = float(Decimal(maxFive) + Decimal('.1'))
             minFive = float(Decimal(minFive) + Decimal('.1'))
 
-        self.log(["Method ", self.computed_method[methodIndex], " finished processing."], self.logDEBUG)
-        self.log(["Max AUPRC achieved:", _max_prc_dict, " at threshold:", max_prc_threshold], self.logDEBUG)
-        self.max_prc_dict[syn_sem_threshold][ self.computed_method[methodIndex] ]= max_prc_threshold
-
         predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_prc_threshold) for similarity_score in
-                                   test_x]
+                            test_x]
 
         # Confusion matrix for the test set
-        # cm = confusion_matrix(test_y, predicted_test_x, labels=self.classes)
+        cm = confusion_matrix(test_y, predicted_test_x, labels=self.classes)
         # print(cm)
-        # conditions = self.calculate_ovr_conditions(cm, max_prc_threshold)
+        conditions = self.calculate_ovr_conditions(cm, max_prc_threshold)
         # self.log(conditions)
+
+        self.log(["Method ", self.computed_method[methodIndex], " finished processing."], self.logDEBUG)
+        self.log(["Max AUPRC achieved:", _max_prc_dict, " at threshold:", max_prc_threshold], self.logDEBUG)
+        self.max_prc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = {"inner_threshold": max_prc_threshold,
+                                                                                   "auc_score": _max_prc_dict,
+                                                                                   "auc_method": "prc",
+                                                                                   "conditions": conditions}
 
         self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + \
                       str(max_prc_threshold[self.class_unrelated]) + "_" + str(max_prc_threshold[self.class_related]) +
                       ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-
 
     # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
     def calculate_threshold_using_auroc(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
@@ -882,9 +898,10 @@ class AnnotatedDataHandler:
         # Split the test set into threshold selection and final test sets
         # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
         #     [float(d) for d in test_x], test_y, test_size=0.5)
-        self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (len([t for t in development_y if t == self.class_unrelated]),
-                                                                len([t for t in development_y if t == self.class_related]),
-                                                                len([t for t in development_y if t == self.class_equal]))], self.logTRACE)
+        self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
+            len([t for t in development_y if t == self.class_unrelated]),
+            len([t for t in development_y if t == self.class_related]),
+            len([t for t in development_y if t == self.class_equal]))], self.logTRACE)
 
         # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
         #       (len([t for t in threshold_selection_y if t == "0.0"]),
@@ -911,7 +928,8 @@ class AnnotatedDataHandler:
                 conditions = {}
 
                 # convert the simialrity score into predicted class labels
-                predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for similarity_score in development_x]
+                predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for
+                                           similarity_score in development_x]
                 roc_auc_dict = self.roc_auc_score_multiclass(development_y, predicted_development_x)
                 self.roc_dict[syn_sem_threshold][self.computed_method[methodIndex]].append(roc_auc_dict)
                 # Find the max roc_auc score which maximizes class 1.0, then 0.5, and finally 0.0
@@ -943,21 +961,23 @@ class AnnotatedDataHandler:
                 maxFive = float(Decimal(maxFive) + Decimal('.1'))
             minFive = float(Decimal(minFive) + Decimal('.1'))
 
-        self.log(["Method ", self.computed_method[methodIndex] , " finished processing."], self.logTRACE)
-        self.log(["Max AUROC achieved:", _max_roc_dict, " at threshold:",max_roc_threshold], self.logTRACE)
-        self.max_roc_dict[syn_sem_threshold][ self.computed_method[methodIndex] ]= max_roc_threshold
-
         # Calculate the predicted class labels for the test set, using max_roc_threshold
         predicted_test_x = [self.convertComputedAttrValue(similarity_score, max_roc_threshold) for similarity_score in
-                                   test_x]
+                            test_x]
         # Confusion matrix for the test set
-        # cm = confusion_matrix(test_y, predicted_test_x, labels=self.classes)
-        # conditions = self.calculate_ovr_conditions(cm, max_roc_threshold)
+        cm = confusion_matrix(test_y, predicted_test_x, labels=self.classes)
+        conditions = self.calculate_ovr_conditions(cm, max_roc_threshold)
         # self.log(conditions)
-        # self.plot_pr(conditions, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
+        # self.plot_pr(conditions, 'PR at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
         #               + "_" + str(max_roc_threshold[self.class_related]) + \
         #               ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
+        self.log(["Method ", self.computed_method[methodIndex], " finished processing."], self.logTRACE)
+        self.log(["Max AUROC achieved:", _max_roc_dict, " at threshold:", max_roc_threshold], self.logTRACE)
+        self.max_roc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = {"inner_threshold": max_roc_threshold,
+                                                                                   "auc_score": _max_roc_dict,
+                                                                                   "auc_method": "roc",
+                                                                                   "conditions": conditions}
 
         self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
                       + "_" + str(max_roc_threshold[self.class_related]) + \
@@ -969,24 +989,41 @@ class AnnotatedDataHandler:
         with open(file_name, 'w') as csv_file:
             self.log("Saving CSV data file for: " + dict_name)
             csv_writer = csv.writer(csv_file, delimiter=',')
-            #pd.DataFrame(annotatedDataHandler.roc_dict).to_csv('roc_dict')
-            if not is_max_score:
-                csv_writer.writerow(["Outer Threshold", "Method name", "0.0", "0.5", "1.0"])
+            # pd.DataFrame(annotatedDataHandler.roc_dict).to_csv('roc_dict')
+            if is_max_score:
+                csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
+                                     " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
+                                     " AUC Score - " + self.class_equal,
+                                     "Conditions - positive class=" + self.class_unrelated
+                                        , "Conditions - positive class=" + self.class_related
+                                        , "Conditions - positive class=" + self.class_equal])
             else:
                 csv_writer.writerow(["Outer Threshold", "Method name", "0.0", "0.5"])
 
             for k_outer_threshold, v_outer_threshold in dict.items():
-                print("k_outer_threshold:", k_outer_threshold, ", items: ", len(v_outer_threshold.items()))
+                # print("k_outer_threshold:", k_outer_threshold, ", items: ", len(v_outer_threshold.items()))
                 for k_method_name, k_method_value in v_outer_threshold.items():
-                    print("k_method_name:",k_method_name)
-                    if isinstance(k_method_value, list):
-                        for auc_object_classes in k_method_value:
-                                csv_writer.writerow(
-                                    [k_outer_threshold, k_method_name, auc_object_classes["0.0"],
-                                     auc_object_classes["0.5"]
-                                        , auc_object_classes["1.0"]])
+                    # print("k_method_name:",k_method_name)
+                    if not isinstance(k_method_value, list):
+                        print("k_method_value", k_method_value)
+                        inner_threshold_str = str(k_method_value["inner_threshold"][self.class_unrelated]) + "_" + \
+                                              str(k_method_value["inner_threshold"][self.class_related])
+                        auc_method = k_method_value["auc_method"]
+                        csv_writer.writerow(
+                            [k_outer_threshold, k_method_name, inner_threshold_str, auc_method,
+                             k_method_value["auc_score"][self.class_unrelated],
+                             k_method_value["auc_score"][self.class_related],
+                             k_method_value["auc_score"][self.class_equal],
+                             str(k_method_value["conditions"][0]),
+                             str(k_method_value["conditions"][1]),
+                             str(k_method_value["conditions"][2])
+                             ])
                     else:
-                        csv_writer.writerow([k_outer_threshold, k_method_name, k_method_value[self.class_unrelated], k_method_value[self.class_related]])
+                        for auc_object_classes in k_method_value:
+                            csv_writer.writerow(
+                                [k_outer_threshold, k_method_name, auc_object_classes[self.class_unrelated],
+                                 auc_object_classes[self.class_related]
+                                    , auc_object_classes[self.class_equal]])
 
             print("done")
 
@@ -1233,12 +1270,11 @@ flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 
 dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
-            range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
+    range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
 resultParentDir = annotatedDataHandler.resultDir
 _result_roc_parentdir = annotatedDataHandler.roc_result_dir
 _result_prc_parentdir = annotatedDataHandler.prc_result_dir
-
 
 for syn_sem_threshold in annotatedDataHandler.result_indexes:
 
@@ -1271,20 +1307,19 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
 
         annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_index, syn_sem_threshold)
 
-        #annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
-        #annotatedDataHandler.log(["max_roc_dict", annotatedDataHandler.max_roc_dict])
+        # annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
+        # annotatedDataHandler.log(["max_roc_dict", annotatedDataHandler.max_roc_dict])
 
-        #pd.DataFrame(annotatedDataHandler.max_roc_dict).to_csv('max_roc_dict')
+        # pd.DataFrame(annotatedDataHandler.max_roc_dict).to_csv('max_roc_dict')
 
         annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_index, syn_sem_threshold)
 
-
-        #annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
+        # annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
         # annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
         # pd.DataFrame(annotatedDataHandler.prc_dict).to_csv('prc_dict')
         # pd.DataFrame(annotatedDataHandler.max_prc_dict).to_csv('max_prc_dict')
 
-annotatedDataHandler.log(["annotatedDataHandler.max_roc_dict:",annotatedDataHandler.max_roc_dict])
+# annotatedDataHandler.log(["annotatedDataHandler.max_roc_dict:",annotatedDataHandler.max_roc_dict])
 
 annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.roc_dict, "roc_dict")
 annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_roc_dict, "max_roc_dict", True)
