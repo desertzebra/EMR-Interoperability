@@ -11,7 +11,17 @@ class Similarity:
 
     def __init__(self):
         self.embeddingVectors = {}
-        self.models = ['bert-large-nli-stsb-mean-tokens', 'bert-base-nli-mean-tokens', 'bert-base-nli-stsb-mean-tokens']
+        self.models = ['bert-base-nli-stsb-mean-tokens',
+        'bert-large-nli-stsb-mean-tokens',
+        'roberta-base-nli-stsb-mean-tokens',
+        'roberta-large-nli-stsb-mean-tokens',
+        'distilbert-base-nli-stsb-mean-tokens',
+        'bert-base-nli-mean-tokens',
+        'bert-large-nli-mean-tokens',
+        'roberta-base-nli-mean-tokens',
+        'roberta-large-nli-mean-tokens',
+        'distilbert-base-nli-mean-tokens'
+        ]
         # self.models = ['bert-base-nli-stsb-mean-tokens']
 
     def readData(self, url):
@@ -182,7 +192,7 @@ class Similarity:
         print('len(attributes)')
         print(len(attributes))
 
-        model = SentenceTransformer(modelName)
+        model = SentenceTransformer(modelName, device='cuda')
 
         for index, attrPair in enumerate(attributes):
             formatedAttr = copy.deepcopy(attrPair)
@@ -191,10 +201,10 @@ class Similarity:
             semanticSimilarity = self.getSemanticSimilarity(attrPair, model)
             # similarity = self.getSemanticSimilarity(attrPair, model)
 
-            print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
+            # print("syntacticSimilarity: ", syntacticSimilarity, ', semanticSimilarity: ', semanticSimilarity)
             # print('Semantic index: ', index)
 
-            similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
+            # similarity = (0.5 * float(syntacticSimilarity)) + (0.5 * float(semanticSimilarity))
 
             formatedAttr['relationshipList'].append(
                 {'type': '', 'method': modelName + '_SYN_MATCH', 'comments': None, 'confidence': syntacticSimilarity})
