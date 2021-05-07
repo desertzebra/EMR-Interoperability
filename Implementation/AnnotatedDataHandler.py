@@ -934,9 +934,17 @@ class AnnotatedDataHandler:
             # plot model roc curve
             # print(new_actual_class)
             # print(test_y)
-            print(new_pred_similarities)
+            # print(new_pred_similarities)
+
             fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_similarities)
-            plt.plot(fpr, tpr, marker=marker, label=positive_class, color=color)
+
+            roc_auc = auc(fpr, tpr)
+            gmeans = np.sqrt(tpr*(1-fpr))
+            ix = np.argmax(gmeans)
+            plt.plot(fpr, tpr, marker='.', label='Class=' + str(positive_class) +' (area = %0.2f at threshold = %0.2f)' % (roc_auc,new_pred_similarities[ix]), color=color)
+            plt.scatter(fpr[ix], tpr[ix], marker=marker, edgecolor='black', color=color, s=100, linewidth=3)
+            # plt.text(fpr[ix] + .03, tpr[ix] + .03, 'Max Threshold = ' + str(new_pred_similarities[ix]),
+            #             fontdict=dict(color='black', size=10), bbox=dict(facecolor='yellow', alpha=0.5))
             # axis labels
         ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
         # plt.yticks(np.arange(0, 1, step=0.02))
