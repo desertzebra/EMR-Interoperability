@@ -5,7 +5,38 @@ from sentence_transformers import SentenceTransformer, util
 from joblib import Parallel, delayed
 import multiprocessing
 import itertools
+import torch
+from numba import njit, cuda, prange
+from numba import jit
+import numpy as np
 
+# Function to print the settings
+def print_settings():
+    print('Using device:', device)
+    # Additional Info when using cuda
+    if device.type == 'cuda':
+        print(torch.cuda.get_device_name(0))
+        print('Memory Usage:')
+        print('Allocated:', round(torch.cuda.memory_allocated(0) / 1024 ** 3, 1), 'GB')
+        print('Cached:   ', round(torch.cuda.memory_reserved(0) / 1024 ** 3, 1), 'GB')
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print_settings()
+
+@jit(nopython=True, parallel=True)
+def cosine_similarity_numba(u:np.ndarray, v:np.ndarray):
+    assert(u.shape[0] == v.shape[0])
+    uv = 0
+    uu = 0
+    vv = 0
+    for i in prange(u.shape[0]):
+        uv += u[i]*v[i]
+        uu += u[i]*u[i]
+        vv += v[i]*v[i]
+    cos_theta = 1
+    if uu!=0 and vv!=0:
+        cos_theta = uv/np.sqrt(uu*vv)
+    return cos_theta
 
 class Similarity:
 
@@ -23,6 +54,7 @@ class Similarity:
         'distilbert-base-nli-mean-tokens'
         ]
         # self.models = ['bert-base-nli-stsb-mean-tokens']
+
 
     def readData(self, url):
 
@@ -53,21 +85,25 @@ class Similarity:
         attributeSimilarities = []
 
         # model = SentenceTransformer('bert-base-nli-stsb-mean-tokens')
-        model = SentenceTransformer(modelName, device='cuda')
+        model = SentenceTransformer(modelName, device=device)
 
-        for i, attr in enumerate(attributes):
-            print(modelName, ' line i: ', i)
-
+        for index, attr in enumerate(attributes):
+            if index % 1000==0:
+                print("index", index)
+                print_settings()
+            # print(modelName, ' line i: ', i)
             formatedAttr = copy.deepcopy(attr)
 
-            embedding1 = model.encode(attr['nodeLeft']['name'], convert_to_tensor=True)
-            embedding2 = model.encode(attr['nodeRight']['name'], convert_to_tensor=True)
+            # embedding1 = model.encode(attr['nodeLeft']['name'], convert_to_tensor=True)
+            embedding1 = model.encode(attr['nodeLeft']['name'])
+            # embedding2 = model.encode(attr['nodeRight']['name'], convert_to_tensor=True)
+            embedding2 = model.encode(attr['nodeRight']['name'])
 
-            similarity = util.pytorch_cos_sim(embedding1, embedding2)
-            similarity = "{:.4f}".format(similarity[0][0])
+            # similarity = util.pytorch_cos_sim(embedding1, embedding2)
+            similarity = cosine_similarity_numba(embedding1, embedding2)
 
             formatedAttr['relationshipList'].append(
-                {'type': '', 'method': modelName, 'comments': None, 'confidence': similarity})
+                {'type': '', 'method': modelName, 'comments': None, 'confidence': "{:.4f}".format(similarity)})
 
             attributeSimilarities.append(formatedAttr)
 
@@ -145,7 +181,8 @@ class Similarity:
 
         for term_left in self.embeddingVectors[nodeLeftIdentifier]:
             if term_left not in sentence_encoding_map:
-                embedding1 = model.encode(term_left, convert_to_tensor=True)
+                # embedding1 = model.encode(term_left, convert_to_tensor=True)
+                embedding1 = model.encode(term_left)
                 sentence_encoding_map[term_left] = embedding1
             else:
                 embedding1 = sentence_encoding_map[term_left]
@@ -156,18 +193,22 @@ class Similarity:
                     max_right_term_similarity == float(1.0)
                     break
                 if term_right not in sentence_encoding_map:
-                    embedding2 = model.encode(term_right, convert_to_tensor=True)
+                    # embedding2 = model.encode(term_right, convert_to_tensor=True)
+                    embedding2 = model.encode(term_right)
                     sentence_encoding_map[term_right] = embedding2
                 else:
 
                     embedding2 = sentence_encoding_map[term_right]
 
-                term_similarity = util.pytorch_cos_sim(embedding1, embedding2)
-                if float(term_similarity[0][0]) == float(1.0):
+                # term_similarity = util.pytorch_cos_sim(embedding1, embedding2)
+                term_similarity = cosine_similarity_numba(embedding1, embedding2)
+                # if float(term_similarity[0][0]) == float(1.0):
+
+                if float(term_similarity) == float(1.0):
                     max_right_term_similarity == float(1.0)
                     break
-                if float(term_similarity[0][0]) > max_right_term_similarity:
-                    max_right_term_similarity = round(float(term_similarity[0][0]), 4)
+                if float(term_similarity) > max_right_term_similarity:
+                    max_right_term_similarity = round(float(term_similarity), 4)
             max_left_term_similarity += max_right_term_similarity
 
         # calculate the average similarity of the disjoint union of two sets
@@ -192,9 +233,12 @@ class Similarity:
         print('len(attributes)')
         print(len(attributes))
 
-        model = SentenceTransformer(modelName, device='cuda')
+        model = SentenceTransformer(modelName, device=device)
 
         for index, attrPair in enumerate(attributes):
+            if index % 1000==0:
+                print("index", index)
+                print_settings()
             formatedAttr = copy.deepcopy(attrPair)
 
             syntacticSimilarity = self.getSyntacticSimilarity(attrPair)
@@ -261,7 +305,11 @@ class Similarity:
         for model in self.models:
             print('model: ', model)
             attributes = self.calculateAmplifiedSimilarity(attributes, model)
+
             attributes = self.calcualteBaseLineSimilarity(attributes, model)
+
+            with open("Data/AmplifiedSimilarity-V0.4"+model+".txt", "wb") as fp:  # Pickling
+                pickle.dump(attributes, fp)
 
         return attributes
 
@@ -288,5 +336,5 @@ similarity = simObj.calculateSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-V0.3.txt", "wb") as fp:  # Pickling
+with open("Data/AmplifiedSimilarity-V0.4.txt", "wb") as fp:  # Pickling
     pickle.dump(similarity, fp)

@@ -4,7 +4,7 @@ from scipy.stats import pearsonr
 from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
     confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, auc
 import numpy as np
-
+# import matplotlib.pyplot as plt
 import re
 import pandas as pd
 from statistics import mode, StatisticsError
@@ -48,7 +48,7 @@ class AnnotatedDataHandler:
         self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-mean-tokens-Syn-SEM"
         self.BERT_BASE_NLI_MEAN_TOKENS_INDEX = "bert-base-nli-mean-tokens"
         self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
-        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-base-nli-stsb-mean-tokens"
+        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
         # Annotations
         self.annotator1Data = []
         self.annotator2Data = []
@@ -60,7 +60,6 @@ class AnnotatedDataHandler:
                                "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
         self.computational_iteration = "1.4"
-        self.result_iteration = ".2"
         self.computed_method = ["fuzzy_wuzzy", "bert_large_nli_sts_mean_tokens_syn_and_sem",
                                 "bert_large_nli_sts_mean_tokens",
                                 "bert_base_nli_mean_tokens_syn_and_sem", "bert_base_nli_mean_tokens",
@@ -95,8 +94,8 @@ class AnnotatedDataHandler:
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
         # Directories
-        self.raw_dict_result_dir = "Results/raw_dicts/" + str(self.computational_iteration)+str(self.result_iteration) + "/"
-        self.resultDir = "Results/charts/" + str(self.computational_iteration)+str(self.result_iteration) + "/"
+        self.raw_dict_result_dir = "Results/raw_dicts/" + str(self.computational_iteration) + "/"
+        self.resultDir = "Results/charts/" + str(self.computational_iteration) + "/"
         self.roc_result_dir = self.resultDir + "/roc/"
         self.prc_result_dir = self.resultDir + "/prc/"
 
@@ -880,86 +879,6 @@ class AnnotatedDataHandler:
                       str(max_prc_threshold[self.class_unrelated]) + "_" + str(max_prc_threshold[self.class_related]) +
                       ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
 
-        # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
-    def calculate_threshold_using_auroc_2(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
-        self.log("AUROC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
-        # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_from[methodIndex](True)
-        data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-
-        # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
-        development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
-        test_x = [data_in_1d[i] for i in dataset['test_x_index']]
-        development_y = dataset['dev_y']
-        test_y = dataset['test_y']
-
-        # Split the data into development and test set
-        # development_x, test_x, development_y, test_y = train_test_split(
-        #     [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
-        # Split the test set into threshold selection and final test sets
-        # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
-        #     [float(d) for d in test_x], test_y, test_size=0.5)
-        self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in development_y if t == self.class_unrelated]),
-            len([t for t in development_y if t == self.class_related]),
-            len([t for t in development_y if t == self.class_equal]))], self.logTRACE)
-
-        # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
-        #       (len([t for t in threshold_selection_y if t == "0.0"]),
-        #        len([t for t in threshold_selection_y if t == "0.5"]),
-        #        len([t for t in threshold_selection_y if t == self.class_equal])))
-
-        self.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in test_y if t == self.class_unrelated]),
-            len([t for t in test_y if t == self.class_related]),
-            len([t for t in test_y if t == self.class_equal]))], self.logTRACE)
-
-        # self.plot_roc(test_y, test_x,
-        #               'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-        plotTitle = 'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex]
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(plotTitle)
-
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            # creating a list of all the classes except the current class
-            other_class = [x for x in self.classes if x != positive_class]
-
-            # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in test_y]
-            new_pred_similarities = [round(float(sim),2) if not sim=='' and not sim=='-' else 0.0 for sim in test_x]
-            # self.plot_roc_curve()
-            # plot model roc curve
-            # print(new_actual_class)
-            # print(test_y)
-            # print(new_pred_similarities)
-
-            fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_similarities)
-
-            roc_auc = auc(fpr, tpr)
-            gmeans = np.sqrt(tpr*(1-fpr))
-            ix = np.argmax(gmeans)
-            plt.plot(fpr, tpr, marker='.', label='Class=' + str(positive_class) +' (area = %0.2f at threshold = %0.2f)' % (roc_auc,new_pred_similarities[ix]), color=color)
-            plt.scatter(fpr[ix], tpr[ix], marker=marker, edgecolor='black', color=color, s=100, linewidth=3)
-            # plt.text(fpr[ix] + .03, tpr[ix] + .03, 'Max Threshold = ' + str(new_pred_similarities[ix]),
-            #             fontdict=dict(color='black', size=10), bbox=dict(facecolor='yellow', alpha=0.5))
-            # axis labels
-        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        # plt.yticks(np.arange(0, 1, step=0.02))
-        # # plt.grid(True)
-        plt.legend()
-        # # plt.show()
-        self.log("saving plot:" + plotTitle)
-
-        fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-        # show the legend
-        # pyplot.legend()
-        # # show the plot
-        # pyplot.show()
-
     # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
     def calculate_threshold_using_auroc(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
         self.log("AUROC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
@@ -1371,10 +1290,10 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
 
     annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
     annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
-    # annotatedDataHandler.resultDir = resultParentDir + str(syn_sem_threshold) + "/"
+    annotatedDataHandler.resultDir = resultParentDir + str(syn_sem_threshold) + "/"
     # Make sure the folder for results exists
-    # if not os.path.exists(annotatedDataHandler.resultDir):
-    #     os.makedirs(annotatedDataHandler.resultDir)
+    if not os.path.exists(annotatedDataHandler.resultDir):
+        os.makedirs(annotatedDataHandler.resultDir)
     if not os.path.exists(annotatedDataHandler.roc_result_dir):
         os.makedirs(annotatedDataHandler.roc_result_dir)
     if not os.path.exists(annotatedDataHandler.prc_result_dir):
@@ -1386,14 +1305,14 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
         # data_in_2d = self.read_computed_data_from[methodIndex](True)
         # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
-        annotatedDataHandler.calculate_threshold_using_auroc_2(dataset, method_index, syn_sem_threshold)
+        annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_index, syn_sem_threshold)
 
         # annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
         # annotatedDataHandler.log(["max_roc_dict", annotatedDataHandler.max_roc_dict])
 
         # pd.DataFrame(annotatedDataHandler.max_roc_dict).to_csv('max_roc_dict')
 
-        # annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_index, syn_sem_threshold)
+        annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_index, syn_sem_threshold)
 
         # annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
         # annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
