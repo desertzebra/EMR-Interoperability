@@ -42,6 +42,19 @@ class AnnotatedDataHandler:
         self.logTRACE = "TRACE"
         self.logLevel = ["DEBUG",
                          "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
+
+        models = ['bert-base-nli-stsb-mean-tokens',
+                  'bert-large-nli-stsb-mean-tokens',
+                  'roberta-base-nli-stsb-mean-tokens',
+                  'roberta-large-nli-stsb-mean-tokens',
+                  'distilbert-base-nli-stsb-mean-tokens',
+                  'bert-base-nli-mean-tokens',
+                  'bert-large-nli-mean-tokens',
+                  'roberta-base-nli-mean-tokens',
+                  'roberta-large-nli-mean-tokens',
+                  'distilbert-base-nli-mean-tokens'
+                  ]
+
         self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
         self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-large-nli-stsb-mean-tokens-Syn-SEM"
         self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-large-nli-stsb-mean-tokens"
@@ -59,7 +72,9 @@ class AnnotatedDataHandler:
         self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3",
                                "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
-        self.computational_iteration = "1.4"
+        self.computational_iteration = "1.5"
+
+
         self.computed_method = ["fuzzy_wuzzy", "bert_large_nli_sts_mean_tokens_syn_and_sem",
                                 "bert_large_nli_sts_mean_tokens",
                                 "bert_base_nli_mean_tokens_syn_and_sem", "bert_base_nli_mean_tokens",

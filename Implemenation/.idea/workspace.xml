@@ -44,7 +44,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Implementation" />
     <property name="settings.editor.selected.configurable" value="Console" />
   </component>
-  <component name="RunManager" selected="Python.AnnotatedDataHandler">
+  <component name="RunManager" selected="Python.results">
     <configuration name="AnnotatedDataHandler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -66,7 +66,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="RoC Test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="results" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -78,7 +78,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../Implementation/RoC Test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../Implementation/results.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -153,17 +153,17 @@
     <list>
       <item itemvalue="Python.AnnotatedDataHandler" />
       <item itemvalue="Python.similarity" />
-      <item itemvalue="Python.RoC Test" />
       <item itemvalue="Python.revision1" />
       <item itemvalue="Python.test" />
+      <item itemvalue="Python.results" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.results" />
         <item itemvalue="Python.AnnotatedDataHandler" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.similarity" />
         <item itemvalue="Python.revision1" />
-        <item itemvalue="Python.RoC Test" />
       </list>
     </recent_temporary>
   </component>

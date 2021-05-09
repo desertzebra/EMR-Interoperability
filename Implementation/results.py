@@ -2,6 +2,7 @@ import pickle
 import csv
 import numpy
 import io
+import os
 
 
 class Results:
@@ -9,7 +10,19 @@ class Results:
     # BASE_INDEX = 2
     # FUZZY_WUZZY_INDEX = 1
     # SYN_AND_SEM_SIM_INDEX = 0
-
+    computational_iteration = "1.5"
+    amplified_similarity_execution_index = "0.4"
+    models = ['bert-base-nli-stsb-mean-tokens',
+              'bert-large-nli-stsb-mean-tokens',
+              'roberta-base-nli-stsb-mean-tokens',
+              'roberta-large-nli-stsb-mean-tokens',
+              'distilbert-base-nli-stsb-mean-tokens',
+              'bert-base-nli-mean-tokens',
+              'bert-large-nli-mean-tokens',
+              'roberta-base-nli-mean-tokens',
+              'roberta-large-nli-mean-tokens',
+              'distilbert-base-nli-mean-tokens'
+              ]
     SYN_AND_SEM_SIM_INDEX = 0
     FUZZY_WUZZY_INDEX = 1
     BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = 2
@@ -41,7 +54,7 @@ class Results:
                  attr['relationshipList'][1]['confidence'], attr['relationshipList'][0]['confidence']])
 
         with open(
-                '/content/drive/MyDrive/papers/EMR-Interoperability/Implementation/Data/ComputedResults/resultsv0.4.csv',
+                'Data/ComputedResults/resultsv'+self.computational_iteration+'.csv',
                 'w', newline='') as file:
             writer = csv.writer(file, delimiter=',')
             writer.writerows(data)
@@ -168,9 +181,12 @@ class Results:
         # with open("Data/1.4/" + str(
         #         fileName) + "-table-V" + "-" + str(syn)+"-"+str(sem)+".csv", "wb") as fp:  # Pickling
         #     pickle.dump(table, fp)
+        result_dir_path = "Data/"+self.computational_iteration+"/"
+        file_path =  result_dir_path + str(fileName) + "-table-V" + "-" + str(syn)+"-"+str(sem)+".csv"
+        if not os.path.exists(result_dir_path):
+            os.makedirs(result_dir_path)
 
-        with io.open("Data/1.4/" + str(
-                fileName) + "-table-V" + "-" + str(syn)+"-"+str(sem)+".csv", 'w', encoding='utf8') as f:
+        with io.open(file_path, 'w', encoding='utf8') as f:
             f.write(table)
 
 
@@ -182,7 +198,7 @@ class Results:
 
 resultObj = Results()
 # data = simObj.readData('Data/dataV03.json')
-data = resultObj.readData('Data/AmplifiedSimilarity-V0.3.txt')
+data = resultObj.readData('Data/AmplifiedSimilarity-V'+resultObj.amplified_similarity_execution_index+'.txt')
 
 print('data')
 print(len(data))
@@ -193,17 +209,20 @@ print(len(data))
 #resultObj.printBaseHeatMap(data,resultObj.SYN_AND_SEM_SIM_INDEX)
 
 #for syn in frange(0.1, 0.9, 0.1):
+
+resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
+
 for syn in numpy.arange(0, 1, 0.1):
 
     syn = round(syn, 1)
     sem = round((1 - syn), 1)
-
-    resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
     resultObj.printBaseHeatMap(data, 'bert-large-nli-stsb-mean-tokens', True, syn, sem)
     resultObj.printBaseHeatMap(data,'bert-large-nli-stsb-mean-tokens', False,  syn, sem)
     resultObj.printBaseHeatMap(data, 'bert-base-nli-mean-tokens', True, syn, sem)
     resultObj.printBaseHeatMap(data, 'bert-base-nli-mean-tokens', False, syn, sem)
     resultObj.printBaseHeatMap(data, 'bert-base-nli-stsb-mean-tokens', True, syn, sem)
     resultObj.printBaseHeatMap(data, 'bert-base-nli-stsb-mean-tokens', False, syn, sem)
+
+
 
 
