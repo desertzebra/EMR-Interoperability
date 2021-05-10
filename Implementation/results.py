@@ -171,12 +171,12 @@ class Results:
             table = table[:-1] + '\r\n'
             i += 1
         print()
-        print("Done. Now saving it:")
+        print(modelName+" done. Now saving it:")
 
         fileName = modelName
 
         if isourMethod:
-            fileName += '-Syn-SEM'
+            fileName += '_syn_sem'
 
         # with open("Data/1.4/" + str(
         #         fileName) + "-table-V" + "-" + str(syn)+"-"+str(sem)+".csv", "wb") as fp:  # Pickling
@@ -211,17 +211,15 @@ print(len(data))
 #for syn in frange(0.1, 0.9, 0.1):
 
 resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
+for model_baseline in resultObj.models:
+    resultObj.printBaseHeatMap(data, model_baseline)
 
 for syn in numpy.arange(0, 1, 0.1):
-
     syn = round(syn, 1)
     sem = round((1 - syn), 1)
-    resultObj.printBaseHeatMap(data, 'bert-large-nli-stsb-mean-tokens', True, syn, sem)
-    resultObj.printBaseHeatMap(data,'bert-large-nli-stsb-mean-tokens', False,  syn, sem)
-    resultObj.printBaseHeatMap(data, 'bert-base-nli-mean-tokens', True, syn, sem)
-    resultObj.printBaseHeatMap(data, 'bert-base-nli-mean-tokens', False, syn, sem)
-    resultObj.printBaseHeatMap(data, 'bert-base-nli-stsb-mean-tokens', True, syn, sem)
-    resultObj.printBaseHeatMap(data, 'bert-base-nli-stsb-mean-tokens', False, syn, sem)
+    for model_for_syn_sem in resultObj.models:
+        resultObj.printBaseHeatMap(data, model_for_syn_sem, True, syn, sem)
+
 
 
 

@@ -1,38 +1,19 @@
 import csv
 import os
 from scipy.stats import pearsonr
-from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
-    confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, auc
 import numpy as np
-# import matplotlib.pyplot as plt
 import re
 import pandas as pd
 from statistics import mode, StatisticsError
 import math
 from matplotlib import pyplot as plt
 from decimal import Decimal
+from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
+    confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, auc
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
 np.seterr('raise')
-
-
-# plot no skill and model roc curves
-def plot_roc_curve(test_y, naive_probs, model_probs):
-    # plot naive skill roc curve
-    fpr, tpr, _ = roc_curve(test_y, naive_probs)
-    pyplot.plot(fpr, tpr, linestyle='--', label='No Skill')
-    # plot model roc curve
-    fpr, tpr, _ = roc_curve(test_y, model_probs)
-    pyplot.plot(fpr, tpr, marker='.', label='Logistic')
-    # axis labels
-    pyplot.xlabel('False Positive Rate')
-    pyplot.ylabel('True Positive Rate')
-    # show the legend
-    pyplot.legend()
-    # show the plot
-    pyplot.show()
-
 
 class AnnotatedDataHandler:
 
@@ -43,25 +24,25 @@ class AnnotatedDataHandler:
         self.logLevel = ["DEBUG",
                          "INFO"]  # ["TRACE", "DEBUG", "INFO"]       # Leave out only those levels, which should fire
 
-        models = ['bert-base-nli-stsb-mean-tokens',
-                  'bert-large-nli-stsb-mean-tokens',
-                  'roberta-base-nli-stsb-mean-tokens',
-                  'roberta-large-nli-stsb-mean-tokens',
-                  'distilbert-base-nli-stsb-mean-tokens',
-                  'bert-base-nli-mean-tokens',
-                  'bert-large-nli-mean-tokens',
-                  'roberta-base-nli-mean-tokens',
-                  'roberta-large-nli-mean-tokens',
-                  'distilbert-base-nli-mean-tokens'
-                  ]
+        self.models = ['bert-base-nli-stsb-mean-tokens',
+                       'bert-large-nli-stsb-mean-tokens',
+                       'roberta-base-nli-stsb-mean-tokens',
+                       'roberta-large-nli-stsb-mean-tokens',
+                       'distilbert-base-nli-stsb-mean-tokens',
+                       'bert-base-nli-mean-tokens',
+                       'bert-large-nli-mean-tokens',
+                       'roberta-base-nli-mean-tokens',
+                       'roberta-large-nli-mean-tokens',
+                       'distilbert-base-nli-mean-tokens'
+                       ]
 
-        self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
-        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-large-nli-stsb-mean-tokens-Syn-SEM"
-        self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-large-nli-stsb-mean-tokens"
-        self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-mean-tokens-Syn-SEM"
-        self.BERT_BASE_NLI_MEAN_TOKENS_INDEX = "bert-base-nli-mean-tokens"
-        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
-        self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
+
+        # self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-large-nli-stsb-mean-tokens-Syn-SEM"
+        # self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-large-nli-stsb-mean-tokens"
+        # self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-mean-tokens-Syn-SEM"
+        # self.BERT_BASE_NLI_MEAN_TOKENS_INDEX = "bert-base-nli-mean-tokens"
+        # self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
+        # self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
         # Annotations
         self.annotator1Data = []
         self.annotator2Data = []
@@ -74,29 +55,41 @@ class AnnotatedDataHandler:
         self.result_file_index = "0.0-1.0"
         self.computational_iteration = "1.5"
 
-
-        self.computed_method = ["fuzzy_wuzzy", "bert_large_nli_sts_mean_tokens_syn_and_sem",
-                                "bert_large_nli_sts_mean_tokens",
-                                "bert_base_nli_mean_tokens_syn_and_sem", "bert_base_nli_mean_tokens",
-                                "bert_base_nli_sts_mean_tokens_syn_and_sem", "bert_base_nli_sts_mean_tokens"
+        self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
+        self.computed_method = ["FUZZY_MATCH",
+                                'bert-base-nli-stsb-mean-tokens',
+                                'bert-large-nli-stsb-mean-tokens',
+                                'roberta-base-nli-stsb-mean-tokens',
+                                'roberta-large-nli-stsb-mean-tokens',
+                                'distilbert-base-nli-stsb-mean-tokens',
+                                'bert-base-nli-mean-tokens',
+                                'bert-large-nli-mean-tokens',
+                                'roberta-base-nli-mean-tokens',
+                                'roberta-large-nli-mean-tokens',
+                                'distilbert-base-nli-mean-tokens'
                                 ]
-        self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
-                                        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem,
-                                        self.read_computed_data_from_bert_large_sts_mean_tokens,
-                                        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem,
-                                        self.read_computed_data_from_bert_base_mean_tokens,
-                                        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem,
-                                        self.read_computed_data_from_bert_base_sts_mean_tokens
-                                        ]
-
         # Computed Data Structures
-        self.fuzzy_wuzzy_computed_data = []
-        self.bert_base_mean_tokens_computed_data = []
-        self.bert_base_mean_tokens_syn_and_sem_computed_data = []
-        self.bert_base_sts_mean_tokens_computed_data = []
-        self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
-        self.bert_large_sts_mean_tokens_computed_data = []
-        self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
+        self.computed_data = {}
+        for m in self.computed_method:
+            self.computed_data[m] = []
+
+        # self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
+        #                                 self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem,
+        #                                 self.read_computed_data_from_bert_large_sts_mean_tokens,
+        #                                 self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem,
+        #                                 self.read_computed_data_from_bert_base_mean_tokens,
+        #                                 self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem,
+        #                                 self.read_computed_data_from_bert_base_sts_mean_tokens
+        #                                 ]
+
+
+        # self.fuzzy_wuzzy_computed_data = []
+        # self.bert_base_mean_tokens_computed_data = []
+        # self.bert_base_mean_tokens_syn_and_sem_computed_data = []
+        # self.bert_base_sts_mean_tokens_computed_data = []
+        # self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
+        # self.bert_large_sts_mean_tokens_computed_data = []
+        # self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
         self.class_equal = "1.0"
         self.class_related = "0.5"
         self.class_unrelated = "0.0"
@@ -119,13 +112,15 @@ class AnnotatedDataHandler:
         self.annotator2Data = []
         self.annotator3Data = []
         self.annotator4Data = []
-        self.fuzzy_wuzzy_computed_data = []
-        self.bert_base_mean_tokens_computed_data = []
-        self.bert_base_mean_tokens_syn_and_sem_computed_data = []
-        self.bert_base_sts_mean_tokens_computed_data = []
-        self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
-        self.bert_large_sts_mean_tokens_computed_data = []
-        self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
+        self.computed_data = {}
+
+        # self.fuzzy_wuzzy_computed_data = []
+        # self.bert_base_mean_tokens_computed_data = []
+        # self.bert_base_mean_tokens_syn_and_sem_computed_data = []
+        # self.bert_base_sts_mean_tokens_computed_data = []
+        # self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
+        # self.bert_large_sts_mean_tokens_computed_data = []
+        # self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
 
     def log(self, msg, log_at="INFO"):
         if log_at in self.logLevel:
@@ -331,109 +326,39 @@ class AnnotatedDataHandler:
 
     def read_computed_data_from_fuzzy_wuzzy(self, readHeaders=False):
         if not readHeaders:
-            self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+            self.computed_data[self.FUZZY_WUZZY_INDEX] = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + self.computational_iteration + "/" + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
         else:
-            self.fuzzy_wuzzy_computed_data = annotatedDataHandler.readCSV(
+            self.computed_data[self.FUZZY_WUZZY_INDEX] = annotatedDataHandler.readCSV(
                 'Data/' + self.computational_iteration + "/" + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
-        return self.fuzzy_wuzzy_computed_data
-        # self.log(["method1 data loaded: ", len(self.fuzzy_wuzzy_computed_data), " with readHeaders=", readHeaders])
+        return self.computed_data[self.FUZZY_WUZZY_INDEX]
 
-    def read_computed_data_from_bert_base_mean_tokens(self, readHeaders=False):
-        if not readHeaders:
-            self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
+    def read_computed_data_for_model(self, model, read_headers=False, has_syn_sem_threshold=False):
+        print("model",model)
+        if has_syn_sem_threshold or model.endswith("_syn_and_sem"):
+            syn_sem_threshold = str(self.result_file_index)
+        else:
+            syn_sem_threshold = "0-0"
+
+        if not read_headers:
+            self.computed_data[model] = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
+                    model) + '-table-V-' + syn_sem_threshold + '.csv',
                 True)
         else:
-            self.bert_base_mean_tokens_computed_data = annotatedDataHandler.readCSV(
+            self.computed_data[model] = annotatedDataHandler.readCSV(
                 'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_MEAN_TOKENS_INDEX) + '-table-V-' + str(self.result_file_index) + '.csv',
+                    model) + '-table-V-' + syn_sem_threshold + '.csv',
                 True)
-        return self.bert_base_mean_tokens_computed_data
-
-    def read_computed_data_from_bert_base_mean_tokens_syn_and_sem(self, readHeaders=False):
-        if not readHeaders:
-            self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        else:
-            self.bert_base_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        return self.bert_base_mean_tokens_syn_and_sem_computed_data
-
-    def read_computed_data_from_bert_base_sts_mean_tokens(self, readHeaders=False, thresholdValues={}):
-        if not readHeaders:
-            self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        else:
-            self.bert_base_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        return self.bert_base_sts_mean_tokens_computed_data
-
-    def read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
-        if not readHeaders:
-            self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        else:
-            self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        return self.bert_base_sts_mean_tokens_syn_and_sem_computed_data
-
-    def read_computed_data_from_bert_large_sts_mean_tokens(self, readHeaders=False):
-        if not readHeaders:
-            self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        else:
-            self.bert_large_sts_mean_tokens_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        return self.bert_large_sts_mean_tokens_computed_data
-
-    def read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(self, readHeaders=False):
-        if not readHeaders:
-            self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSVWithoutHeaders(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        else:
-            self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = annotatedDataHandler.readCSV(
-                'Data/' + self.computational_iteration + "/" + str(
-                    self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX) + '-table-V-' + str(
-                    self.result_file_index) + '.csv', True)
-        return self.bert_large_sts_mean_tokens_syn_and_sem_computed_data
+        return self.computed_data[model]
 
     def readAllComputedData(self, readHeaders=False):
-        self.read_computed_data_from_fuzzy_wuzzy(readHeaders)
-        self.log(["*"] * 80)
-        self.read_computed_data_from_syn_and_sem(readHeaders)
-        self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_mean_tokens(readHeaders)
-        self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem(readHeaders)
-        self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_sts_mean_tokens(readHeaders)
-        self.log(["*"] * 80)
-        self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem(readHeaders)
-        self.log(["*"] * 80)
-        self.read_computed_data_from_bert_large_sts_mean_tokens(readHeaders)
-        self.log(["*"] * 80)
-        self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem(readHeaders)
-        self.log(["*"] * 80)
+
+        for model in self.computed_method:
+            self.read_computed_data_for_model(model, readHeaders)
+            if model != self.FUZZY_WUZZY_INDEX:
+                self.read_computed_data_for_model(model+"_syn_and_sem", readHeaders, True)
+            self.log(["*"] * 80)
 
     def calculatePearsonScoreBetweenAnnotators(self):
         allAnnotatedDataHandlers = ""
@@ -521,31 +446,16 @@ class AnnotatedDataHandler:
             else:
                 avgAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators()
 
-        if len(self.fuzzy_wuzzy_computed_data) < 1 or len(self.fuzzy_wuzzy_computed_data) < 1 or len(
-                self.fuzzy_wuzzy_computed_data) < 1:
-            self.log("Insufficient data for the computed methods, have you read the files yet?")
-            return
-
         resultAsCsvString = "\r\n"
-
-        self.log('Cohen kappa score  between method1 and avg(annotators): ')
-        resultAsCsvString += "method1 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.fuzzy_wuzzy_computed_data, avgAnnotatedData)) + "\r\n"
-        self.log(["*"] * 80)
-
-        self.log('Cohen kappa score  between method2 and avg(annotators): ')
-        resultAsCsvString += "method2 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.syn_sem_computed_data, avgAnnotatedData)) + "\r\n"
-
-        self.log(["*"] * 80)
-        self.log('Cohen kappa score  between method3 and avg(annotators): ')
-
-        resultAsCsvString += "method3 vs avg(annotators)," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.name_embedding_computed_data, avgAnnotatedData)) + "\r\n"
-        self.log(["*"] * 80)
-
-        self.log(["*"] * 80)
-        self.log(resultAsCsvString)
+        for m in self.computed_method:
+            if len(self.computed_data[m])<1:
+                self.log("Insufficient data for the computed methods, have you read the files yet?")
+                return
+            self.log('Cohen kappa score  between '+m+' and avg(annotators): ')
+            resultAsCsvString += m+" vs avg(annotators)," + ",".join(
+                annotatedDataHandler.getKappaCorrelationScore(self.computed_data[m],
+                                                              avgAnnotatedData)) + "\r\n"
+            self.log(["*"] * 80)
 
     def calculateModeScoreBetweenAllAnnotators(self, hasHeaders=False):
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 \
@@ -801,10 +711,15 @@ class AnnotatedDataHandler:
         return prc_auc_dict
 
     # Calculate the max value for Area under the Precision Recall Curve to identify the class thresholds
-    def calculate_threshold_using_auprc(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
-        self.log("AUPRC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+    def calculate_threshold_using_auprc(self, dataset, method_name, syn_sem_threshold="0-0"):
+        if syn_sem_threshold not in self.result_indexes:
+            has_syn_sem_threshold = False
+        else:
+            has_syn_sem_threshold = True
+
+        self.log("AUPRC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_from[methodIndex](True)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
@@ -839,8 +754,8 @@ class AnnotatedDataHandler:
         ovr_conditions = []
         _max_prc_dict = {}
         max_prc_threshold = {}
-        self.prc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = []
-        self.max_prc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = None
+        self.prc_dict[syn_sem_threshold][method_name] = []
+        self.max_prc_dict[syn_sem_threshold][method_name] = None
         while minFive < float(0.91):
             maxFive = minFive + float(0.1)
             while maxFive <= float(1.0):
@@ -851,7 +766,7 @@ class AnnotatedDataHandler:
                 predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for
                                            similarity_score in development_x]
                 prc_auc_dict = self.prc_auc_score_multiclass(development_y, predicted_development_x)
-                self.prc_dict[syn_sem_threshold][self.computed_method[methodIndex]].append(prc_auc_dict)
+                self.prc_dict[syn_sem_threshold][method_name].append(prc_auc_dict)
                 # Find the max roc_auc score which maximizes class 1.0, then 0.5, and finally 0.0
                 if self.class_equal not in _max_prc_dict:
                     _max_prc_dict = prc_auc_dict
@@ -883,22 +798,26 @@ class AnnotatedDataHandler:
         conditions = self.calculate_ovr_conditions(cm, max_prc_threshold)
         # self.log(conditions)
 
-        self.log(["Method ", self.computed_method[methodIndex], " finished processing."], self.logDEBUG)
+        self.log(["Method ", method_name, " finished processing."], self.logDEBUG)
         self.log(["Max AUPRC achieved:", _max_prc_dict, " at threshold:", max_prc_threshold], self.logDEBUG)
-        self.max_prc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = {"inner_threshold": max_prc_threshold,
+        self.max_prc_dict[syn_sem_threshold][method_name] = {"inner_threshold": max_prc_threshold,
                                                                                    "auc_score": _max_prc_dict,
                                                                                    "auc_method": "prc",
                                                                                    "conditions": conditions}
 
         self.plot_prc(test_y, predicted_test_x, 'Precision-Recall curve at max threshold(' + \
                       str(max_prc_threshold[self.class_unrelated]) + "_" + str(max_prc_threshold[self.class_related]) +
-                      ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+                      ') for Mode(Annotated Data) vs ' + method_name)
 
     # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
-    def calculate_threshold_using_auroc(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
-        self.log("AUROC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+    def calculate_threshold_using_auroc(self, dataset, method_name, syn_sem_threshold="0-0"):
+        if syn_sem_threshold not in self.result_indexes:
+            has_syn_sem_threshold = False
+        else:
+            has_syn_sem_threshold = True
+        self.log("AUROC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_from[methodIndex](True)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
@@ -934,8 +853,8 @@ class AnnotatedDataHandler:
         _max_roc_dict = {}
         max_roc_threshold = {}
 
-        self.roc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = []
-        self.max_roc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = None
+        self.roc_dict[syn_sem_threshold][method_name] = []
+        self.max_roc_dict[syn_sem_threshold][method_name] = None
         while minFive < float(0.91):
             maxFive = minFive + float(0.1)
             while maxFive <= float(1.0):
@@ -946,7 +865,7 @@ class AnnotatedDataHandler:
                 predicted_development_x = [self.convertComputedAttrValue(similarity_score, thresholds) for
                                            similarity_score in development_x]
                 roc_auc_dict = self.roc_auc_score_multiclass(development_y, predicted_development_x)
-                self.roc_dict[syn_sem_threshold][self.computed_method[methodIndex]].append(roc_auc_dict)
+                self.roc_dict[syn_sem_threshold][method_name].append(roc_auc_dict)
                 # Find the max roc_auc score which maximizes class 1.0, then 0.5, and finally 0.0
                 if self.class_equal not in _max_roc_dict:
                     _max_roc_dict = roc_auc_dict
@@ -985,18 +904,18 @@ class AnnotatedDataHandler:
         # self.log(conditions)
         # self.plot_pr(conditions, 'PR at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
         #               + "_" + str(max_roc_threshold[self.class_related]) + \
-        #               ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+        #               ') for Mode(Annotated Data) vs ' + method_name)
 
-        self.log(["Method ", self.computed_method[methodIndex], " finished processing."], self.logTRACE)
+        self.log(["Method ", method_name, " finished processing."], self.logTRACE)
         self.log(["Max AUROC achieved:", _max_roc_dict, " at threshold:", max_roc_threshold], self.logTRACE)
-        self.max_roc_dict[syn_sem_threshold][self.computed_method[methodIndex]] = {"inner_threshold": max_roc_threshold,
+        self.max_roc_dict[syn_sem_threshold][method_name] = {"inner_threshold": max_roc_threshold,
                                                                                    "auc_score": _max_roc_dict,
                                                                                    "auc_method": "roc",
                                                                                    "conditions": conditions}
 
         self.plot_roc(test_y, predicted_test_x, 'ROC at max threshold(' + str(max_roc_threshold[self.class_unrelated]) \
                       + "_" + str(max_roc_threshold[self.class_related]) + \
-                      ') for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
+                      ') for Mode(Annotated Data) vs ' + method_name)
 
     def writeDetailedDictToCsv(self, dict={}, dict_name="result", is_max_score=False):
         file_name = self.raw_dict_result_dir + "" + dict_name
@@ -1056,7 +975,6 @@ class AnnotatedDataHandler:
             # marking the current class as 1 and all other classes as 0
             new_actual_class = [0 if x in other_class else 1 for x in actual_class]
             new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-            # self.plot_roc_curve()
             # plot model roc curve
             fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_class)
             plt.plot(fpr, tpr, marker=marker, label=positive_class, color=color)
@@ -1089,7 +1007,6 @@ class AnnotatedDataHandler:
             # marking the current class as 1 and all other classes as 0
             new_actual_class = [0 if x in other_class else 1 for x in actual_class]
             new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-            # self.plot_roc_curve()
             # plot model roc curve
             precision, recall, _ = precision_recall_curve(new_actual_class, new_pred_class)
             plt.plot(recall, precision, marker=marker, label=positive_class, color=color)
@@ -1291,6 +1208,34 @@ resultParentDir = annotatedDataHandler.resultDir
 _result_roc_parentdir = annotatedDataHandler.roc_result_dir
 _result_prc_parentdir = annotatedDataHandler.prc_result_dir
 
+syn_sem_threshold = "0-0"
+# init threshold holder for this syn_sem key
+annotatedDataHandler.roc_dict[syn_sem_threshold] = {}
+annotatedDataHandler.max_roc_dict[syn_sem_threshold] = {}
+annotatedDataHandler.prc_dict[syn_sem_threshold] = {}
+annotatedDataHandler.max_prc_dict[syn_sem_threshold] = {}
+annotatedDataHandler.result_file_index = syn_sem_threshold
+
+annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
+annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
+annotatedDataHandler.resultDir = resultParentDir + str(syn_sem_threshold) + "/"
+# Make sure the folder for results exists
+if not os.path.exists(annotatedDataHandler.resultDir):
+    os.makedirs(annotatedDataHandler.resultDir)
+if not os.path.exists(annotatedDataHandler.roc_result_dir):
+    os.makedirs(annotatedDataHandler.roc_result_dir)
+if not os.path.exists(annotatedDataHandler.prc_result_dir):
+    os.makedirs(annotatedDataHandler.prc_result_dir)
+if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
+    os.makedirs(annotatedDataHandler.raw_dict_result_dir)
+
+annotatedDataHandler.log("Analyzing the baseline models first")
+for baseline_method in annotatedDataHandler.computed_method:
+    annotatedDataHandler.log(["method:",baseline_method])
+    annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method)
+    annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
+
+
 for syn_sem_threshold in annotatedDataHandler.result_indexes:
 
     annotatedDataHandler.log(["Now processing:", syn_sem_threshold])
@@ -1316,18 +1261,10 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
     if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
         os.makedirs(annotatedDataHandler.raw_dict_result_dir)
 
-    for method_index, method_name in enumerate(annotatedDataHandler.computed_method):
-        # data_in_2d = self.read_computed_data_from[methodIndex](True)
-        # data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-
-        annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_index, syn_sem_threshold)
-
-        # annotatedDataHandler.log(["roc_dict", annotatedDataHandler.roc_dict])
-        # annotatedDataHandler.log(["max_roc_dict", annotatedDataHandler.max_roc_dict])
-
-        # pd.DataFrame(annotatedDataHandler.max_roc_dict).to_csv('max_roc_dict')
-
-        annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_index, syn_sem_threshold)
+    for method_for_syn_sem in annotatedDataHandler.computed_method:
+        if method_for_syn_sem != annotatedDataHandler.FUZZY_WUZZY_INDEX:
+            annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_for_syn_sem+"_syn_sem", syn_sem_threshold)
+            annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_for_syn_sem+"_syn_sem", syn_sem_threshold)
 
         # annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
         # annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
