@@ -716,9 +716,14 @@ class AnnotatedDataHandler:
 
     # Calculate the max value for Area under the Precision Recall Curve to identify the class thresholds
     def calculate_threshold_using_auprc(self, dataset, method_name, syn_sem_threshold="0-0"):
-        self.log("AUROC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+        if syn_sem_threshold not in self.result_indexes:
+            has_syn_sem_threshold = False
+        else:
+            has_syn_sem_threshold = True
+
+        self.log("AUPRC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_from[methodIndex](True)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
@@ -727,16 +732,7 @@ class AnnotatedDataHandler:
         development_y = dataset['dev_y']
         test_y = dataset['test_y']
 
-        # Split the data into development and test set
-        # development_x, test_x, development_y, test_y = train_test_split(
-        #     [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
-        # Split the test set into threshold selection and final test sets
-        # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
-        #     [float(d) for d in test_x], test_y, test_size=0.5)
-
-        # self.plot_roc(test_y, test_x,
-        #               'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-        plotTitle = 'All PRC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex]
+        plotTitle = 'PRC for Mode(Annotated Data) vs ' + method_name
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('Recall')
@@ -751,17 +747,14 @@ class AnnotatedDataHandler:
             new_actual_class = [0 if x in other_class else 1 for x in test_y]
             new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in
                                      test_x]
-            # self.plot_roc_curve()
-            # plot model roc curve
-            # print(new_actual_class)
-            # print(test_y)
-            print(new_pred_similarities)
+
+            # print(new_pred_similarities)
             precision, recall, thresholds = precision_recall_curve(new_actual_class, new_pred_similarities)
             areas=[]
             for thrIndex, threshold in enumerate(thresholds):
                 areas.append(auc([0, recall[thrIndex], 1], [1, precision[thrIndex], 0]))
 
-            ix = argmax(areas)
+            ix = np.argmax(areas)
 
             print(' Threshold', thresholds[ix], ' area: ', areas[ix])
 
@@ -772,7 +765,7 @@ class AnnotatedDataHandler:
 
 
             # axis labels
-        ax.plot([0,recall[ix], 1], [1, precision[ix], 0], color='black', ls="--", size=10)
+        plt.plot([0,recall[ix], 1], [1, precision[ix], 0], color='black', ls="--", linewidth=1)
         # plt.yticks(np.arange(0, 1, step=0.02))
         # # plt.grid(True)
         plt.legend()
@@ -787,10 +780,15 @@ class AnnotatedDataHandler:
         # pyplot.show()
 
     # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
-    def calculate_threshold_using_auroc(self, dataset, methodIndex=1, syn_sem_threshold="0.0-0.0"):
-        self.log("AUROC Mode(Annotated Data) vs " + self.computed_method[methodIndex])
+    def calculate_threshold_using_auroc(self, dataset, method_name, syn_sem_threshold="0.0-0.0"):
+        if syn_sem_threshold not in self.result_indexes:
+            has_syn_sem_threshold = False
+        else:
+            has_syn_sem_threshold = True
+
+        self.log("AUROC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_from[methodIndex](True)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
@@ -799,30 +797,7 @@ class AnnotatedDataHandler:
         development_y = dataset['dev_y']
         test_y = dataset['test_y']
 
-        # Split the data into development and test set
-        # development_x, test_x, development_y, test_y = train_test_split(
-        #     [float(d) for d in data_in_1d], annotatedData, test_size=0.4)
-        # Split the test set into threshold selection and final test sets
-        # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
-        #     [float(d) for d in test_x], test_y, test_size=0.5)
-        self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in development_y if t == self.class_unrelated]),
-            len([t for t in development_y if t == self.class_related]),
-            len([t for t in development_y if t == self.class_equal]))], self.logTRACE)
-
-        # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
-        #       (len([t for t in threshold_selection_y if t == "0.0"]),
-        #        len([t for t in threshold_selection_y if t == "0.5"]),
-        #        len([t for t in threshold_selection_y if t == self.class_equal])))
-
-        self.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in test_y if t == self.class_unrelated]),
-            len([t for t in test_y if t == self.class_related]),
-            len([t for t in test_y if t == self.class_equal]))], self.logTRACE)
-
-        # self.plot_roc(test_y, test_x,
-        #               'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-        plotTitle = 'ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex]
+        plotTitle = 'ROC for Mode(Annotated Data) vs ' + method_name
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('False Positive Rate')
@@ -841,7 +816,7 @@ class AnnotatedDataHandler:
             # plot model roc curve
             # print(new_actual_class)
             # print(test_y)
-            print(new_pred_similarities)
+            # print(new_pred_similarities)
             fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_similarities)
             roc_auc = auc(fpr, tpr)
             gmeans = np.sqrt(tpr*(1-fpr))
@@ -1154,20 +1129,20 @@ dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
     range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
-self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in dataset['dev_y'] if t == self.class_unrelated]),
-            len([t for t in dataset['dev_y'] if t == self.class_related]),
-            len([t for t in dataset['dev_y'] if t == self.class_equal]))], self.logTRACE)
+annotatedDataHandler.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
+            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_unrelated]),
+            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_related]),
+            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
 
 # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
 #       (len([t for t in threshold_selection_y if t == "0.0"]),
 #        len([t for t in threshold_selection_y if t == "0.5"]),
 #        len([t for t in threshold_selection_y if t == self.class_equal])))
 
-self.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
-    len([t for t in dataset['test_y'] if t == self.class_unrelated]),
-    len([t for t in dataset['test_y'] if t == self.class_related]),
-    len([t for t in dataset['test_y'] if t == self.class_equal]))], self.logTRACE)
+annotatedDataHandler.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
+    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_unrelated]),
+    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_related]),
+    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
 
 
 _result_roc_parentdir = annotatedDataHandler.roc_result_dir
