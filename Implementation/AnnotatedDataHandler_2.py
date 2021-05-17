@@ -1177,10 +1177,8 @@ annotatedDataHandler.result_file_index = syn_sem_threshold
 
 annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
 annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
-annotatedDataHandler.resultDir = resultParentDir + str(syn_sem_threshold) + "/"
+
 # Make sure the folder for results exists
-if not os.path.exists(annotatedDataHandler.resultDir):
-    os.makedirs(annotatedDataHandler.resultDir)
 if not os.path.exists(annotatedDataHandler.roc_result_dir):
     os.makedirs(annotatedDataHandler.roc_result_dir)
 if not os.path.exists(annotatedDataHandler.prc_result_dir):
@@ -1209,10 +1207,7 @@ for syn_sem_threshold in annotatedDataHandler.result_indexes:
 
     annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
     annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
-    annotatedDataHandler.resultDir = resultParentDir + str(syn_sem_threshold) + "/"
     # Make sure the folder for results exists
-    if not os.path.exists(annotatedDataHandler.resultDir):
-        os.makedirs(annotatedDataHandler.resultDir)
     if not os.path.exists(annotatedDataHandler.roc_result_dir):
         os.makedirs(annotatedDataHandler.roc_result_dir)
     if not os.path.exists(annotatedDataHandler.prc_result_dir):
