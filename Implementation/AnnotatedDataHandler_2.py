@@ -54,6 +54,7 @@ class AnnotatedDataHandler:
                                "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
         self.computational_iteration = "1.5"
+        self.result_iteration = ".1"
 
         self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
         self.computed_method = ["FUZZY_MATCH",
@@ -102,8 +103,8 @@ class AnnotatedDataHandler:
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
         # Directories
-        self.raw_dict_result_dir = "Results/raw_dicts/" + str(self.computational_iteration) + "/"
-        self.resultDir = "Results/charts/" + str(self.computational_iteration) + "/"
+        self.raw_dict_result_dir = "Results/raw_dicts/" + str(self.computational_iteration) + str(self.result_iteration) + "/"
+        self.resultDir = "Results/charts/" + str(self.computational_iteration) + str(self.result_iteration) + "/"
         self.roc_result_dir = self.resultDir + "/roc/"
         self.prc_result_dir = self.resultDir + "/prc/"
 
@@ -578,6 +579,7 @@ class AnnotatedDataHandler:
                     exit()
         self.log(["countProblematicRows:", countProblematicRows])
 
+    # Calcualte performance metrics from confusion matrix
     def calculate_ovr_conditions(self, cm, thresholds):
         performance_dict = {}
         performance_dict["threshold"] = thresholds
@@ -671,6 +673,7 @@ class AnnotatedDataHandler:
 
         return performance_dict
 
+    # Calculate area under ROC, multiclass using 0-1 probabilities
     # https://stackoverflow.com/questions/39685740/calculate-sklearn-roc-auc-score-for-multi-class/52750599#52750599
     def roc_auc_score_multiclass(self, actual_class, pred_class, average="macro"):
         # creating a set of all the unique classes using the actual class list
@@ -689,6 +692,7 @@ class AnnotatedDataHandler:
 
         return roc_auc_dict
 
+    # Calculate area under PRC, multiclass using 0-1 probabilities
     def prc_auc_score_multiclass(self, actual_class, pred_class, average="macro"):
         # creating a set of all the unique classes using the actual class list
         prc_auc_dict = {}
@@ -729,28 +733,14 @@ class AnnotatedDataHandler:
         # Split the test set into threshold selection and final test sets
         # threshold_selection_x, test_x, threshold_selection_y, test_y = train_test_split(
         #     [float(d) for d in test_x], test_y, test_size=0.5)
-        self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in development_y if t == self.class_unrelated]),
-            len([t for t in development_y if t == self.class_related]),
-            len([t for t in development_y if t == self.class_equal]))], self.logTRACE)
-
-        # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
-        #       (len([t for t in threshold_selection_y if t == "0.0"]),
-        #        len([t for t in threshold_selection_y if t == "0.5"]),
-        #        len([t for t in threshold_selection_y if t == self.class_equal])))
-
-        self.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in test_y if t == self.class_unrelated]),
-            len([t for t in test_y if t == self.class_related]),
-            len([t for t in test_y if t == self.class_equal]))], self.logTRACE)
 
         # self.plot_roc(test_y, test_x,
         #               'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-        plotTitle = 'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex]
+        plotTitle = 'All PRC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex]
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
         plt.title(plotTitle)
 
         for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
@@ -832,7 +822,7 @@ class AnnotatedDataHandler:
 
         # self.plot_roc(test_y, test_x,
         #               'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex])
-        plotTitle = 'All ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex]
+        plotTitle = 'ROC for Mode(Annotated Data) vs ' + self.computed_method[methodIndex]
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('False Positive Rate')
@@ -920,233 +910,234 @@ class AnnotatedDataHandler:
 
             print("done")
 
-    def plot_roc(self, actual_class, pred_class, plotTitle):
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(plotTitle)
+# Older plot functions
+    # def plot_roc(self, actual_class, pred_class, plotTitle):
+    #     fig = plt.figure(figsize=(20, 10))
+    #     ax = fig.add_subplot(111)
+    #     plt.xlabel('False Positive Rate')
+    #     plt.ylabel('True Positive Rate')
+    #     plt.title(plotTitle)
+    #
+    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+    #         # creating a list of all the classes except the current class
+    #         other_class = [x for x in self.classes if x != positive_class]
+    #
+    #         # marking the current class as 1 and all other classes as 0
+    #         new_actual_class = [0 if x in other_class else 1 for x in actual_class]
+    #         new_pred_class = [0 if x in other_class else 1 for x in pred_class]
+    #         # plot model roc curve
+    #         fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_class)
+    #         plt.plot(fpr, tpr, marker=marker, label=positive_class, color=color)
+    #         # axis labels
+    #     ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+    #     # plt.yticks(np.arange(0, 1, step=0.02))
+    #     # # plt.grid(True)
+    #     plt.legend()
+    #     # # plt.show()
+    #     self.log("saving plot:" + plotTitle)
+    #
+    #     fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+    #     plt.close(fig)
+    #     # show the legend
+    #     # pyplot.legend()
+    #     # # show the plot
+    #     # pyplot.show()
 
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            # creating a list of all the classes except the current class
-            other_class = [x for x in self.classes if x != positive_class]
+    # def plot_prc(self, actual_class, pred_class, plotTitle):
+    #     fig = plt.figure(figsize=(20, 10))
+    #     ax = fig.add_subplot(111)
+    #     plt.xlabel('False Positive Rate')
+    #     plt.ylabel('True Positive Rate')
+    #     plt.title(plotTitle)
+    #
+    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+    #         # creating a list of all the classes except the current class
+    #         other_class = [x for x in self.classes if x != positive_class]
+    #
+    #         # marking the current class as 1 and all other classes as 0
+    #         new_actual_class = [0 if x in other_class else 1 for x in actual_class]
+    #         new_pred_class = [0 if x in other_class else 1 for x in pred_class]
+    #         # plot model roc curve
+    #         precision, recall, _ = precision_recall_curve(new_actual_class, new_pred_class)
+    #         plt.plot(recall, precision, marker=marker, label=positive_class, color=color)
+    #         # axis labels
+    #     ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+    #     # plt.yticks(np.arange(0, 1, step=0.02))
+    #     # # plt.grid(True)
+    #     plt.legend()
+    #     # # plt.show()
+    #     self.log("saving plot:" + plotTitle)
+    #     fig.savefig(self.prc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+    #     plt.close(fig)
+    #     # show the legend
+    #     # pyplot.legend()
+    #     # # show the plot
+    #     # pyplot.show()
+    #
+    # # Plot precision
+    # def plot_precision_plot(self, condition_from_experimental_iterations, plotTitle):
+    #     fig = plt.figure(figsize=(20, 10))
+    #     ax = fig.add_subplot(111)
+    #     plt.xlabel('Thresholds')
+    #     plt.ylabel('Precision')
+    #     plt.title(plotTitle)
+    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+    #         recall_from_experimental_iterations = []
+    #         precision_from_experimental_iterations = []
+    #         thresholds_from_experimental_iterations = []
+    #         for cond_i, cond in enumerate(condition_from_experimental_iterations):
+    #             for index in range(0, len(self.classes)):
+    #                 class_result = cond[index]
+    #                 if class_result['classPositive'] == positive_class:
+    #                     precision_from_experimental_iterations.append(class_result['precision'])
+    #                     # recall_from_experimental_iterations.append(class_result["recall"])
+    #                     thresholds_from_experimental_iterations.append(
+    #                         str([round(float(v), 1) for k, v in cond["threshold"].items()]))
+    #
+    #         X_axis = np.arange(len(thresholds_from_experimental_iterations))
+    #         if positive_class == self.class_unrelated:
+    #             plt.bar(X_axis - 0.3, precision_from_experimental_iterations,
+    #                     label=positive_class, color=color, align='center', width=0.2)
+    #         elif positive_class == self.class_related:
+    #             plt.bar(X_axis, precision_from_experimental_iterations,
+    #                     label=positive_class, color=color, align='center', width=0.2)
+    #         else:
+    #             plt.bar(X_axis + 0.3, precision_from_experimental_iterations,
+    #                     label=positive_class, color=color, align='center', width=0.2)
+    #         plt.xticks(X_axis, thresholds_from_experimental_iterations,
+    #                    size='small', rotation=90)
+    #
+    #         # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
+    #         #                    thresholds_from_experimental_iterations):
+    #         #     # print(z["0.0"])
+    #         #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+    #     # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+    #     # ax.set_xticks()
+    #     # plt.xticks(str(cond["threshold"]), rotation=45)
+    #     plt.yticks(np.arange(0, 1, step=0.02))
+    #     # plt.grid(True)
+    #     plt.legend()
+    #     # plt.show()
+    #     self.log("saving plot:" + plotTitle)
+    #     fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+    #     plt.close(fig)
+    #
+    # # Plot precision
+    # def plot_recall_plot(self, condition_from_experimental_iterations, plotTitle):
+    #     fig = plt.figure(figsize=(20, 10))
+    #     ax = fig.add_subplot(111)
+    #     plt.xlabel('Thresholds')
+    #     plt.ylabel('Precision')
+    #     plt.title(plotTitle)
+    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+    #         recall_from_experimental_iterations = []
+    #         precision_from_experimental_iterations = []
+    #         thresholds_from_experimental_iterations = []
+    #         for cond_i, cond in enumerate(condition_from_experimental_iterations):
+    #             for index in range(0, len(self.classes)):
+    #                 class_result = cond[index]
+    #                 if class_result['classPositive'] == positive_class:
+    #                     # precision_from_experimental_iterations.append(class_result['precision'])
+    #                     recall_from_experimental_iterations.append(class_result["recall"])
+    #                     thresholds_from_experimental_iterations.append(
+    #                         str([round(float(v), 1) for k, v in cond["threshold"].items()]))
+    #
+    #         X_axis = np.arange(len(thresholds_from_experimental_iterations))
+    #         if positive_class == self.class_unrelated:
+    #             plt.bar(X_axis - 0.2, recall_from_experimental_iterations,
+    #                     label=positive_class, color=color, align='center', width=0.2)
+    #         elif positive_class == self.class_related:
+    #             plt.bar(X_axis, recall_from_experimental_iterations,
+    #                     label=positive_class, color=color, align='center', width=0.2)
+    #         else:
+    #             plt.bar(X_axis + 0.2, recall_from_experimental_iterations,
+    #                     label=positive_class, color=color, align='center', width=0.2)
+    #         plt.xticks(X_axis, thresholds_from_experimental_iterations,
+    #                    size='small', rotation=90)
+    #         # plt.plot(recall_from_experimental_iterations,
+    #         #          linestyle='dashed',
+    #         #          linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
+    #         # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
+    #         #                    thresholds_from_experimental_iterations):
+    #         #     # print(z["0.0"])
+    #         #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+    #     # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+    #     # plt.xticks(cond["threshold"], rotation=45)
+    #     plt.yticks(np.arange(0, 1, step=0.02))
+    #     # plt.grid(True)
+    #     plt.legend()
+    #     # plt.show()
+    #     self.log("saving plot:" + plotTitle)
+    #     fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+    #     plt.close(fig)
+    #
+    # # Plot precision vs recall
+    # def plot_pr(self, condition_from_experimental_iterations, plotTitle):
+    #     fig = plt.figure(figsize=(20, 10))
+    #     ax = fig.add_subplot(111)
+    #     plt.xlabel('Recall')
+    #     plt.ylabel('Precision')
+    #     plt.title(plotTitle)
+    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+    #         recall_from_experimental_iterations = []
+    #         precision_from_experimental_iterations = []
+    #         thresholds_from_experimental_iterations = []
+    #         for cond in condition_from_experimental_iterations:
+    #             for index in range(0, len(self.classes)):
+    #                 class_result = cond[index]
+    #                 if class_result['classPositive'] == positive_class:
+    #                     precision_from_experimental_iterations.append(class_result['precision'])
+    #                     recall_from_experimental_iterations.append(class_result["recall"])
+    #                     thresholds_from_experimental_iterations.append(cond["threshold"])
+    #
+    #         plt.plot(recall_from_experimental_iterations, precision_from_experimental_iterations,
+    #                  linestyle='dashed',
+    #                  linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
+    #         # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
+    #         #                    thresholds_from_experimental_iterations):
+    #         #     # print(z["0.0"])
+    #         #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
+    #     ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
+    #     plt.xticks(np.arange(0, 1, step=0.02), rotation=45)
+    #     plt.yticks(np.arange(0, 1, step=0.02))
+    #     # plt.grid(True)
+    #     plt.legend()
+    #     # plt.show()
+    #     self.log("saving plot:" + plotTitle)
+    #     fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+    #     plt.close(fig)
+    #
+    # def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
+    #     fig = plt.figure(figsize=(20, 10))
+    #     ax = fig.add_subplot(111)
+    #     plt.xlabel("MCC")
+    #     # Labeling the Y-axis
+    #     plt.ylabel("F-1 Score")
+    #     plt.title(plotTitle)
+    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
+    #         sensitivity_from_experimental_iterations = []
+    #         fpr_from_experimental_iterations = []
+    #         thresholds_from_experimental_iterations = []
+    #         for cond in condition_from_experimental_iterations:
+    #             for index in range(0, len(self.classes)):
+    #                 class_result = cond[index]
+    #                 if class_result['classPositive'] == positive_class:
+    #                     sensitivity_from_experimental_iterations.append(class_result['mcc'])
+    #                     fpr_from_experimental_iterations.append(class_result['f-measure']['1'])
+    #                     thresholds_from_experimental_iterations.append(cond["threshold"])
+    #
+    #         plt.scatter(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
+    #                     label=positive_class, marker=marker)
+    #     # plt.grid(True)
+    #     plt.xticks(np.arange(-1, 1, step=0.05), rotation=45)
+    #     plt.yticks(np.arange(0, 1.02, step=0.02))
+    #     plt.legend()
+    #     # plt.show()
+    #     self.log("saving plot:" + plotTitle)
+    #     fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
+    #     plt.close(fig)
 
-            # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
-            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-            # plot model roc curve
-            fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_class)
-            plt.plot(fpr, tpr, marker=marker, label=positive_class, color=color)
-            # axis labels
-        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        # plt.yticks(np.arange(0, 1, step=0.02))
-        # # plt.grid(True)
-        plt.legend()
-        # # plt.show()
-        self.log("saving plot:" + plotTitle)
-
-        fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-        # show the legend
-        # pyplot.legend()
-        # # show the plot
-        # pyplot.show()
-
-    def plot_prc(self, actual_class, pred_class, plotTitle):
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(plotTitle)
-
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            # creating a list of all the classes except the current class
-            other_class = [x for x in self.classes if x != positive_class]
-
-            # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
-            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-            # plot model roc curve
-            precision, recall, _ = precision_recall_curve(new_actual_class, new_pred_class)
-            plt.plot(recall, precision, marker=marker, label=positive_class, color=color)
-            # axis labels
-        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        # plt.yticks(np.arange(0, 1, step=0.02))
-        # # plt.grid(True)
-        plt.legend()
-        # # plt.show()
-        self.log("saving plot:" + plotTitle)
-        fig.savefig(self.prc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-        # show the legend
-        # pyplot.legend()
-        # # show the plot
-        # pyplot.show()
-
-    # Plot precision
-    def plot_precision_plot(self, condition_from_experimental_iterations, plotTitle):
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('Thresholds')
-        plt.ylabel('Precision')
-        plt.title(plotTitle)
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            recall_from_experimental_iterations = []
-            precision_from_experimental_iterations = []
-            thresholds_from_experimental_iterations = []
-            for cond_i, cond in enumerate(condition_from_experimental_iterations):
-                for index in range(0, len(self.classes)):
-                    class_result = cond[index]
-                    if class_result['classPositive'] == positive_class:
-                        precision_from_experimental_iterations.append(class_result['precision'])
-                        # recall_from_experimental_iterations.append(class_result["recall"])
-                        thresholds_from_experimental_iterations.append(
-                            str([round(float(v), 1) for k, v in cond["threshold"].items()]))
-
-            X_axis = np.arange(len(thresholds_from_experimental_iterations))
-            if positive_class == self.class_unrelated:
-                plt.bar(X_axis - 0.3, precision_from_experimental_iterations,
-                        label=positive_class, color=color, align='center', width=0.2)
-            elif positive_class == self.class_related:
-                plt.bar(X_axis, precision_from_experimental_iterations,
-                        label=positive_class, color=color, align='center', width=0.2)
-            else:
-                plt.bar(X_axis + 0.3, precision_from_experimental_iterations,
-                        label=positive_class, color=color, align='center', width=0.2)
-            plt.xticks(X_axis, thresholds_from_experimental_iterations,
-                       size='small', rotation=90)
-
-            # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
-            #                    thresholds_from_experimental_iterations):
-            #     # print(z["0.0"])
-            #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
-        # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        # ax.set_xticks()
-        # plt.xticks(str(cond["threshold"]), rotation=45)
-        plt.yticks(np.arange(0, 1, step=0.02))
-        # plt.grid(True)
-        plt.legend()
-        # plt.show()
-        self.log("saving plot:" + plotTitle)
-        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-
-    # Plot precision
-    def plot_recall_plot(self, condition_from_experimental_iterations, plotTitle):
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('Thresholds')
-        plt.ylabel('Precision')
-        plt.title(plotTitle)
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            recall_from_experimental_iterations = []
-            precision_from_experimental_iterations = []
-            thresholds_from_experimental_iterations = []
-            for cond_i, cond in enumerate(condition_from_experimental_iterations):
-                for index in range(0, len(self.classes)):
-                    class_result = cond[index]
-                    if class_result['classPositive'] == positive_class:
-                        # precision_from_experimental_iterations.append(class_result['precision'])
-                        recall_from_experimental_iterations.append(class_result["recall"])
-                        thresholds_from_experimental_iterations.append(
-                            str([round(float(v), 1) for k, v in cond["threshold"].items()]))
-
-            X_axis = np.arange(len(thresholds_from_experimental_iterations))
-            if positive_class == self.class_unrelated:
-                plt.bar(X_axis - 0.2, recall_from_experimental_iterations,
-                        label=positive_class, color=color, align='center', width=0.2)
-            elif positive_class == self.class_related:
-                plt.bar(X_axis, recall_from_experimental_iterations,
-                        label=positive_class, color=color, align='center', width=0.2)
-            else:
-                plt.bar(X_axis + 0.2, recall_from_experimental_iterations,
-                        label=positive_class, color=color, align='center', width=0.2)
-            plt.xticks(X_axis, thresholds_from_experimental_iterations,
-                       size='small', rotation=90)
-            # plt.plot(recall_from_experimental_iterations,
-            #          linestyle='dashed',
-            #          linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
-            # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
-            #                    thresholds_from_experimental_iterations):
-            #     # print(z["0.0"])
-            #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
-        # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        # plt.xticks(cond["threshold"], rotation=45)
-        plt.yticks(np.arange(0, 1, step=0.02))
-        # plt.grid(True)
-        plt.legend()
-        # plt.show()
-        self.log("saving plot:" + plotTitle)
-        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-
-    # Plot precision vs recall
-    def plot_pr(self, condition_from_experimental_iterations, plotTitle):
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title(plotTitle)
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            recall_from_experimental_iterations = []
-            precision_from_experimental_iterations = []
-            thresholds_from_experimental_iterations = []
-            for cond in condition_from_experimental_iterations:
-                for index in range(0, len(self.classes)):
-                    class_result = cond[index]
-                    if class_result['classPositive'] == positive_class:
-                        precision_from_experimental_iterations.append(class_result['precision'])
-                        recall_from_experimental_iterations.append(class_result["recall"])
-                        thresholds_from_experimental_iterations.append(cond["threshold"])
-
-            plt.plot(recall_from_experimental_iterations, precision_from_experimental_iterations,
-                     linestyle='dashed',
-                     linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
-            # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
-            #                    thresholds_from_experimental_iterations):
-            #     # print(z["0.0"])
-            #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
-        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        plt.xticks(np.arange(0, 1, step=0.02), rotation=45)
-        plt.yticks(np.arange(0, 1, step=0.02))
-        # plt.grid(True)
-        plt.legend()
-        # plt.show()
-        self.log("saving plot:" + plotTitle)
-        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-
-    def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel("MCC")
-        # Labeling the Y-axis
-        plt.ylabel("F-1 Score")
-        plt.title(plotTitle)
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            sensitivity_from_experimental_iterations = []
-            fpr_from_experimental_iterations = []
-            thresholds_from_experimental_iterations = []
-            for cond in condition_from_experimental_iterations:
-                for index in range(0, len(self.classes)):
-                    class_result = cond[index]
-                    if class_result['classPositive'] == positive_class:
-                        sensitivity_from_experimental_iterations.append(class_result['mcc'])
-                        fpr_from_experimental_iterations.append(class_result['f-measure']['1'])
-                        thresholds_from_experimental_iterations.append(cond["threshold"])
-
-            plt.scatter(sensitivity_from_experimental_iterations, fpr_from_experimental_iterations,
-                        label=positive_class, marker=marker)
-        # plt.grid(True)
-        plt.xticks(np.arange(-1, 1, step=0.05), rotation=45)
-        plt.yticks(np.arange(0, 1.02, step=0.02))
-        plt.legend()
-        # plt.show()
-        self.log("saving plot:" + plotTitle)
-        fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-
-
+# Main script
 annotatedDataHandler = AnnotatedDataHandler()
 
 # annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
@@ -1163,7 +1154,22 @@ dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
     range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
-resultParentDir = annotatedDataHandler.resultDir
+self.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
+            len([t for t in dataset['dev_y'] if t == self.class_unrelated]),
+            len([t for t in dataset['dev_y'] if t == self.class_related]),
+            len([t for t in dataset['dev_y'] if t == self.class_equal]))], self.logTRACE)
+
+# print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
+#       (len([t for t in threshold_selection_y if t == "0.0"]),
+#        len([t for t in threshold_selection_y if t == "0.5"]),
+#        len([t for t in threshold_selection_y if t == self.class_equal])))
+
+self.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
+    len([t for t in dataset['test_y'] if t == self.class_unrelated]),
+    len([t for t in dataset['test_y'] if t == self.class_related]),
+    len([t for t in dataset['test_y'] if t == self.class_equal]))], self.logTRACE)
+
+
 _result_roc_parentdir = annotatedDataHandler.roc_result_dir
 _result_prc_parentdir = annotatedDataHandler.prc_result_dir
 
