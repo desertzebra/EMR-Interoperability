@@ -1,14 +1,15 @@
-import ujson as json
 import copy
-import pickle
-from sentence_transformers import SentenceTransformer, util
-from joblib import Parallel, delayed
-import multiprocessing
-import itertools
 import torch
-from numba import njit, cuda, prange
-from numba import jit
+import pickle
+import itertools
 import numpy as np
+import ujson as json
+from numba import jit
+import multiprocessing
+from gensim.models import Word2Vec
+from numba import njit, cuda, prange
+from joblib import Parallel, delayed
+from sentence_transformers import SentenceTransformer, util
 
 # Function to print the settings
 def print_settings():
@@ -58,12 +59,12 @@ class Similarity:
 
     def readData(self, url):
 
-        with open(url) as json_file:
-            data = json.load(json_file)
+        # with open(url) as json_file:
+        #     data = json.load(json_file)
 
-        # data = []
-        # with open(url, "rb") as fp:
-        #     data = pickle.load(fp)
+        data = []
+        with open(url, "rb") as fp:
+            data = pickle.load(fp)
 
         return data
 
@@ -77,35 +78,69 @@ class Similarity:
 
         return data
 
-    def calcualteBaseLineSimilarity(self, attributes, modelName):
+    def calcualteBaseLineSimilarity(self, attributes):
 
         print('len(attributes)')
         print(len(attributes))
 
         attributeSimilarities = []
 
-        # model = SentenceTransformer('bert-base-nli-stsb-mean-tokens')
-        model = SentenceTransformer(modelName, device=device)
+        leftNodes = []
+        rightNodes = []
 
         for index, attr in enumerate(attributes):
-            if index % 1000==0:
-                print("index", index)
-                print_settings()
-            # print(modelName, ' line i: ', i)
-            formatedAttr = copy.deepcopy(attr)
 
-            # embedding1 = model.encode(attr['nodeLeft']['name'], convert_to_tensor=True)
-            embedding1 = model.encode(attr['nodeLeft']['name'])
-            # embedding2 = model.encode(attr['nodeRight']['name'], convert_to_tensor=True)
-            embedding2 = model.encode(attr['nodeRight']['name'])
+            leftNodes.append(attr['nodeLeft']['name'])
+            rightNodes.append(attr['nodeRight']['name'])
 
-            # similarity = util.pytorch_cos_sim(embedding1, embedding2)
-            similarity = cosine_similarity_numba(embedding1, embedding2)
+        print('leftNodes: ', len(leftNodes), ' rightNodes: ', len(rightNodes))
+        print('leftNodes: ', leftNodes[0], ' rightNodes: ', rightNodes[0])
 
-            formatedAttr['relationshipList'].append(
-                {'type': '', 'method': modelName, 'comments': None, 'confidence': "{:.4f}".format(similarity)})
+        leftModel = Word2Vec(leftNodes, min_count=1)
+        print("leftModel",leftModel)
 
-            attributeSimilarities.append(formatedAttr)
+        rightModel = Word2Vec(rightNodes, min_count=1)
+        print("rightModel",rightModel)
+
+        print("AdmissionId: ", leftModel['AdmissionId'])
+        print("AdmissionEndDate: ", rightModel['AdmissionEndDate'])
+
+        exit()
+
+        if index % 1000==0:
+            print("index", index)
+            print_settings()
+        # print(modelName, ' line i: ', i)
+        formatedAttr = copy.deepcopy(attr)
+
+        # embedding1 = model.encode(attr['nodeLeft']['name'], convert_to_tensor=True)
+        #model1 = model.encode(attr['nodeLeft']['name'])
+        model1 = Word2Vec(attr['nodeLeft']['name'])
+
+        print('model 1: ', len(model1))
+        print(model1)
+
+        exit()
+
+
+
+
+
+
+
+
+
+
+        # embedding2 = model.encode(attr['nodeRight']['name'], convert_to_tensor=True)
+        embedding2 = model.encode(attr['nodeRight']['name'])
+
+        # similarity = util.pytorch_cos_sim(embedding1, embedding2)
+        similarity = cosine_similarity_numba(embedding1, embedding2)
+
+        formatedAttr['relationshipList'].append(
+            {'type': '', 'method': modelName, 'comments': None, 'confidence': "{:.4f}".format(similarity)})
+
+        attributeSimilarities.append(formatedAttr)
 
         return attributeSimilarities
 
@@ -301,15 +336,16 @@ class Similarity:
     #     return attrPair
 
     def calculateSimilarity(self, attributes):
+    
+        # attributes = self.calculateAmplifiedSimilarity(attributes, model)
 
-        for model in self.models:
-            print('model: ', model)
-            attributes = self.calculateAmplifiedSimilarity(attributes, model)
+        attributes = self.calcualteBaseLineSimilarity(attributes)
 
-            attributes = self.calcualteBaseLineSimilarity(attributes, model)
+        print('attributes: ', len(attributes))
+        eixt()
 
-            with open("Data/AmplifiedSimilarity-V0.4"+model+".txt", "wb") as fp:  # Pickling
-                pickle.dump(attributes, fp)
+        # with open("Data/AmplifiedSimilarity-V0.4"+model+".txt", "wb") as fp:  # Pickling
+        #     pickle.dump(attributes, fp)
 
         return attributes
 
@@ -318,7 +354,8 @@ num_cores = multiprocessing.cpu_count() - 1
 print("num_cores:", num_cores)
 
 simObj = Similarity()
-data = simObj.readData('Data/schema_processed_1617174847206.json')
+#data = simObj.readData('Data/schema_processed_1617174847206.json')
+data = simObj.readData('Data/AmplifiedSimilarity-V0.3.txt')
 
 print('data')
 print(len(data))
@@ -327,6 +364,8 @@ print(len(data))
 
 
 similarity = simObj.calculateSimilarity(data)
+
+exit()
 
 # synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 
