@@ -143,8 +143,8 @@ class AnnotatedDataHandler:
                     if not isComputed:
                         attr = self.convertAnnotatedAttrValue(attr)
                     else:
-                        # attr = self.convertComputedAttrValue(attr, thresholds)
-                        attr = attr.strip()
+                        attr = self.convertComputedAttrValue(attr, thresholds)
+                        # attr = attr.strip()
                     cellData.append(attr)
                 if len(cellData) > 0:
                     data.append(cellData)
@@ -172,8 +172,8 @@ class AnnotatedDataHandler:
                     if not isComputed:
                         attr = self.convertAnnotatedAttrValue(attr)
                     else:
-                        # attr = self.convertComputedAttrValue(attr, thresholds)
-                        attr = attr.strip()
+                        attr = self.convertComputedAttrValue(attr, thresholds)
+                        # attr = attr.strip()
 
                     if attr == '':
                         self.log(["rowIterator:", rowIterator, ",colIterator:", colIterator, ",attr:", attr], "DEBUG")
@@ -335,7 +335,7 @@ class AnnotatedDataHandler:
                 'Data/' + self.computational_iteration + "/" + str(self.FUZZY_WUZZY_INDEX) + '-table-V-0-0.csv', True)
         return self.computed_data[self.FUZZY_WUZZY_INDEX]
 
-    def read_computed_data_for_model(self, model, read_headers=False, has_syn_sem_threshold=False):
+    def read_computed_data_for_model(self, model, read_headers=False, has_syn_sem_threshold=False, thresholds={}):
         print("model",model)
         if has_syn_sem_threshold or model.endswith("_syn_and_sem"):
             syn_sem_threshold = str(self.result_file_index)
@@ -346,20 +346,20 @@ class AnnotatedDataHandler:
             self.computed_data[model] = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + self.computational_iteration + "/" + str(
                     model) + '-table-V-' + syn_sem_threshold + '.csv',
-                True)
+                True, thresholds)
         else:
             self.computed_data[model] = annotatedDataHandler.readCSV(
                 'Data/' + self.computational_iteration + "/" + str(
                     model) + '-table-V-' + syn_sem_threshold + '.csv',
-                True)
+                True, thresholds)
         return self.computed_data[model]
 
-    def readAllComputedData(self, readHeaders=False):
+    def readAllComputedData(self, readHeaders=False, thresholds={}):
 
         for model in self.computed_method:
-            self.read_computed_data_for_model(model, readHeaders)
+            self.read_computed_data_for_model(model, readHeaders, thresholds=thresholds)
             if model != self.FUZZY_WUZZY_INDEX:
-                self.read_computed_data_for_model(model+"_syn_and_sem", readHeaders, True)
+                self.read_computed_data_for_model(model+"_syn_and_sem", readHeaders, True, thresholds)
             self.log(["*"] * 80)
 
     def calculatePearsonScoreBetweenAnnotators(self):
@@ -716,7 +716,7 @@ class AnnotatedDataHandler:
         return prc_auc_dict
 
     # Calculate the max value for Area under the Precision Recall Curve to identify the class thresholds
-    def calculate_threshold_using_auprc(self, dataset, method_name, syn_sem_threshold="0-0"):
+    def calculate_threshold_using_auprc(self, dataset, method_name, syn_sem_threshold="0-0", thresholds={}):
         if syn_sem_threshold not in self.result_indexes:
             has_syn_sem_threshold = False
         else:
@@ -724,7 +724,7 @@ class AnnotatedDataHandler:
 
         self.log("AUPRC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
@@ -733,7 +733,7 @@ class AnnotatedDataHandler:
         development_y = dataset['dev_y']
         test_y = dataset['test_y']
 
-        plotTitle = 'PRC for Mode(Annotated Data) vs ' + method_name
+        plotTitle = 'PRC for Mode(Annotated Data) vs ' + method_name+ ' at threshold:'+thresholds
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('Recall')
@@ -746,8 +746,8 @@ class AnnotatedDataHandler:
 
             # marking the current class as 1 and all other classes as 0
             new_actual_class = [0 if x in other_class else 1 for x in test_y]
-            new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in
-                                     test_x]
+            new_pred_similarities = [0 if x in other_class else 1 for x in test_x]
+            # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in test_x]
 
             # print(new_pred_similarities)
             precision, recall, thresholds = precision_recall_curve(new_actual_class, new_pred_similarities)
@@ -781,7 +781,7 @@ class AnnotatedDataHandler:
         # pyplot.show()
 
     # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
-    def calculate_threshold_using_auroc(self, dataset, method_name, syn_sem_threshold="0.0-0.0"):
+    def calculate_threshold_using_auroc(self, dataset, method_name, syn_sem_threshold="0.0-0.0", thresholds={}):
         if syn_sem_threshold not in self.result_indexes:
             has_syn_sem_threshold = False
         else:
@@ -789,16 +789,17 @@ class AnnotatedDataHandler:
 
         self.log("AUROC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds)
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-
+        print(len(data_in_1d))
+        print(len(dataset['dev_x_index']))
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
         development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
         test_x = [data_in_1d[i] for i in dataset['test_x_index']]
         development_y = dataset['dev_y']
         test_y = dataset['test_y']
 
-        plotTitle = 'ROC for Mode(Annotated Data) vs ' + method_name
+        plotTitle = 'ROC for Mode(Annotated Data) vs ' + method_name + ' at threshold:'+thresholds
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('False Positive Rate')
@@ -811,8 +812,9 @@ class AnnotatedDataHandler:
 
             # marking the current class as 1 and all other classes as 0
             new_actual_class = [0 if x in other_class else 1 for x in test_y]
-            new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in
-                                     test_x]
+            new_pred_similarities = [0 if x in other_class else 1 for x in test_x]
+            # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in test_x]
+
             # self.plot_roc_curve()
             # plot model roc curve
             # print(new_actual_class)
@@ -1177,15 +1179,20 @@ if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
 #     annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
 
 annotatedDataHandler.log("Analyzing the word 2 vec first")
-for baseline_method in annotatedDataHandler.computed_method:
-    annotatedDataHandler.log(["method:",baseline_method])
-    annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method)
-    annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
+minFive = 0.0
+maxFive = 0.1
+step = 0.1
+while minFive<1:
+    maxFive = minFive+step
+    while maxFive <=1:
+        thresholds = {annotatedDataHandler.class_unrelated:minFive, annotatedDataHandler.class_related: maxFive}
+        for baseline_method in annotatedDataHandler.computed_method:
+            annotatedDataHandler.log(["method:",baseline_method])
+            annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method, thresholds)
+            annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method, thresholds)
 
-    break
 
 exit()
-
 
 for syn_sem_threshold in annotatedDataHandler.result_indexes:
 
