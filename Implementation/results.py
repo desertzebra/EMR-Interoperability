@@ -10,7 +10,7 @@ class Results:
     # BASE_INDEX = 2
     # FUZZY_WUZZY_INDEX = 1
     # SYN_AND_SEM_SIM_INDEX = 0
-    computational_iteration = "1.5"
+    computational_iteration = "1.6"
     amplified_similarity_execution_index = "0.4"
     models = ['bert-base-nli-stsb-mean-tokens',
               'bert-large-nli-stsb-mean-tokens',
@@ -198,7 +198,8 @@ class Results:
 
 resultObj = Results()
 # data = simObj.readData('Data/dataV03.json')
-data = resultObj.readData('Data/AmplifiedSimilarity-V'+resultObj.amplified_similarity_execution_index+'.txt')
+#data = resultObj.readData('Data/AmplifiedSimilarity-V'+resultObj.amplified_similarity_execution_index+'.txt')
+data = resultObj.readData('Data/AmplifiedSimilarity-Word2Vec-V'+resultObj.amplified_similarity_execution_index+'.txt')
 
 print('data')
 print(len(data))
@@ -210,7 +211,13 @@ print(len(data))
 
 #for syn in frange(0.1, 0.9, 0.1):
 
-resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
+#resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
+resultObj.printBaseHeatMap(data, 'Word2Vec')
+
+
+exit()
+
+
 for model_baseline in resultObj.models:
     resultObj.printBaseHeatMap(data, model_baseline)
 

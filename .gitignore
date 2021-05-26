@@ -55,3 +55,4 @@ Implementation/Data/AmplifiedSimilarity-V0.4roberta-base-nli-stsb-mean-tokens.tx
 Implementation/Data/AmplifiedSimilarity-V0.4roberta-large-nli-mean-tokens.txt
 Implementation/Data/AmplifiedSimilarity-V0.4roberta-large-nli-stsb-mean-tokens.txt
 Implementation/Data/AmplifiedSimilarity-V0.4.txt
+Implementation/Data/AmplifiedSimilarity-Word2Vec-V0.4.txt

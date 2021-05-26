@@ -80,9 +80,6 @@ class Similarity:
 
     def calcualteBaseLineSimilarity(self, attributes):
 
-        print('len(attributes)')
-        print(len(attributes))
-
         attributeSimilarities = []
 
         leftNodes = []
@@ -93,54 +90,30 @@ class Similarity:
             leftNodes.append(attr['nodeLeft']['name'])
             rightNodes.append(attr['nodeRight']['name'])
 
-        print('leftNodes: ', len(leftNodes), ' rightNodes: ', len(rightNodes))
-        print('leftNodes: ', leftNodes[0], ' rightNodes: ', rightNodes[0])
-
-        leftModel = Word2Vec(leftNodes, min_count=1)
-        print("leftModel",leftModel)
-
-        rightModel = Word2Vec(rightNodes, min_count=1)
-        print("rightModel",rightModel)
-
-        print("AdmissionId: ", leftModel['AdmissionId'])
-        print("AdmissionEndDate: ", rightModel['AdmissionEndDate'])
-
-        exit()
-
-        if index % 1000==0:
-            print("index", index)
-            print_settings()
-        # print(modelName, ' line i: ', i)
-        formatedAttr = copy.deepcopy(attr)
-
-        # embedding1 = model.encode(attr['nodeLeft']['name'], convert_to_tensor=True)
-        #model1 = model.encode(attr['nodeLeft']['name'])
-        model1 = Word2Vec(attr['nodeLeft']['name'])
-
-        print('model 1: ', len(model1))
-        print(model1)
-
-        exit()
+        
+        leftModel = Word2Vec([leftNodes])
+        rightModel = Word2Vec([rightNodes])
 
 
+        for index, leftWord in enumerate(leftNodes):
+
+            formatedAttr = copy.deepcopy(attributes[index])
+
+            try:
+                similarity = cosine_similarity_numba(leftModel.wv[leftWord], rightModel.wv[rightNodes[index]])
+                comment = None
+            except Exception as e:
+                similarity = 0
+                comment = 'Not Found'
 
 
+            # similarity = cosine_similarity_numba(leftModel.wv[leftWord], rightModel.wv[rightNodes[index]])
 
+            formatedAttr['relationshipList'].append(
+                {'type': '', 'method': 'Word2Vec', 'comments': comment, 'confidence': similarity})
 
+            attributeSimilarities.append(formatedAttr)
 
-
-
-
-        # embedding2 = model.encode(attr['nodeRight']['name'], convert_to_tensor=True)
-        embedding2 = model.encode(attr['nodeRight']['name'])
-
-        # similarity = util.pytorch_cos_sim(embedding1, embedding2)
-        similarity = cosine_similarity_numba(embedding1, embedding2)
-
-        formatedAttr['relationshipList'].append(
-            {'type': '', 'method': modelName, 'comments': None, 'confidence': "{:.4f}".format(similarity)})
-
-        attributeSimilarities.append(formatedAttr)
 
         return attributeSimilarities
 
@@ -341,11 +314,10 @@ class Similarity:
 
         attributes = self.calcualteBaseLineSimilarity(attributes)
 
-        print('attributes: ', len(attributes))
-        eixt()
+        
 
-        # with open("Data/AmplifiedSimilarity-V0.4"+model+".txt", "wb") as fp:  # Pickling
-        #     pickle.dump(attributes, fp)
+        with open("Data/AmplifiedSimilarity-Word2Vec-V0.4.txt", "wb") as fp:  # Pickling
+            pickle.dump(attributes, fp)
 
         return attributes
 
@@ -365,7 +337,7 @@ print(len(data))
 
 similarity = simObj.calculateSimilarity(data)
 
-exit()
+
 
 # synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 
@@ -375,5 +347,5 @@ exit()
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-V0.4.txt", "wb") as fp:  # Pickling
-    pickle.dump(similarity, fp)
+# with open("Data/AmplifiedSimilarity-V0.4.txt", "wb") as fp:  # Pickling
+#     pickle.dump(similarity, fp)

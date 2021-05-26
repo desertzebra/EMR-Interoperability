@@ -53,11 +53,12 @@ class AnnotatedDataHandler:
         self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3",
                                "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
-        self.computational_iteration = "1.5"
+        self.computational_iteration = "1.6"
         self.result_iteration = ".1"
 
         self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
-        self.computed_method = ["FUZZY_MATCH",
+        self.computed_method = ["Word2Vec",
+                                "FUZZY_MATCH",
                                 'bert-base-nli-stsb-mean-tokens',
                                 'bert-large-nli-stsb-mean-tokens',
                                 'roberta-base-nli-stsb-mean-tokens',
@@ -834,6 +835,8 @@ class AnnotatedDataHandler:
         # # plt.show()
         self.log("saving plot:" + plotTitle)
 
+        self.log("File path:" +  self.roc_result_dir + self.get_valid_filename(plotTitle))
+
         fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
         plt.close(fig)
         # show the legend
@@ -1167,11 +1170,21 @@ if not os.path.exists(annotatedDataHandler.prc_result_dir):
 if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
     os.makedirs(annotatedDataHandler.raw_dict_result_dir)
 
-annotatedDataHandler.log("Analyzing the baseline models first")
+# annotatedDataHandler.log("Analyzing the baseline models first")
+# for baseline_method in annotatedDataHandler.computed_method:
+#     annotatedDataHandler.log(["method:",baseline_method])
+#     annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method)
+#     annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
+
+annotatedDataHandler.log("Analyzing the word 2 vec first")
 for baseline_method in annotatedDataHandler.computed_method:
     annotatedDataHandler.log(["method:",baseline_method])
     annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method)
     annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
+
+    break
+
+exit()
 
 
 for syn_sem_threshold in annotatedDataHandler.result_indexes:
