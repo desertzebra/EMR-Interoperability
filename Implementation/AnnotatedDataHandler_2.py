@@ -100,8 +100,8 @@ class AnnotatedDataHandler:
         self.prc_dict = {}
         self.max_prc_dict = {}
         # Plot accessories
-        # self.classes = [self.class_unrelated, self.class_related, self.class_equal]
-        self.classes = [self.class_unrelated, self.class_related]
+        self.classes = [self.class_unrelated, self.class_related, self.class_equal]
+        # self.classes = [self.class_unrelated, self.class_related]
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
         # Directories
@@ -144,8 +144,8 @@ class AnnotatedDataHandler:
                     if not isComputed:
                         attr = self.convertAnnotatedAttrValue(attr)
                     else:
-                        attr = self.convertComputedAttrValue(attr, thresholds)
-                        # attr = attr.strip()
+                        # attr = self.convertComputedAttrValue(attr, thresholds)
+                        attr = attr.strip()
                     cellData.append(attr)
                 if len(cellData) > 0:
                     data.append(cellData)
@@ -173,8 +173,8 @@ class AnnotatedDataHandler:
                     if not isComputed:
                         attr = self.convertAnnotatedAttrValue(attr)
                     else:
-                        attr = self.convertComputedAttrValue(attr, thresholds)
-                        # attr = attr.strip()
+                        # attr = self.convertComputedAttrValue(attr, thresholds)
+                        attr = attr.strip()
 
                     if attr == '':
                         self.log(["rowIterator:", rowIterator, ",colIterator:", colIterator, ",attr:", attr], "DEBUG")
@@ -245,8 +245,8 @@ class AnnotatedDataHandler:
         # elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
         elif self.isFloat(attr) and float(attr) < thresholds[self.class_unrelated]:
             return self.class_unrelated
-        # elif self.isFloat(attr) and thresholds[self.class_unrelated] <= float(attr) < thresholds[self.class_related]:
-        #     return self.class_related
+        elif self.isFloat(attr) and thresholds[self.class_unrelated] <= float(attr) < thresholds[self.class_related]:
+            return self.class_related
         elif self.isFloat(attr) and thresholds[self.class_related] <= float(attr):
             return self.class_related
 
@@ -347,20 +347,20 @@ class AnnotatedDataHandler:
             self.computed_data[model] = annotatedDataHandler.readCSVWithoutHeaders(
                 'Data/' + self.computational_iteration + "/" + str(
                     model) + '-table-V-' + syn_sem_threshold + '.csv',
-                True, thresholds)
+                True, thresholds={})
         else:
             self.computed_data[model] = annotatedDataHandler.readCSV(
                 'Data/' + self.computational_iteration + "/" + str(
                     model) + '-table-V-' + syn_sem_threshold + '.csv',
-                True, thresholds)
+                True, thresholds={})
         return self.computed_data[model]
 
     def readAllComputedData(self, readHeaders=False, thresholds={}):
 
         for model in self.computed_method:
-            self.read_computed_data_for_model(model, readHeaders, thresholds=thresholds)
+            self.read_computed_data_for_model(model, readHeaders, thresholds={})
             if model != self.FUZZY_WUZZY_INDEX:
-                self.read_computed_data_for_model(model+"_syn_and_sem", readHeaders, True, thresholds)
+                self.read_computed_data_for_model(model+"_syn_and_sem", readHeaders, True, thresholds={})
             self.log(["*"] * 80)
 
     def calculatePearsonScoreBetweenAnnotators(self):
@@ -725,14 +725,14 @@ class AnnotatedDataHandler:
 
         self.log("AUPRC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds={})
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
 
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
         development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
-        test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+        # test_x = [data_in_1d[i] for i in dataset['test_x_index']]
         development_y = dataset['dev_y']
-        test_y = dataset['test_y']
+        # test_y = dataset['test_y']
 
         plotTitle = 'PRC for Mode(Annotated Data) vs ' + method_name+ ' at threshold:'+str(thresholds)
         fig = plt.figure(figsize=(20, 10))
@@ -746,9 +746,10 @@ class AnnotatedDataHandler:
             other_class = [x for x in self.classes if x != positive_class]
 
             # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in test_y]
-            new_pred_similarities = [0 if x in other_class else 1 for x in test_x]
-            # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in test_x]
+            new_actual_class = [0 if x in other_class else 1 for x in development_y]
+            # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in
+            #                          test_x]
+            new_pred_similarities = [0 if x in other_class else 1 for x in development_x]
 
             # print(new_pred_similarities)
             precision, recall, thresholds = precision_recall_curve(new_actual_class, new_pred_similarities)
@@ -790,10 +791,9 @@ class AnnotatedDataHandler:
 
         self.log("AUROC Mode(Annotated Data) vs " + method_name)
         # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds)
+        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds={})
         data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-        print(len(data_in_1d))
-        print(len(dataset['dev_x_index']))
+
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
         development_x = []
         for i in dataset['dev_x_index']:
@@ -809,6 +809,7 @@ class AnnotatedDataHandler:
         # test_y = dataset['test_y']
 
         plotTitle = 'ROC for Mode(Annotated Data) vs ' + method_name + ' at threshold:'+str(thresholds)
+
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('False Positive Rate')
@@ -820,6 +821,7 @@ class AnnotatedDataHandler:
             other_class = [x for x in self.classes if x != positive_class]
 
             # marking the current class as 1 and all other classes as 0
+
             new_actual_class = [0 if x in other_class else 1 for x in development_y]
             new_pred_similarities = [0 if x in other_class else 1 for x in development_x]
             # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in test_x]
@@ -863,18 +865,18 @@ class AnnotatedDataHandler:
             csv_writer = csv.writer(csv_file, delimiter=',')
             # pd.DataFrame(annotatedDataHandler.roc_dict).to_csv('roc_dict')
             if is_max_score:
-                # csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
-                #                      " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
-                #                      " AUC Score - " + self.class_equal,
-                #                      "Conditions - positive class=" + self.class_unrelated
-                #                         , "Conditions - positive class=" + self.class_related
-                #                         , "Conditions - positive class=" + self.class_equal])
-
                 csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
                                      " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
+                                     " AUC Score - " + self.class_equal,
                                      "Conditions - positive class=" + self.class_unrelated
-                                        , "Conditions - positive class=" + self.class_related]
-                                     )
+                                        , "Conditions - positive class=" + self.class_related
+                                        , "Conditions - positive class=" + self.class_equal])
+
+                # csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
+                #                      " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
+                #                      "Conditions - positive class=" + self.class_unrelated
+                #                         , "Conditions - positive class=" + self.class_related]
+                #                      )
 
 
             else:
@@ -889,22 +891,22 @@ class AnnotatedDataHandler:
                         inner_threshold_str = str(k_method_value["inner_threshold"][self.class_unrelated]) + "_" + \
                                               str(k_method_value["inner_threshold"][self.class_related])
                         auc_method = k_method_value["auc_method"]
-                        # csv_writer.writerow(
-                        #     [k_outer_threshold, k_method_name, inner_threshold_str, auc_method,
-                        #      k_method_value["auc_score"][self.class_unrelated],
-                        #      k_method_value["auc_score"][self.class_related],
-                        #      k_method_value["auc_score"][self.class_equal],
-                        #      str(k_method_value["conditions"][0]),
-                        #      str(k_method_value["conditions"][1]),
-                        #      str(k_method_value["conditions"][2])
-                        #      ])
                         csv_writer.writerow(
                             [k_outer_threshold, k_method_name, inner_threshold_str, auc_method,
                              k_method_value["auc_score"][self.class_unrelated],
                              k_method_value["auc_score"][self.class_related],
+                             k_method_value["auc_score"][self.class_equal],
                              str(k_method_value["conditions"][0]),
                              str(k_method_value["conditions"][1]),
+                             str(k_method_value["conditions"][2])
                              ])
+                        # csv_writer.writerow(
+                        #     [k_outer_threshold, k_method_name, inner_threshold_str, auc_method,
+                        #      k_method_value["auc_score"][self.class_unrelated],
+                        #      k_method_value["auc_score"][self.class_related],
+                        #      str(k_method_value["conditions"][0]),
+                        #      str(k_method_value["conditions"][1]),
+                        #      ])
                     else:
                         for auc_object_classes in k_method_value:
                             csv_writer.writerow(
@@ -1220,8 +1222,16 @@ while minFive<1:
             annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method, thresholds)
             annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method, thresholds)
 
+#
+# for baseline_method in annotatedDataHandler.computed_method:
+#     annotatedDataHandler.log(["method:",baseline_method])
+#     annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method)
+#     annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
+
+    break
 
 exit()
+
 
 for syn_sem_threshold in annotatedDataHandler.result_indexes:
 
