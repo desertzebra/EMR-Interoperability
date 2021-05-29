@@ -36,13 +36,6 @@ class AnnotatedDataHandler:
                        'distilbert-base-nli-mean-tokens'
                        ]
 
-
-        # self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-large-nli-stsb-mean-tokens-Syn-SEM"
-        # self.BERT_LARGE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-large-nli-stsb-mean-tokens"
-        # self.BERT_BASE_NLI_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-mean-tokens-Syn-SEM"
-        # self.BERT_BASE_NLI_MEAN_TOKENS_INDEX = "bert-base-nli-mean-tokens"
-        # self.BERT_BASE_NLI_STSB_MEAN_TOKENS_SYN_AND_SEM_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
-        # self.BERT_BASE_NLI_STSB_MEAN_TOKENS_INDEX = "bert-base-nli-stsb-mean-tokens-Syn-SEM"
         # Annotations
         self.annotator1Data = []
         self.annotator2Data = []
@@ -75,30 +68,13 @@ class AnnotatedDataHandler:
         for m in self.computed_method:
             self.computed_data[m] = []
 
-        # self.read_computed_data_from = [self.read_computed_data_from_fuzzy_wuzzy,
-        #                                 self.read_computed_data_from_bert_large_sts_mean_tokens_syn_and_sem,
-        #                                 self.read_computed_data_from_bert_large_sts_mean_tokens,
-        #                                 self.read_computed_data_from_bert_base_mean_tokens_syn_and_sem,
-        #                                 self.read_computed_data_from_bert_base_mean_tokens,
-        #                                 self.read_computed_data_from_bert_base_sts_mean_tokens_syn_and_sem,
-        #                                 self.read_computed_data_from_bert_base_sts_mean_tokens
-        #                                 ]
-
-
-        # self.fuzzy_wuzzy_computed_data = []
-        # self.bert_base_mean_tokens_computed_data = []
-        # self.bert_base_mean_tokens_syn_and_sem_computed_data = []
-        # self.bert_base_sts_mean_tokens_computed_data = []
-        # self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
-        # self.bert_large_sts_mean_tokens_computed_data = []
-        # self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
         self.class_equal = "1.0"
         self.class_related = "0.5"
         self.class_unrelated = "0.0"
-        self.roc_dict = {}
-        self.max_roc_dict = {}
-        self.prc_dict = {}
-        self.max_prc_dict = {}
+        # self.roc_dict = {}
+        # self.max_roc_dict = {}
+        # self.prc_dict = {}
+        # self.max_prc_dict = {}
         # Plot accessories
         self.classes = [self.class_unrelated, self.class_related, self.class_equal]
         self.marker_set = ["o", "^", "x"]
@@ -115,14 +91,6 @@ class AnnotatedDataHandler:
         self.annotator3Data = []
         self.annotator4Data = []
         self.computed_data = {}
-
-        # self.fuzzy_wuzzy_computed_data = []
-        # self.bert_base_mean_tokens_computed_data = []
-        # self.bert_base_mean_tokens_syn_and_sem_computed_data = []
-        # self.bert_base_sts_mean_tokens_computed_data = []
-        # self.bert_base_sts_mean_tokens_syn_and_sem_computed_data = []
-        # self.bert_large_sts_mean_tokens_computed_data = []
-        # self.bert_large_sts_mean_tokens_syn_and_sem_computed_data = []
 
     def log(self, msg, log_at="INFO"):
         if log_at in self.logLevel:
@@ -449,14 +417,29 @@ class AnnotatedDataHandler:
                 avgAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators()
 
         resultAsCsvString = "\r\n"
+        # print(self.computed_data)
         for m in self.computed_method:
             if len(self.computed_data[m])<1:
                 self.log("Insufficient data for the computed methods, have you read the files yet?")
                 return
             self.log('Cohen kappa score  between '+m+' and avg(annotators): ')
+            data_in_1d = self.collapseDataSetTo1d(self.computed_data[m])
+            # print(len(avgAnnotatedData))
+            # self.log(["*"]*80)
+            # self.log(["*"] * 80)
+            # self.log(["*"] * 80)
+            # self.log(["*"] * 80)
+            # self.log(["*"] * 80)
+            # self.log(["*"] * 80)
+            # self.log(["*"] * 80)
+            # self.log(["*"] * 80)
+            # print(len(data_in_1d))
+            # annotatedDataHandler.computed_data[baseline_method] = data_in_1d
+
             resultAsCsvString += m+" vs avg(annotators)," + ",".join(
-                annotatedDataHandler.getKappaCorrelationScore(self.computed_data[m],
+                annotatedDataHandler.getKappaCorrelationScore(data_in_1d,
                                                               avgAnnotatedData)) + "\r\n"
+            print("resultAsCsvString:",resultAsCsvString)
             self.log(["*"] * 80)
 
     def calculateModeScoreBetweenAllAnnotators(self, hasHeaders=False):
@@ -674,178 +657,6 @@ class AnnotatedDataHandler:
 
         return performance_dict
 
-    # Calculate area under ROC, multiclass using 0-1 probabilities
-    # https://stackoverflow.com/questions/39685740/calculate-sklearn-roc-auc-score-for-multi-class/52750599#52750599
-    def roc_auc_score_multiclass(self, actual_class, pred_class, average="macro"):
-        # creating a set of all the unique classes using the actual class list
-        roc_auc_dict = {}
-        for per_class in self.classes:
-            # creating a list of all the classes except the current class
-            other_class = [x for x in self.classes if x != per_class]
-
-            # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
-            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-
-            # using the sklearn metrics method to calculate the roc_auc_score
-            roc_auc = roc_auc_score(new_actual_class, new_pred_class, average=average)
-            roc_auc_dict[per_class] = roc_auc
-
-        return roc_auc_dict
-
-    # Calculate area under PRC, multiclass using 0-1 probabilities
-    def prc_auc_score_multiclass(self, actual_class, pred_class, average="macro"):
-        # creating a set of all the unique classes using the actual class list
-        prc_auc_dict = {}
-        for per_class in self.classes:
-            # creating a list of all the classes except the current class
-            other_class = [x for x in self.classes if x != per_class]
-
-            # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in actual_class]
-            new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-
-            # using the sklearn metrics method to calculate the roc_auc_score
-            precision, recall, thresholds = precision_recall_curve(new_actual_class, new_pred_class)
-            # print("precision:", precision, "| recall:", recall)
-            precision, recall = zip(*sorted(zip(precision, recall)))
-            # print("precision:",precision, "| recall:",recall)
-            prc_auc = auc(precision, recall)
-            # print('computed AUC using sklearn.metrics.auc: {}'.format(prc_auc))
-            prc_auc_dict[per_class] = prc_auc
-        return prc_auc_dict
-
-    # Calculate the max value for Area under the Precision Recall Curve to identify the class thresholds
-    def calculate_threshold_using_auprc(self, dataset, method_name, syn_sem_threshold="0-0", thresholds={}):
-        if syn_sem_threshold not in self.result_indexes:
-            has_syn_sem_threshold = False
-        else:
-            has_syn_sem_threshold = True
-
-        self.log("AUPRC Mode(Annotated Data) vs " + method_name)
-        # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds)
-        data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-
-        # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
-        development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
-        test_x = [data_in_1d[i] for i in dataset['test_x_index']]
-        development_y = dataset['dev_y']
-        test_y = dataset['test_y']
-
-        plotTitle = 'PRC for Mode(Annotated Data) vs ' + method_name+ ' at threshold:'+str(thresholds)
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title(plotTitle)
-
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            # creating a list of all the classes except the current class
-            other_class = [x for x in self.classes if x != positive_class]
-
-            # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in test_y]
-            new_pred_similarities = [0 if x in other_class else 1 for x in test_x]
-            # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in test_x]
-
-            # print(new_pred_similarities)
-            precision, recall, thresholds = precision_recall_curve(new_actual_class, new_pred_similarities)
-            areas=[]
-            for thrIndex, threshold in enumerate(thresholds):
-                areas.append(auc([0, recall[thrIndex], 1], [1, precision[thrIndex], 0]))
-
-            ix = np.argmax(areas)
-
-            print(' Threshold', thresholds[ix], ' area: ', areas[ix])
-
-            plt.plot(recall, precision, marker='.',
-                     label='Class=' + str(positive_class) + ' (area = %0.2f at threshold = %0.2f)' % (
-                         areas[ix], new_pred_similarities[ix]), color=color, linewidth=2)
-            plt.scatter(recall[ix], precision[ix], marker=marker, edgecolor='black', color=color, s=100, linewidth=3, label='Best Threshold')
-
-
-            # axis labels
-        plt.plot([0,recall[ix], 1], [1, precision[ix], 0], color='black', ls="--", linewidth=1)
-        # plt.yticks(np.arange(0, 1, step=0.02))
-        # # plt.grid(True)
-        plt.legend()
-        # # plt.show()
-        self.log("saving plot:" + plotTitle)
-
-        fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-        # show the legend
-        # pyplot.legend()
-        # # show the plot
-        # pyplot.show()
-
-    # Calculate the max value for Area under the Receiver operating characteristic curve to identify the class thresholds
-    def calculate_threshold_using_auroc(self, dataset, method_name, syn_sem_threshold="0.0-0.0", thresholds={}):
-        if syn_sem_threshold not in self.result_indexes:
-            has_syn_sem_threshold = False
-        else:
-            has_syn_sem_threshold = True
-
-        self.log("AUROC Mode(Annotated Data) vs " + method_name)
-        # # read all data produced by the computed method in 1 go
-        data_in_2d = self.read_computed_data_for_model(method_name, True, has_syn_sem_threshold, thresholds)
-        data_in_1d = annotatedDataHandler.collapseDataSetTo1d(data_in_2d)
-        print(len(data_in_1d))
-        print(len(dataset['dev_x_index']))
-        # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
-        development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
-        test_x = [data_in_1d[i] for i in dataset['test_x_index']]
-        development_y = dataset['dev_y']
-        test_y = dataset['test_y']
-
-        plotTitle = 'ROC for Mode(Annotated Data) vs ' + method_name + ' at threshold:'+str(thresholds)
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(111)
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(plotTitle)
-
-        for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-            # creating a list of all the classes except the current class
-            other_class = [x for x in self.classes if x != positive_class]
-
-            # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in test_y]
-            new_pred_similarities = [0 if x in other_class else 1 for x in test_x]
-            # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in test_x]
-
-            # self.plot_roc_curve()
-            # plot model roc curve
-            # print(new_actual_class)
-            # print(test_y)
-            # print(new_pred_similarities)
-            fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_similarities)
-            roc_auc = auc(fpr, tpr)
-            gmeans = np.sqrt(tpr*(1-fpr))
-            ix = np.argmax(gmeans)
-            plt.plot(fpr, tpr, marker='.',
-                     label='Class=' + str(positive_class) + ' (area = %0.2f at threshold = %0.2f)' % (
-                     roc_auc, new_pred_similarities[ix]), color=color)
-            plt.scatter(fpr[ix], tpr[ix], marker=marker, edgecolor='black', color=color, s=100, linewidth=3)
-
-            # axis labels
-        ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-        # plt.yticks(np.arange(0, 1, step=0.02))
-        # # plt.grid(True)
-        plt.legend()
-        # # plt.show()
-        self.log("saving plot:" + plotTitle)
-
-        self.log("File path:" +  self.roc_result_dir + self.get_valid_filename(plotTitle))
-
-        fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-        plt.close(fig)
-        # show the legend
-        # pyplot.legend()
-        # # show the plot
-        # pyplot.show()
-
     def writeDetailedDictToCsv(self, dict={}, dict_name="result", is_max_score=False):
         file_name = self.raw_dict_result_dir + "" + dict_name
         dict_table = []
@@ -890,203 +701,6 @@ class AnnotatedDataHandler:
 
             print("done")
 
-# Older plot functions
-    # def plot_roc(self, actual_class, pred_class, plotTitle):
-    #     fig = plt.figure(figsize=(20, 10))
-    #     ax = fig.add_subplot(111)
-    #     plt.xlabel('False Positive Rate')
-    #     plt.ylabel('True Positive Rate')
-    #     plt.title(plotTitle)
-    #
-    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-    #         # creating a list of all the classes except the current class
-    #         other_class = [x for x in self.classes if x != positive_class]
-    #
-    #         # marking the current class as 1 and all other classes as 0
-    #         new_actual_class = [0 if x in other_class else 1 for x in actual_class]
-    #         new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-    #         # plot model roc curve
-    #         fpr, tpr, max_threshold = roc_curve(new_actual_class, new_pred_class)
-    #         plt.plot(fpr, tpr, marker=marker, label=positive_class, color=color)
-    #         # axis labels
-    #     ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-    #     # plt.yticks(np.arange(0, 1, step=0.02))
-    #     # # plt.grid(True)
-    #     plt.legend()
-    #     # # plt.show()
-    #     self.log("saving plot:" + plotTitle)
-    #
-    #     fig.savefig(self.roc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-    #     plt.close(fig)
-    #     # show the legend
-    #     # pyplot.legend()
-    #     # # show the plot
-    #     # pyplot.show()
-
-    # def plot_prc(self, actual_class, pred_class, plotTitle):
-    #     fig = plt.figure(figsize=(20, 10))
-    #     ax = fig.add_subplot(111)
-    #     plt.xlabel('False Positive Rate')
-    #     plt.ylabel('True Positive Rate')
-    #     plt.title(plotTitle)
-    #
-    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-    #         # creating a list of all the classes except the current class
-    #         other_class = [x for x in self.classes if x != positive_class]
-    #
-    #         # marking the current class as 1 and all other classes as 0
-    #         new_actual_class = [0 if x in other_class else 1 for x in actual_class]
-    #         new_pred_class = [0 if x in other_class else 1 for x in pred_class]
-    #         # plot model roc curve
-    #         precision, recall, _ = precision_recall_curve(new_actual_class, new_pred_class)
-    #         plt.plot(recall, precision, marker=marker, label=positive_class, color=color)
-    #         # axis labels
-    #     ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-    #     # plt.yticks(np.arange(0, 1, step=0.02))
-    #     # # plt.grid(True)
-    #     plt.legend()
-    #     # # plt.show()
-    #     self.log("saving plot:" + plotTitle)
-    #     fig.savefig(self.prc_result_dir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-    #     plt.close(fig)
-    #     # show the legend
-    #     # pyplot.legend()
-    #     # # show the plot
-    #     # pyplot.show()
-    #
-    # # Plot precision
-    # def plot_precision_plot(self, condition_from_experimental_iterations, plotTitle):
-    #     fig = plt.figure(figsize=(20, 10))
-    #     ax = fig.add_subplot(111)
-    #     plt.xlabel('Thresholds')
-    #     plt.ylabel('Precision')
-    #     plt.title(plotTitle)
-    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-    #         recall_from_experimental_iterations = []
-    #         precision_from_experimental_iterations = []
-    #         thresholds_from_experimental_iterations = []
-    #         for cond_i, cond in enumerate(condition_from_experimental_iterations):
-    #             for index in range(0, len(self.classes)):
-    #                 class_result = cond[index]
-    #                 if class_result['classPositive'] == positive_class:
-    #                     precision_from_experimental_iterations.append(class_result['precision'])
-    #                     # recall_from_experimental_iterations.append(class_result["recall"])
-    #                     thresholds_from_experimental_iterations.append(
-    #                         str([round(float(v), 1) for k, v in cond["threshold"].items()]))
-    #
-    #         X_axis = np.arange(len(thresholds_from_experimental_iterations))
-    #         if positive_class == self.class_unrelated:
-    #             plt.bar(X_axis - 0.3, precision_from_experimental_iterations,
-    #                     label=positive_class, color=color, align='center', width=0.2)
-    #         elif positive_class == self.class_related:
-    #             plt.bar(X_axis, precision_from_experimental_iterations,
-    #                     label=positive_class, color=color, align='center', width=0.2)
-    #         else:
-    #             plt.bar(X_axis + 0.3, precision_from_experimental_iterations,
-    #                     label=positive_class, color=color, align='center', width=0.2)
-    #         plt.xticks(X_axis, thresholds_from_experimental_iterations,
-    #                    size='small', rotation=90)
-    #
-    #         # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
-    #         #                    thresholds_from_experimental_iterations):
-    #         #     # print(z["0.0"])
-    #         #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
-    #     # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-    #     # ax.set_xticks()
-    #     # plt.xticks(str(cond["threshold"]), rotation=45)
-    #     plt.yticks(np.arange(0, 1, step=0.02))
-    #     # plt.grid(True)
-    #     plt.legend()
-    #     # plt.show()
-    #     self.log("saving plot:" + plotTitle)
-    #     fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-    #     plt.close(fig)
-    #
-    # # Plot precision
-    # def plot_recall_plot(self, condition_from_experimental_iterations, plotTitle):
-    #     fig = plt.figure(figsize=(20, 10))
-    #     ax = fig.add_subplot(111)
-    #     plt.xlabel('Thresholds')
-    #     plt.ylabel('Precision')
-    #     plt.title(plotTitle)
-    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-    #         recall_from_experimental_iterations = []
-    #         precision_from_experimental_iterations = []
-    #         thresholds_from_experimental_iterations = []
-    #         for cond_i, cond in enumerate(condition_from_experimental_iterations):
-    #             for index in range(0, len(self.classes)):
-    #                 class_result = cond[index]
-    #                 if class_result['classPositive'] == positive_class:
-    #                     # precision_from_experimental_iterations.append(class_result['precision'])
-    #                     recall_from_experimental_iterations.append(class_result["recall"])
-    #                     thresholds_from_experimental_iterations.append(
-    #                         str([round(float(v), 1) for k, v in cond["threshold"].items()]))
-    #
-    #         X_axis = np.arange(len(thresholds_from_experimental_iterations))
-    #         if positive_class == self.class_unrelated:
-    #             plt.bar(X_axis - 0.2, recall_from_experimental_iterations,
-    #                     label=positive_class, color=color, align='center', width=0.2)
-    #         elif positive_class == self.class_related:
-    #             plt.bar(X_axis, recall_from_experimental_iterations,
-    #                     label=positive_class, color=color, align='center', width=0.2)
-    #         else:
-    #             plt.bar(X_axis + 0.2, recall_from_experimental_iterations,
-    #                     label=positive_class, color=color, align='center', width=0.2)
-    #         plt.xticks(X_axis, thresholds_from_experimental_iterations,
-    #                    size='small', rotation=90)
-    #         # plt.plot(recall_from_experimental_iterations,
-    #         #          linestyle='dashed',
-    #         #          linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
-    #         # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
-    #         #                    thresholds_from_experimental_iterations):
-    #         #     # print(z["0.0"])
-    #         #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
-    #     # ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-    #     # plt.xticks(cond["threshold"], rotation=45)
-    #     plt.yticks(np.arange(0, 1, step=0.02))
-    #     # plt.grid(True)
-    #     plt.legend()
-    #     # plt.show()
-    #     self.log("saving plot:" + plotTitle)
-    #     fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-    #     plt.close(fig)
-    #
-    # # Plot precision vs recall
-    # def plot_pr(self, condition_from_experimental_iterations, plotTitle):
-    #     fig = plt.figure(figsize=(20, 10))
-    #     ax = fig.add_subplot(111)
-    #     plt.xlabel('Recall')
-    #     plt.ylabel('Precision')
-    #     plt.title(plotTitle)
-    #     for positive_class, marker, color in zip(self.classes, self.marker_set, self.color_set):
-    #         recall_from_experimental_iterations = []
-    #         precision_from_experimental_iterations = []
-    #         thresholds_from_experimental_iterations = []
-    #         for cond in condition_from_experimental_iterations:
-    #             for index in range(0, len(self.classes)):
-    #                 class_result = cond[index]
-    #                 if class_result['classPositive'] == positive_class:
-    #                     precision_from_experimental_iterations.append(class_result['precision'])
-    #                     recall_from_experimental_iterations.append(class_result["recall"])
-    #                     thresholds_from_experimental_iterations.append(cond["threshold"])
-    #
-    #         plt.plot(recall_from_experimental_iterations, precision_from_experimental_iterations,
-    #                  linestyle='dashed',
-    #                  linewidth=2, label=positive_class, marker=marker, markerfacecolor=color, markersize=6)
-    #         # for x, y, z in zip(recall_from_experimental_iterations, precision_from_experimental_iterations,
-    #         #                    thresholds_from_experimental_iterations):
-    #         #     # print(z["0.0"])
-    #         #     ax.annotate('(%.1f,%.1f)' % (z["0.0"], z["0.5"]), xy=(x, y))
-    #     ax.plot([0, 1], [0, 1], transform=ax.transAxes, ls="--", c=".3")
-    #     plt.xticks(np.arange(0, 1, step=0.02), rotation=45)
-    #     plt.yticks(np.arange(0, 1, step=0.02))
-    #     # plt.grid(True)
-    #     plt.legend()
-    #     # plt.show()
-    #     self.log("saving plot:" + plotTitle)
-    #     fig.savefig(self.resultDir + self.get_valid_filename(plotTitle), bbox_inches='tight')
-    #     plt.close(fig)
-    #
     # def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
     #     fig = plt.figure(figsize=(20, 10))
     #     ax = fig.add_subplot(111)
@@ -1119,66 +733,19 @@ class AnnotatedDataHandler:
 
 # Main script
 annotatedDataHandler = AnnotatedDataHandler()
-
-# annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
-# annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(modeAnnotatedData)
-
 # Now to convert the datasets into 1d
-
 annotatedDataHandler.initDataStructures()
 annotatedDataHandler.readAllAnnotatorsData(True)
-modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
-flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
+# annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
 
+modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
+# print(modeAnnotatedData)
+flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
+# print("len(flatAnnotatedData):", len(flatAnnotatedData))
 dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
     range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
-annotatedDataHandler.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_unrelated]),
-            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_related]),
-            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
-
-# print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
-#       (len([t for t in threshold_selection_y if t == "0.0"]),
-#        len([t for t in threshold_selection_y if t == "0.5"]),
-#        len([t for t in threshold_selection_y if t == self.class_equal])))
-
-annotatedDataHandler.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
-    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_unrelated]),
-    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_related]),
-    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
-
-
-_result_roc_parentdir = annotatedDataHandler.roc_result_dir
-_result_prc_parentdir = annotatedDataHandler.prc_result_dir
-
-syn_sem_threshold = "0-0"
-# init threshold holder for this syn_sem key
-annotatedDataHandler.roc_dict[syn_sem_threshold] = {}
-annotatedDataHandler.max_roc_dict[syn_sem_threshold] = {}
-annotatedDataHandler.prc_dict[syn_sem_threshold] = {}
-annotatedDataHandler.max_prc_dict[syn_sem_threshold] = {}
-annotatedDataHandler.result_file_index = syn_sem_threshold
-
-annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
-annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
-
-# Make sure the folder for results exists
-if not os.path.exists(annotatedDataHandler.roc_result_dir):
-    os.makedirs(annotatedDataHandler.roc_result_dir)
-if not os.path.exists(annotatedDataHandler.prc_result_dir):
-    os.makedirs(annotatedDataHandler.prc_result_dir)
-if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
-    os.makedirs(annotatedDataHandler.raw_dict_result_dir)
-
-# annotatedDataHandler.log("Analyzing the baseline models first")
-# for baseline_method in annotatedDataHandler.computed_method:
-#     annotatedDataHandler.log(["method:",baseline_method])
-#     annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method)
-#     annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
-
-annotatedDataHandler.log("Analyzing the word 2 vec first")
 minFive = 0.0
 maxFive = 0.1
 step = 0.1
@@ -1187,48 +754,111 @@ while minFive<1:
     while maxFive <=1:
         thresholds = {annotatedDataHandler.class_unrelated:minFive, annotatedDataHandler.class_related: maxFive}
         for baseline_method in annotatedDataHandler.computed_method:
-            annotatedDataHandler.log(["method:",baseline_method])
-            annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method, thresholds)
-            annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method, thresholds)
 
+            # # read all data produced by the computed method in 1 go
+            annotatedDataHandler.read_computed_data_for_model(baseline_method, True, False, thresholds)
+            print("KAPAAA BETEWEEN ANNOTATORS AND COMPUTED")
+            annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(flatAnnotatedData)
 
-exit()
+#
+#
 
-for syn_sem_threshold in annotatedDataHandler.result_indexes:
-
-    annotatedDataHandler.log(["Now processing:", syn_sem_threshold])
-
-    # init threshold holder for this syn_sem key
-    annotatedDataHandler.roc_dict[syn_sem_threshold] = {}
-    annotatedDataHandler.max_roc_dict[syn_sem_threshold] = {}
-    annotatedDataHandler.prc_dict[syn_sem_threshold] = {}
-    annotatedDataHandler.max_prc_dict[syn_sem_threshold] = {}
-
-    annotatedDataHandler.result_file_index = syn_sem_threshold
-
-    annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
-    annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
-    # Make sure the folder for results exists
-    if not os.path.exists(annotatedDataHandler.roc_result_dir):
-        os.makedirs(annotatedDataHandler.roc_result_dir)
-    if not os.path.exists(annotatedDataHandler.prc_result_dir):
-        os.makedirs(annotatedDataHandler.prc_result_dir)
-    if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
-        os.makedirs(annotatedDataHandler.raw_dict_result_dir)
-
-    for method_for_syn_sem in annotatedDataHandler.computed_method:
-        if method_for_syn_sem != annotatedDataHandler.FUZZY_WUZZY_INDEX:
-            annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_for_syn_sem+"_syn_sem", syn_sem_threshold)
-            annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_for_syn_sem+"_syn_sem", syn_sem_threshold)
-
-        # annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
-        # annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
-        # pd.DataFrame(annotatedDataHandler.prc_dict).to_csv('prc_dict')
-        # pd.DataFrame(annotatedDataHandler.max_prc_dict).to_csv('max_prc_dict')
-
-# annotatedDataHandler.log(["annotatedDataHandler.max_roc_dict:",annotatedDataHandler.max_roc_dict])
-
-annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.roc_dict, "roc_dict")
-annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_roc_dict, "max_roc_dict", True)
-annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.prc_dict, "prc_dict")
-annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_prc_dict, "max_prc_dict", True)
+#
+# annotatedDataHandler.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
+#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_unrelated]),
+#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_related]),
+#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
+#
+# # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
+# #       (len([t for t in threshold_selection_y if t == "0.0"]),
+# #        len([t for t in threshold_selection_y if t == "0.5"]),
+# #        len([t for t in threshold_selection_y if t == self.class_equal])))
+#
+# annotatedDataHandler.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
+#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_unrelated]),
+#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_related]),
+#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
+#
+#
+# _result_roc_parentdir = annotatedDataHandler.roc_result_dir
+# _result_prc_parentdir = annotatedDataHandler.prc_result_dir
+#
+# syn_sem_threshold = "0-0"
+# # init threshold holder for this syn_sem key
+# annotatedDataHandler.roc_dict[syn_sem_threshold] = {}
+# annotatedDataHandler.max_roc_dict[syn_sem_threshold] = {}
+# annotatedDataHandler.prc_dict[syn_sem_threshold] = {}
+# annotatedDataHandler.max_prc_dict[syn_sem_threshold] = {}
+# annotatedDataHandler.result_file_index = syn_sem_threshold
+#
+# annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
+# annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
+#
+# # Make sure the folder for results exists
+# if not os.path.exists(annotatedDataHandler.roc_result_dir):
+#     os.makedirs(annotatedDataHandler.roc_result_dir)
+# if not os.path.exists(annotatedDataHandler.prc_result_dir):
+#     os.makedirs(annotatedDataHandler.prc_result_dir)
+# if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
+#     os.makedirs(annotatedDataHandler.raw_dict_result_dir)
+#
+# # annotatedDataHandler.log("Analyzing the baseline models first")
+# # for baseline_method in annotatedDataHandler.computed_method:
+# #     annotatedDataHandler.log(["method:",baseline_method])
+# #     annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method)
+# #     annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method)
+#
+# annotatedDataHandler.log("Analyzing the word 2 vec first")
+# minFive = 0.0
+# maxFive = 0.1
+# step = 0.1
+# while minFive<1:
+#     maxFive = minFive+step
+#     while maxFive <=1:
+#         thresholds = {annotatedDataHandler.class_unrelated:minFive, annotatedDataHandler.class_related: maxFive}
+#         for baseline_method in annotatedDataHandler.computed_method:
+#             annotatedDataHandler.log(["method:",baseline_method])
+#             annotatedDataHandler.calculate_threshold_using_auroc(dataset, baseline_method, thresholds)
+#             annotatedDataHandler.calculate_threshold_using_auprc(dataset, baseline_method, thresholds)
+#
+#
+# exit()
+#
+# for syn_sem_threshold in annotatedDataHandler.result_indexes:
+#
+#     annotatedDataHandler.log(["Now processing:", syn_sem_threshold])
+#
+#     # init threshold holder for this syn_sem key
+#     annotatedDataHandler.roc_dict[syn_sem_threshold] = {}
+#     annotatedDataHandler.max_roc_dict[syn_sem_threshold] = {}
+#     annotatedDataHandler.prc_dict[syn_sem_threshold] = {}
+#     annotatedDataHandler.max_prc_dict[syn_sem_threshold] = {}
+#
+#     annotatedDataHandler.result_file_index = syn_sem_threshold
+#
+#     annotatedDataHandler.roc_result_dir = _result_roc_parentdir + str(syn_sem_threshold) + "/"
+#     annotatedDataHandler.prc_result_dir = _result_prc_parentdir + str(syn_sem_threshold) + "/"
+#     # Make sure the folder for results exists
+#     if not os.path.exists(annotatedDataHandler.roc_result_dir):
+#         os.makedirs(annotatedDataHandler.roc_result_dir)
+#     if not os.path.exists(annotatedDataHandler.prc_result_dir):
+#         os.makedirs(annotatedDataHandler.prc_result_dir)
+#     if not os.path.exists(annotatedDataHandler.raw_dict_result_dir):
+#         os.makedirs(annotatedDataHandler.raw_dict_result_dir)
+#
+#     for method_for_syn_sem in annotatedDataHandler.computed_method:
+#         if method_for_syn_sem != annotatedDataHandler.FUZZY_WUZZY_INDEX:
+#             annotatedDataHandler.calculate_threshold_using_auroc(dataset, method_for_syn_sem+"_syn_sem", syn_sem_threshold)
+#             annotatedDataHandler.calculate_threshold_using_auprc(dataset, method_for_syn_sem+"_syn_sem", syn_sem_threshold)
+#
+#         # annotatedDataHandler.log(["prc_dict",annotatedDataHandler.prc_dict])
+#         # annotatedDataHandler.log(["max_prc_dict",annotatedDataHandler.max_prc_dict])
+#         # pd.DataFrame(annotatedDataHandler.prc_dict).to_csv('prc_dict')
+#         # pd.DataFrame(annotatedDataHandler.max_prc_dict).to_csv('max_prc_dict')
+#
+# # annotatedDataHandler.log(["annotatedDataHandler.max_roc_dict:",annotatedDataHandler.max_roc_dict])
+#
+# annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.roc_dict, "roc_dict")
+# annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_roc_dict, "max_roc_dict", True)
+# annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.prc_dict, "prc_dict")
+# annotatedDataHandler.writeDetailedDictToCsv(annotatedDataHandler.max_prc_dict, "max_prc_dict", True)
