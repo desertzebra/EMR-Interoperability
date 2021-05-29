@@ -57,9 +57,9 @@ class AnnotatedDataHandler:
         self.result_iteration = ".1"
 
         self.FUZZY_WUZZY_INDEX = "FUZZY_MATCH"
-        self.computed_method = ["Word2Vec",
-                                "FUZZY_MATCH",
+        self.computed_method = ["FUZZY_MATCH",
                                 'bert-base-nli-stsb-mean-tokens',
+                                "Word2Vec",
                                 'bert-large-nli-stsb-mean-tokens',
                                 'roberta-base-nli-stsb-mean-tokens',
                                 'roberta-large-nli-stsb-mean-tokens',
@@ -100,7 +100,8 @@ class AnnotatedDataHandler:
         self.prc_dict = {}
         self.max_prc_dict = {}
         # Plot accessories
-        self.classes = [self.class_unrelated, self.class_related, self.class_equal]
+        # self.classes = [self.class_unrelated, self.class_related, self.class_equal]
+        self.classes = [self.class_unrelated, self.class_related]
         self.marker_set = ["o", "^", "x"]
         self.color_set = ["blue", "red", "green"]
         # Directories
@@ -244,10 +245,10 @@ class AnnotatedDataHandler:
         # elif self.isFloat(attr) and 0 <= float(attr) < thresholds["0.0"]:
         elif self.isFloat(attr) and float(attr) < thresholds[self.class_unrelated]:
             return self.class_unrelated
-        elif self.isFloat(attr) and thresholds[self.class_unrelated] <= float(attr) < thresholds[self.class_related]:
-            return self.class_related
+        # elif self.isFloat(attr) and thresholds[self.class_unrelated] <= float(attr) < thresholds[self.class_related]:
+        #     return self.class_related
         elif self.isFloat(attr) and thresholds[self.class_related] <= float(attr):
-            return self.class_equal
+            return self.class_related
 
         # check if some float value was missed
         if self.isFloat(attr):
@@ -266,7 +267,7 @@ class AnnotatedDataHandler:
         elif attr == '<' or attr == '>':
             attr = self.class_related
         elif attr == '1':
-            attr = self.class_equal
+            attr = self.class_related
         # elif attr == '>':
         #     attr = "1.5"
 
@@ -733,7 +734,7 @@ class AnnotatedDataHandler:
         development_y = dataset['dev_y']
         test_y = dataset['test_y']
 
-        plotTitle = 'PRC for Mode(Annotated Data) vs ' + method_name+ ' at threshold:'+thresholds
+        plotTitle = 'PRC for Mode(Annotated Data) vs ' + method_name+ ' at threshold:'+str(thresholds)
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('Recall')
@@ -794,12 +795,20 @@ class AnnotatedDataHandler:
         print(len(data_in_1d))
         print(len(dataset['dev_x_index']))
         # development_x = [float(data_in_1d[i]) for i in dataset['dev_x_index']]
-        development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
-        test_x = [data_in_1d[i] for i in dataset['test_x_index']]
-        development_y = dataset['dev_y']
-        test_y = dataset['test_y']
+        development_x = []
+        for i in dataset['dev_x_index']:
+            try:
+                development_x.append(data_in_1d[i])
+            except IndexError as e:
+                print("i:", i)
+                exit()
 
-        plotTitle = 'ROC for Mode(Annotated Data) vs ' + method_name + ' at threshold:'+thresholds
+        # development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+        # test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+        development_y = dataset['dev_y']
+        # test_y = dataset['test_y']
+
+        plotTitle = 'ROC for Mode(Annotated Data) vs ' + method_name + ' at threshold:'+str(thresholds)
         fig = plt.figure(figsize=(20, 10))
         ax = fig.add_subplot(111)
         plt.xlabel('False Positive Rate')
@@ -811,8 +820,8 @@ class AnnotatedDataHandler:
             other_class = [x for x in self.classes if x != positive_class]
 
             # marking the current class as 1 and all other classes as 0
-            new_actual_class = [0 if x in other_class else 1 for x in test_y]
-            new_pred_similarities = [0 if x in other_class else 1 for x in test_x]
+            new_actual_class = [0 if x in other_class else 1 for x in development_y]
+            new_pred_similarities = [0 if x in other_class else 1 for x in development_x]
             # new_pred_similarities = [round(float(sim), 2) if not sim == '' and not sim == '-' else 0.0 for sim in test_x]
 
             # self.plot_roc_curve()
@@ -854,12 +863,20 @@ class AnnotatedDataHandler:
             csv_writer = csv.writer(csv_file, delimiter=',')
             # pd.DataFrame(annotatedDataHandler.roc_dict).to_csv('roc_dict')
             if is_max_score:
+                # csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
+                #                      " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
+                #                      " AUC Score - " + self.class_equal,
+                #                      "Conditions - positive class=" + self.class_unrelated
+                #                         , "Conditions - positive class=" + self.class_related
+                #                         , "Conditions - positive class=" + self.class_equal])
+
                 csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
                                      " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
-                                     " AUC Score - " + self.class_equal,
                                      "Conditions - positive class=" + self.class_unrelated
-                                        , "Conditions - positive class=" + self.class_related
-                                        , "Conditions - positive class=" + self.class_equal])
+                                        , "Conditions - positive class=" + self.class_related]
+                                     )
+
+
             else:
                 csv_writer.writerow(["Outer Threshold", "Method name", "0.0", "0.5"])
 
@@ -872,21 +889,31 @@ class AnnotatedDataHandler:
                         inner_threshold_str = str(k_method_value["inner_threshold"][self.class_unrelated]) + "_" + \
                                               str(k_method_value["inner_threshold"][self.class_related])
                         auc_method = k_method_value["auc_method"]
+                        # csv_writer.writerow(
+                        #     [k_outer_threshold, k_method_name, inner_threshold_str, auc_method,
+                        #      k_method_value["auc_score"][self.class_unrelated],
+                        #      k_method_value["auc_score"][self.class_related],
+                        #      k_method_value["auc_score"][self.class_equal],
+                        #      str(k_method_value["conditions"][0]),
+                        #      str(k_method_value["conditions"][1]),
+                        #      str(k_method_value["conditions"][2])
+                        #      ])
                         csv_writer.writerow(
                             [k_outer_threshold, k_method_name, inner_threshold_str, auc_method,
                              k_method_value["auc_score"][self.class_unrelated],
                              k_method_value["auc_score"][self.class_related],
-                             k_method_value["auc_score"][self.class_equal],
                              str(k_method_value["conditions"][0]),
                              str(k_method_value["conditions"][1]),
-                             str(k_method_value["conditions"][2])
                              ])
                     else:
                         for auc_object_classes in k_method_value:
                             csv_writer.writerow(
                                 [k_outer_threshold, k_method_name, auc_object_classes[self.class_unrelated],
-                                 auc_object_classes[self.class_related]
-                                    , auc_object_classes[self.class_equal]])
+                                 auc_object_classes[self.class_related]])
+                            # csv_writer.writerow(
+                            #     [k_outer_threshold, k_method_name, auc_object_classes[self.class_unrelated],
+                            #      auc_object_classes[self.class_related]
+                            #         , auc_object_classes[self.class_equal]])
 
             print("done")
 
@@ -1131,23 +1158,25 @@ modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(
 flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
 
 dataset = {}
-dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
-    range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
 
-annotatedDataHandler.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
-            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_unrelated]),
-            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_related]),
-            len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
+print("len(flatAnnotatedData):",len(flatAnnotatedData))
+dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
+    range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.3)
+
+# annotatedDataHandler.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
+#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_unrelated]),
+#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_related]),
+#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
 
 # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
 #       (len([t for t in threshold_selection_y if t == "0.0"]),
 #        len([t for t in threshold_selection_y if t == "0.5"]),
 #        len([t for t in threshold_selection_y if t == self.class_equal])))
 
-annotatedDataHandler.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
-    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_unrelated]),
-    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_related]),
-    len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
+# annotatedDataHandler.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
+#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_unrelated]),
+#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_related]),
+#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
 
 
 _result_roc_parentdir = annotatedDataHandler.roc_result_dir
