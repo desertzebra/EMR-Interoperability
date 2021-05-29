@@ -15,6 +15,20 @@ from sklearn.model_selection import train_test_split
 
 np.seterr('raise')
 
+
+
+list1 = [1, 2, 3, 4, 5, 6, 8]
+list2 = [1, 3, 5, 2, 5, 6, 8]
+
+score = cohen_kappa_score(list1, list2)
+
+print("score: ", score)
+
+exit()
+
+
+
+
 class AnnotatedDataHandler:
 
     def __init__(self):

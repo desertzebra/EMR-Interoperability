@@ -6,7 +6,7 @@ import re
 import pandas as pd
 from statistics import mode, StatisticsError
 import math
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 from decimal import Decimal
 from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
     confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, auc
@@ -14,6 +14,12 @@ from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
 np.seterr('raise')
+
+# list1 = [1, 2, 3, 4, 5, 6, 8, 1, 2]
+# list2 = [1, 3, 5, 2, 5, 6, 8, 2 ,1 ]
+# score = cohen_kappa_score(list1, list2)
+# print("score: ", score)
+# exit()
 
 class AnnotatedDataHandler:
 
@@ -176,15 +182,28 @@ class AnnotatedDataHandler:
 
     def getKappaCorrelationScore(self, list1, list2):
         kappaCorrelationBetweenLists = []
-        for list1_attr, list2_attr in zip(list1, list2):
-            # self.log(len(list1_attr))
-            # self.log(len(list2_attr))
-            d_score = cohen_kappa_score(list(str(v) for v in list1_attr), list(str(v) for v in list2_attr))
-            formatted_d_score = str(round(d_score, 2))
-            kappaCorrelationBetweenLists.append(formatted_d_score)
-            # AnnotatedDataHandler = round(AnnotatedDataHandler, 2)
-            # print('%7.4f %7.4f' % (AnnotatedDataHandler, p_value))
-        return kappaCorrelationBetweenLists
+        # for list1_attr, list2_attr in zip(list1, list2):
+        #     # self.log(len(list1_attr))
+        #     # self.log(len(list2_attr))
+        #
+        #     print("list1_attr ", list1_attr)
+        #     print("list(str(v) for v in list1_attr): ", list(str(v) for v in list1_attr))
+        #
+        #     exit()
+        #
+        #     # d_score = cohen_kappa_score(list(str(v) for v in list1_attr), list(str(v) for v in list2_attr))
+
+        # print('list1: ', len(list1), ' list2: ', len(list2))
+
+        d_score = cohen_kappa_score( list1, list2)
+
+
+        formatted_d_score = str(round(d_score, 2))
+        # kappaCorrelationBetweenLists.append(formatted_d_score)
+        # AnnotatedDataHandler = round(AnnotatedDataHandler, 2)
+        # print('%7.4f %7.4f' % (AnnotatedDataHandler, p_value))
+
+        return formatted_d_score
 
     def getDefaultThresholdValues(self, thresholdValues={}):
 
@@ -377,33 +396,32 @@ class AnnotatedDataHandler:
         allKappaAnnotatedDataHandlers = "\r\n"
 
         self.log('Cohen kappa score  between annotator1 and annotator2: ')
-        allKappaAnnotatedDataHandlers += "annotator1 vs annotator2," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator2Data)) + "\r\n"
+        allKappaAnnotatedDataHandlers += "annotator1 vs annotator2," + annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator2Data) + "\r\n"
         self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator1 and annotator3: ')
-        allKappaAnnotatedDataHandlers += "annotator1 vs annotator3," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator3Data)) + "\r\n"
+        allKappaAnnotatedDataHandlers += "annotator1 vs annotator3," + \
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator3Data) + "\r\n"
         self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator1 and annotator4: ')
-        allKappaAnnotatedDataHandlers += "annotator1 vs annotator4," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator4Data)) + "\r\n"
+        allKappaAnnotatedDataHandlers += "annotator1 vs annotator4," + \
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator1Data, self.annotator4Data) + "\r\n"
         self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator2 and annotator3: ')
-        allKappaAnnotatedDataHandlers += "annotator2 vs annotator3," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator3Data)) + "\r\n"
+        allKappaAnnotatedDataHandlers += "annotator2 vs annotator3," + \
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator3Data) + "\r\n"
         self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator2 and annotator4: ')
-        allKappaAnnotatedDataHandlers += "annotator2 vs annotator4," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator4Data)) + "\r\n"
+        allKappaAnnotatedDataHandlers += "annotator2 vs annotator4," + \
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator2Data, self.annotator4Data) + "\r\n"
         annotatedDataHandler.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator3 and annotator4: ')
-        allKappaAnnotatedDataHandlers += "annotator3 vs annotator4," + ",".join(
-            annotatedDataHandler.getKappaCorrelationScore(self.annotator3Data, self.annotator4Data)) + "\r\n"
+        allKappaAnnotatedDataHandlers += "annotator3 vs annotator4," + \
+            annotatedDataHandler.getKappaCorrelationScore(self.annotator3Data, self.annotator4Data) + "\r\n"
         annotatedDataHandler.log(["*"] * 80)
         self.log(allKappaAnnotatedDataHandlers)
 
@@ -423,7 +441,7 @@ class AnnotatedDataHandler:
                 self.log("Insufficient data for the computed methods, have you read the files yet?")
                 return
             self.log('Cohen kappa score  between '+m+' and avg(annotators): ')
-            data_in_1d = self.collapseDataSetTo1d(self.computed_data[m])
+            data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.computed_data[m])
             # print(len(avgAnnotatedData))
             # self.log(["*"]*80)
             # self.log(["*"] * 80)
@@ -436,9 +454,9 @@ class AnnotatedDataHandler:
             # print(len(data_in_1d))
             # annotatedDataHandler.computed_data[baseline_method] = data_in_1d
 
-            resultAsCsvString += m+" vs avg(annotators)," + ",".join(
+            resultAsCsvString += m+" vs avg(annotators)," + \
                 annotatedDataHandler.getKappaCorrelationScore(data_in_1d,
-                                                              avgAnnotatedData)) + "\r\n"
+                                                              avgAnnotatedData) + "\r\n"
             print("resultAsCsvString:",resultAsCsvString)
             self.log(["*"] * 80)
 
@@ -740,7 +758,7 @@ annotatedDataHandler.readAllAnnotatorsData(True)
 
 modeAnnotatedData = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators(True)
 # print(modeAnnotatedData)
-flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1d(modeAnnotatedData)
+flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(modeAnnotatedData)
 # print("len(flatAnnotatedData):", len(flatAnnotatedData))
 dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
@@ -755,10 +773,15 @@ while minFive<1:
         thresholds = {annotatedDataHandler.class_unrelated:minFive, annotatedDataHandler.class_related: maxFive}
         for baseline_method in annotatedDataHandler.computed_method:
 
+            print('baseline_Method: ', baseline_method)
+
             # # read all data produced by the computed method in 1 go
             annotatedDataHandler.read_computed_data_for_model(baseline_method, True, False, thresholds)
+
+            annotatedDataHandler.compare1dLists(annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(annotatedDataHandler.computed_data[baseline_method]), flatAnnotatedData)
             print("KAPAAA BETEWEEN ANNOTATORS AND COMPUTED")
-            annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(flatAnnotatedData)
+
+        annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(flatAnnotatedData)
 
 #
 #
