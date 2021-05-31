@@ -776,7 +776,7 @@ while minFive < 1:
 
 annotatedDataHandler.log("Printing Final Results")
 annotatedDataHandler.log([kappa_score_at_thresholds])
-annotatedDataHandler.writeDetailedDictToCsv(kappa_score_at_thresholds, "kappa_score"+self.computational_iteration, type="kappa")
+annotatedDataHandler.writeDetailedDictToCsv(kappa_score_at_thresholds, "kappa_score"+annotatedDataHandler.computational_iteration, type="kappa")
 #
 #
 
