@@ -195,8 +195,11 @@ class AnnotatedDataHandler:
 
         # print('list1: ', len(list1), ' list2: ', len(list2))
 
-        d_score = cohen_kappa_score( list1, list2)
+        list1Class = [t[2] for t in list1]
+        list2Class = [t[2] for t in list2]
 
+        # d_score = cohen_kappa_score( list1, list2)
+        d_score = cohen_kappa_score( list1Class, list2Class)
 
         formatted_d_score = str(round(d_score, 2))
         # kappaCorrelationBetweenLists.append(formatted_d_score)
