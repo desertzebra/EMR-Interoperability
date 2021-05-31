@@ -120,34 +120,34 @@ class Similarity:
 
         return result
 
-    # @staticmethod
-    # def createSentenceForAA(node):
-    #     amplified_sentences = []
-    #     word_concept_map = {}
-    #     # for word in node['suffixArray']:
-    #     #     word_concept_map["word"] = []
-    #     amplified_sentences.append(" ".join(node['suffixArray']))
-    #     for concept in node['conceptArray']:
-    #         if concept['token'] not in word_concept_map:
-    #             word_concept_map[concept['token']] = []
-    #         word_concept_map[concept['token']].append(concept['name'])
-    #     conceptset = word_concept_map.values()
-    #     product_concepts = list(itertools.product(*conceptset))
-    #     for concept_product_tuple in product_concepts:
-    #         amplified_sentences.append(" ".join(concept_product_tuple))
-    #
-    #     return amplified_sentences
     @staticmethod
     def createSentenceForAA(node):
         amplified_sentences = []
-        # word_concept_map = {}
+        word_concept_map = {}
         # for word in node['suffixArray']:
         #     word_concept_map["word"] = []
-        amplified_sentences.extend(node['suffixArray'])
+        amplified_sentences.append(" ".join(node['suffixArray']))
         for concept in node['conceptArray']:
-            amplified_sentences.append(concept['name'])
+            if concept['token'] not in word_concept_map:
+                word_concept_map[concept['token']] = []
+            word_concept_map[concept['token']].append(concept['name'])
+        conceptset = word_concept_map.values()
+        product_concepts = list(itertools.product(*conceptset))
+        for concept_product_tuple in product_concepts:
+            amplified_sentences.append(" ".join(concept_product_tuple))
 
         return amplified_sentences
+    # @staticmethod
+    # def createSentenceForAA(node):
+    #     amplified_sentences = []
+    #     # word_concept_map = {}
+    #     # for word in node['suffixArray']:
+    #     #     word_concept_map["word"] = []
+    #     amplified_sentences.extend(node['suffixArray'])
+    #     for concept in node['conceptArray']:
+    #         amplified_sentences.append(concept['name'])
+    #
+    #     return amplified_sentences
 
 
     def getSyntacticSimilarity(self, attr):
@@ -308,7 +308,7 @@ class Similarity:
 
             attributes = self.calcualteBaseLineSimilarity(attributes, model)
 
-            with open("Data/AmplifiedSimilarity-V0.4"+model+".txt", "wb") as fp:  # Pickling
+            with open("../Data/AmplifiedSimilarity-V0.5"+model+".txt", "wb") as fp:  # Pickling
                 pickle.dump(attributes, fp)
 
         return attributes
@@ -318,7 +318,7 @@ num_cores = multiprocessing.cpu_count() - 1
 print("num_cores:", num_cores)
 
 simObj = Similarity()
-data = simObj.readData('Data/schema_processed_1617174847206.json')
+data = simObj.readData('../Data/schema_processed_1617174847206.json')
 
 print('data')
 print(len(data))
@@ -336,5 +336,5 @@ similarity = simObj.calculateSimilarity(data)
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
 
-with open("Data/AmplifiedSimilarity-V0.4.txt", "wb") as fp:  # Pickling
+with open("../Data/AmplifiedSimilarity-V0.5.txt", "wb") as fp:  # Pickling
     pickle.dump(similarity, fp)

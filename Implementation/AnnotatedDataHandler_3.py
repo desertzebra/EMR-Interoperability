@@ -63,7 +63,7 @@ class AnnotatedDataHandler:
                                "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
         self.computational_iteration = "1.6"
-        self.result_iteration = ".1"
+        self.result_iteration = ".2"
         self.notSynAndSem = ["FUZZY_MATCH", "Word2Vec"]
         self.computed_method = ['bert-base-nli-stsb-mean-tokens',
                                 'bert-large-nli-stsb-mean-tokens',
@@ -100,6 +100,14 @@ class AnnotatedDataHandler:
         self.resultDir = "Results/charts/" + str(self.computational_iteration) + str(self.result_iteration) + "/"
         self.roc_result_dir = self.resultDir + "/roc/"
         self.prc_result_dir = self.resultDir + "/prc/"
+        # Make sure the folder for results exists
+        if not os.path.exists(self.roc_result_dir):
+            os.makedirs(self.roc_result_dir)
+        if not os.path.exists(self.prc_result_dir):
+            os.makedirs(self.prc_result_dir)
+        if not os.path.exists(self.raw_dict_result_dir):
+            os.makedirs(self.raw_dict_result_dir)
+
 
     def log(self, msg, log_at="INFO"):
         if log_at in self.logLevel:
@@ -670,6 +678,7 @@ class AnnotatedDataHandler:
     def writeDetailedDictToCsv(self, dict={}, dict_name="result", type="kappa", is_max_score=False):
         file_name = self.raw_dict_result_dir + "" + dict_name
         dict_table = []
+
         with open(file_name, 'w') as csv_file:
             self.log("Saving CSV data file for: " + dict_name)
             csv_writer = csv.writer(csv_file, delimiter=',')
@@ -692,7 +701,7 @@ class AnnotatedDataHandler:
                     # print("k_method_name:",k_method_name)
                     if not isinstance(v_method_name, list):
                         if type == "kappa":
-                            for k_inner_threshold, v_inner_threshold in v_outer_threshold.items():
+                            for k_inner_threshold, v_inner_threshold in v_method_name.items():
                                 csv_writer.writerow(
                                     [k_outer_threshold, k_method_name, k_inner_threshold,v_inner_threshold])
 
