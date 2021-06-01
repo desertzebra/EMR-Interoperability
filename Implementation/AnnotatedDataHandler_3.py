@@ -62,8 +62,8 @@ class AnnotatedDataHandler:
         self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3",
                                "0.8-0.2", "0.9-0.1"]
         self.result_file_index = "0.0-1.0"
-        self.computational_iteration = "1.6"
-        self.result_iteration = ".2"
+        self.computational_iteration = "1.7"
+        self.result_iteration = ".1"
         self.notSynAndSem = ["FUZZY_MATCH", "Word2Vec"]
         self.computed_method = ['bert-base-nli-stsb-mean-tokens',
                                 'bert-large-nli-stsb-mean-tokens',
