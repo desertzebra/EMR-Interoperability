@@ -44,3 +44,36 @@ Implementation/Data/AmplifiedSimilarity-V0.1.txt
 Implementation/Data/AmplifiedSimilarity-V0.2.txt
 Implementation/Data/AmplifiedSimilarity-V0.3.txt
 Implementation/Data/AmplifiedSimilarity-V0.3.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4bert-base-nli-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4bert-base-nli-stsb-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4bert-large-nli-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4bert-large-nli-stsb-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4distilbert-base-nli-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4distilbert-base-nli-stsb-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4roberta-base-nli-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4roberta-base-nli-stsb-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4roberta-large-nli-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4roberta-large-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4.txt
+Implementation/Data/AmplifiedSimilarity-V0.4bert-base-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4bert-base-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4bert-large-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4bert-large-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4distilbert-base-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4distilbert-base-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4roberta-base-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4roberta-base-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4roberta-large-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.4roberta-large-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5.txt
+Implementation/Data/AmplifiedSimilarity-V0.5bert-base-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5bert-base-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5bert-large-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5bert-large-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5distilbert-base-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5distilbert-base-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5roberta-base-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5roberta-base-nli-stsb-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5roberta-large-nli-mean-tokens.txt
+Implementation/Data/AmplifiedSimilarity-V0.5roberta-large-nli-stsb-mean-tokens.txt
+Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4.txt
