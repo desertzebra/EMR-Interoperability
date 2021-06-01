@@ -4,12 +4,13 @@ from scipy.stats import pearsonr
 import numpy as np
 import re
 import pandas as pd
+import sys
 from statistics import mode, StatisticsError
 import math
 # from matplotlib import pyplot as plt
 from decimal import Decimal
 from sklearn.metrics import cohen_kappa_score, accuracy_score, classification_report, multilabel_confusion_matrix, \
-    confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, auc
+    confusion_matrix, roc_curve, roc_auc_score, precision_recall_curve, auc, matthews_corrcoef
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
@@ -29,6 +30,35 @@ def get_kappa_correlation_score(list1, list2):
     d_score = cohen_kappa_score(list1Class, list2Class)
     # formatted_d_score = str(round(d_score, 2))
     return d_score
+
+def get_Mcc_score(y_true_tuple, y_pred_tuple):
+    kappaCorrelationBetweenLists = []
+    y_true = [t[2] for t in y_true_tuple]
+    y_pred = [t[2] for t in y_pred_tuple]
+
+    # C = confusion_matrix(y_true, y_pred, sample_weight=None)
+    # t_sum = C.sum(axis=1, dtype=np.float64)
+    # p_sum = C.sum(axis=0, dtype=np.float64)
+    # n_correct = np.trace(C, dtype=np.float64)
+    # n_samples = p_sum.sum()
+    # print("n_correct * n_samples:", n_correct * n_samples)
+    # print("np.dot(t_sum, p_sum):", np.dot(t_sum, p_sum))
+    # cov_ytyp = n_correct * n_samples - np.dot(t_sum, p_sum)
+    # cov_ypyp = n_samples ** 2 - np.dot(p_sum, p_sum)
+    # cov_ytyt = n_samples ** 2 - np.dot(t_sum, t_sum)
+    # print("cov_ytyp:",cov_ytyp)
+    # print("cov_ytyt:",cov_ytyt)
+    # print("cov_ypyp:",cov_ypyp)
+    # mcc = cov_ytyp / np.sqrt(cov_ytyt * cov_ypyp)
+    try:
+        mcc_score = matthews_corrcoef(y_true, y_pred)
+    except:
+        mcc_score = 0
+
+
+    # formatted_d_score = str(round(d_score, 2))
+    return mcc_score
+
 
 
 def get_pearson_correlation_score(list1, list2):
@@ -59,11 +89,11 @@ class AnnotatedDataHandler:
         self.annotator4Data = []
 
         # Computational accessories
-        self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3",
-                               "0.8-0.2", "0.9-0.1"]
-        self.result_file_index = "0.0-1.0"
+        # self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3",
+        #                        "0.8-0.2", "0.9-0.1"]
+        self.result_indexes = ["0.0-1.0"]
         self.computational_iteration = "1.7"
-        self.result_iteration = ".1"
+        self.result_iteration = ".3"
         self.notSynAndSem = ["FUZZY_MATCH", "Word2Vec"]
         self.computed_method = ['bert-base-nli-stsb-mean-tokens',
                                 'bert-large-nli-stsb-mean-tokens',
@@ -107,7 +137,6 @@ class AnnotatedDataHandler:
             os.makedirs(self.prc_result_dir)
         if not os.path.exists(self.raw_dict_result_dir):
             os.makedirs(self.raw_dict_result_dir)
-
 
     def log(self, msg, log_at="INFO"):
         if log_at in self.logLevel:
@@ -321,13 +350,13 @@ class AnnotatedDataHandler:
                                                                                                  syn_sem_threshold,
                                                                                                  _thresholds)
         # Read other methods
-        annotatedDataHandler.log(['-'] * 80)
+        # annotatedDataHandler.log(['-'] * 80)
         for model in self.notSynAndSem:
             syn_sem_threshold = "0-0"
             self.computed_data[model][syn_sem_threshold] = self.read_computed_data_for_model(model, read_headers,
                                                                                              syn_sem_threshold,
                                                                                              _thresholds)
-        annotatedDataHandler.log(['*'] * 80)
+        # annotatedDataHandler.log(['*'] * 80)
 
     def calculate_pearson_score_between_annotators(self):
         allAnnotatedDataHandlers = ""
@@ -411,45 +440,83 @@ class AnnotatedDataHandler:
         annotatedDataHandler.log(["*"] * 80)
         self.log(allKappaAnnotatedDataHandlers)
 
-    def calculateKappaScoreBetweenComputedAndAnnotatedData(self, annotated_data=None):
-        if annotated_data is None:
-            if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 or len(
-                    self.annotator4Data) < 1:
-                self.log("Insufficient data for the annotators, have you read the files yet?")
-                return
-            else:
-                annotated_data = annotatedDataHandler.calculateModeScoreBetweenAllAnnotators()
-
-        # result_as_csv_str = "\r\n"
+    def calculateKappaScoreBetweenComputedAndAnnotatedData(self, dataset):
         result_as_dict = {}
+        devset_true_1d = dataset['dev_y']
         # Base methods
         for m in self.notSynAndSem:
-            result_as_dict[m] = {}
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
 
             if len(self.computed_data[m]) < 1:
                 self.log("Insufficient data for the computed methods, have you read the files yet?")
                 return
             # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
             data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.computed_data[m]["0-0"])
-            result_as_dict[m]["0-0"] = get_kappa_correlation_score(data_in_1d, annotated_data)
-            # result_as_csv_str += m + "-0-0 vs mode(annotators)," + get_kappa_correlation_score(data_in_1d,
-            #                                                                                    annotated_data) + "\r\n"
-
+            development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+            if "0-0" not in result_as_dict[m]:
+                result_as_dict[m]["0-0"] = [0]*2
+            result_as_dict[m]["0-0"][0] = get_kappa_correlation_score(development_x, devset_true_1d)
 
         # print(self.computed_data)
         for m in self.computed_method:
-            result_as_dict[m] = {}
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
             for _syn_sem_threshold in self.result_indexes:
                 if len(self.computed_data[m]) < 1:
                     self.log("Insufficient data for the computed methods, have you read the files yet?")
                     return
                 # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
                 data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.computed_data[m][_syn_sem_threshold])
-                result_as_dict[m][_syn_sem_threshold] = get_kappa_correlation_score(data_in_1d, annotated_data)
+                development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+
+                if _syn_sem_threshold not in result_as_dict[m]:
+                    result_as_dict[m][_syn_sem_threshold] = [0] * 2
+
+                result_as_dict[m][_syn_sem_threshold][0] = get_kappa_correlation_score(development_x, devset_true_1d)
+        # print("INSIDE KAPPA CALCULATION:",result_as_dict)
+        return result_as_dict
+        # self.log(["*"] * 80)
+
+    def calculateMccBetweenComputedAndAnnotatedData(self, dataset, result_as_dict={}):
+        development_y = dataset['dev_y']
+        # result_as_csv_str = "\r\n"
+        # print("result_as_dict:", result_as_dict)
+
+        # Base methods
+        for m in self.notSynAndSem:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            if len(self.computed_data[m]) < 1:
+                self.log("Insufficient data for the computed methods, have you read the files yet?")
+                return
+            # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+            data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.computed_data[m]["0-0"])
+            development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+            if "0-0" not in result_as_dict[m]:
+                result_as_dict[m]["0-0"] = [0]*2
+            result_as_dict[m]["0-0"][1] = get_Mcc_score(development_y, development_x)
+        # print(self.computed_data)
+        for m in self.computed_method:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            for _syn_sem_threshold in self.result_indexes:
+                if len(self.computed_data[m]) < 1:
+                    self.log("Insufficient data for the computed methods, have you read the files yet?")
+                    return
+                # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+                data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.computed_data[m][_syn_sem_threshold])
+                development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+
+                if _syn_sem_threshold not in result_as_dict[m]:
+                    result_as_dict[m][_syn_sem_threshold] = [0] * 2
+
+                result_as_dict[m][_syn_sem_threshold][1] = get_Mcc_score(development_y, development_x)
+
                 # result_as_csv_str += m + "-" + str(syn_sem_threshold) + " vs mode(annotators)," + \
                 #                      get_kappa_correlation_score(data_in_1d, annotated_data) + "\r\n"
 
-        # print("result_as_csv_str:", result_as_csv_str)
+        # print("result_as_csv_str2:", result_as_dict)
         return result_as_dict
         # self.log(["*"] * 80)
 
@@ -684,7 +751,7 @@ class AnnotatedDataHandler:
             csv_writer = csv.writer(csv_file, delimiter=',')
             # pd.DataFrame(annotatedDataHandler.roc_dict).to_csv('roc_dict')
             if type == "kappa":
-                csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "d score (kappa)"])
+                csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "d score (kappa)", "mcc"])
             elif type == "condition":
                 csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
                                      " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
@@ -693,7 +760,7 @@ class AnnotatedDataHandler:
                                         , "Conditions - positive class=" + self.class_related
                                         , "Conditions - positive class=" + self.class_equal])
             # else:
-                # No header?
+            # No header?
 
             for k_outer_threshold, v_outer_threshold in dict.items():
                 # print("k_outer_threshold:", k_outer_threshold, ", items: ", len(v_outer_threshold.items()))
@@ -702,8 +769,15 @@ class AnnotatedDataHandler:
                     if not isinstance(v_method_name, list):
                         if type == "kappa":
                             for k_inner_threshold, v_inner_threshold in v_method_name.items():
-                                csv_writer.writerow(
-                                    [k_outer_threshold, k_method_name, k_inner_threshold,v_inner_threshold])
+                                print(v_inner_threshold)
+                                if isinstance(v_inner_threshold, list):
+                                    row = [k_outer_threshold, k_method_name, k_inner_threshold]
+                                    row.extend(v_inner_threshold)
+                                    print(row)
+                                    csv_writer.writerow(row)
+                                else:
+                                    csv_writer.writerow(
+                                        [k_outer_threshold, k_method_name, k_inner_threshold, v_inner_threshold])
 
             print("done")
 
@@ -750,42 +824,63 @@ flatAnnotatedData = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(mod
 # print("len(flatAnnotatedData):", len(flatAnnotatedData))
 dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
-    range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.4)
+    range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.3)
 
 minFive = 0.0
-maxFive = 0.1
-step = 0.1
-kappa_score_at_thresholds = {}
+maxFive = 0.01
+step = 0.01
+all_score_at_thresholds = {}
 while minFive < 1:
-    maxFive = minFive + step
+    maxFive = round(float(minFive + step), 2)
     while maxFive <= 1:
         annotatedDataHandler.log(['*'] * 80)
         thresholds = {annotatedDataHandler.class_unrelated: minFive, annotatedDataHandler.class_related: maxFive}
-        annotatedDataHandler.log('Thresholds:' + str(thresholds))
+        str_thresholds_key = str(minFive) + "_" + str(maxFive)
+        annotatedDataHandler.log('Thresholds:' + str_thresholds_key)
         annotatedDataHandler.read_all_computed_data(read_headers=True, _thresholds=thresholds)
 
         # Read other models
         for baseline_method in annotatedDataHandler.notSynAndSem:
             # Check if there are any inconsistencies between the 2 lists
-            annotatedDataHandler.compare1dLists(annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(
-                annotatedDataHandler.computed_data[baseline_method]["0-0"]), flatAnnotatedData)
+            devset_computed_2d = annotatedDataHandler.computed_data[baseline_method]["0-0"]
+            devset_computed_1d = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(devset_computed_2d)
+            development_x = [devset_computed_1d[i] for i in dataset['dev_x_index']]
+            annotatedDataHandler.compare1dLists(development_x, dataset['dev_y'])
 
         # Read own models
         for own_method in annotatedDataHandler.computed_method:
             for syn_sem_threshold in annotatedDataHandler.result_indexes:
                 # Check if there are any inconsistencies between the 2 lists
-                annotatedDataHandler.compare1dLists(annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(
-                    annotatedDataHandler.computed_data[own_method][syn_sem_threshold]), flatAnnotatedData)
+                devset_computed_2d = annotatedDataHandler.computed_data[own_method][syn_sem_threshold]
+                devset_computed_1d = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(devset_computed_2d)
+                development_x = [devset_computed_1d[i] for i in dataset['dev_x_index']]
+                annotatedDataHandler.compare1dLists(development_x, dataset['dev_y'])
+        # annotatedDataHandler.log(["BEFORE kappa_score = ", all_score_at_thresholds])
+        kappa_score = annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(dataset)
+        # annotatedDataHandler.log(["kappa_score = ", all_score_at_thresholds])
+        # annotatedDataHandler.log(["kappa_score = ", kappa_score])
+        mcc_and_kappa_score = annotatedDataHandler.calculateMccBetweenComputedAndAnnotatedData(dataset, kappa_score)
+        # annotatedDataHandler.log(["mcc_and_kappa_score = ", all_score_at_thresholds])
 
-        kappa_score_at_thresholds[str(thresholds)] = annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(flatAnnotatedData)
-        annotatedDataHandler.log(['Kappa Score for thresholds:', str(thresholds), " = ", kappa_score_at_thresholds[str(thresholds)]])
+        # print("str(thresholds):", str_thresholds_key)
+        if str_thresholds_key not in all_score_at_thresholds:
+            all_score_at_thresholds[str_thresholds_key] = {}
+            # print(all_score_at_thresholds[str_thresholds_key])
+
+        # annotatedDataHandler.log(["all_score_at_thresholds = ", all_score_at_thresholds])
+
+        all_score_at_thresholds[str_thresholds_key] = mcc_and_kappa_score
+
+        # annotatedDataHandler.log(["Scores for thresholds = ", all_score_at_thresholds])
         # annotatedDataHandler.log(['-'] * 80)
-        maxFive = maxFive + step
-    minFive = minFive + step
+        maxFive = round(float(maxFive + step), 2)
+    minFive = round(float(minFive + step), 2)
+# annotatedDataHandler.log(["Scores for thresholds = ", all_score_at_thresholds])
 
-annotatedDataHandler.log("Printing Final Results")
-annotatedDataHandler.log([kappa_score_at_thresholds])
-annotatedDataHandler.writeDetailedDictToCsv(kappa_score_at_thresholds, "kappa_score"+annotatedDataHandler.computational_iteration, type="kappa")
+# annotatedDataHandler.log("Printing Final Results")
+# annotatedDataHandler.log([kappa_score_at_thresholds])
+annotatedDataHandler.writeDetailedDictToCsv(all_score_at_thresholds,
+                                            "kappa_score" + annotatedDataHandler.computational_iteration, type="kappa")
 #
 #
 
