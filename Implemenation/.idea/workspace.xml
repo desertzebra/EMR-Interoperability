@@ -41,10 +41,10 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Implementation/AnnotatedDataHandler_2.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Implementation/similarity.py" />
     <property name="settings.editor.selected.configurable" value="Console" />
   </component>
-  <component name="RunManager" selected="Python.similarity 21 05 2021">
+  <component name="RunManager" selected="Python.AnnotatedDataHandler_3">
     <configuration name="AnnotatedDataHandler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -159,8 +159,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.similarity 21 05 2021" />
         <item itemvalue="Python.AnnotatedDataHandler_3" />
+        <item itemvalue="Python.similarity 21 05 2021" />
         <item itemvalue="Python.AnnotatedDataHandler_2" />
         <item itemvalue="Python.AnnotatedDataHandler" />
         <item itemvalue="Python.results" />
