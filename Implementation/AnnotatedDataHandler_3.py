@@ -106,16 +106,33 @@ class AnnotatedDataHandler:
                                 'roberta-large-nli-mean-tokens',
                                 'distilbert-base-nli-mean-tokens'
                                 ]
+        self.class_equal = "1.0"
+        self.class_related = "0.5"
+        self.class_unrelated = "0.0"
+
+        self.max_thresholds = { 'Word2Vec': {self.class_unrelated:0.05, self.class_related:0.1},
+                                'FUZZY_MATCH': {self.class_unrelated:0.7, self.class_related:0.75},
+                                'bert-base-nli-stsb-mean-tokens': {self.class_unrelated:0.85, self.class_related:0.9} ,
+                                'bert-large-nli-stsb-mean-tokens': {self.class_unrelated:0.85, self.class_related:0.9},
+                                'roberta-base-nli-stsb-mean-tokens': {self.class_unrelated:0.85, self.class_related:0.9},
+                                'roberta-large-nli-stsb-mean-tokens': {self.class_unrelated:0.85, self.class_related:0.9},
+                                'distilbert-base-nli-stsb-mean-tokens': {self.class_unrelated:0.85, self.class_related:0.9},
+                                'bert-base-nli-mean-tokens': {self.class_unrelated:0.9, self.class_related:0.95},
+                                'bert-large-nli-mean-tokens': {self.class_unrelated:0.75, self.class_related:0.9},
+                                'roberta-base-nli-mean-tokens': {self.class_unrelated:0.9, self.class_related:0.95},
+                                'roberta-large-nli-mean-tokens': {self.class_unrelated:0.9, self.class_related:0.95},
+                                'distilbert-base-nli-mean-tokens': {self.class_unrelated:0.9, self.class_related:0.95}
+                               }
+
         # Computed Data Structures
         self.computed_data = {}
+        self.test_data = {}
         for m in self.notSynAndSem:
             self.computed_data[m] = {}
         for m in self.computed_method:
             self.computed_data[m] = {}
 
-        self.class_equal = "1.0"
-        self.class_related = "0.5"
-        self.class_unrelated = "0.0"
+
         # self.roc_dict = {}
         # self.max_roc_dict = {}
         # self.prc_dict = {}
@@ -520,6 +537,82 @@ class AnnotatedDataHandler:
         return result_as_dict
         # self.log(["*"] * 80)
 
+    def calculateMccOnTest(self, dataset):
+        result_as_dict = {}
+        test_y = dataset['test_y']
+        # result_as_csv_str = "\r\n"
+        # print("result_as_dict:", result_as_dict)
+
+        # Base methods
+        for m in self.notSynAndSem:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            if len(self.test_data[m]) < 1:
+                self.log("Insufficient data for the computed methods, have you read the files yet?")
+                return
+            # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+            data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.test_data[m])
+            test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+            result_as_dict[m] = get_Mcc_score(test_y, test_x)
+        # print(self.computed_data)
+        for m in self.computed_method:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            for _syn_sem_threshold in self.result_indexes:
+                if len(self.test_data[m]) < 1:
+                    self.log("Insufficient data for the computed methods, have you read the files yet?")
+                    return
+                # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+                data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.test_data[m])
+                test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+
+                result_as_dict[m] = get_Mcc_score(test_y, test_x)
+
+                # result_as_csv_str += m + "-" + str(syn_sem_threshold) + " vs mode(annotators)," + \
+                #                      get_kappa_correlation_score(data_in_1d, annotated_data) + "\r\n"
+
+        # print("result_as_csv_str2:", result_as_dict)
+        return result_as_dict
+        # self.log(["*"] * 80)
+
+    def calculateKapaaOnTest(self, dataset):
+        result_as_dict = {}
+        test_y = dataset['test_y']
+        # result_as_csv_str = "\r\n"
+        # print("result_as_dict:", result_as_dict)
+
+        # Base methods
+        for m in self.notSynAndSem:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            if len(self.test_data[m]) < 1:
+                self.log("Insufficient data for the computed methods, have you read the files yet?")
+                return
+            # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+            data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.test_data[m])
+            test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+            result_as_dict[m] = get_kappa_correlation_score(test_x, test_y)
+        # print(self.computed_data)
+        for m in self.computed_method:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            for _syn_sem_threshold in self.result_indexes:
+                if len(self.test_data[m]) < 1:
+                    self.log("Insufficient data for the computed methods, have you read the files yet?")
+                    return
+                # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+                data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.test_data[m])
+                test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+
+                result_as_dict[m] = get_kappa_correlation_score(test_x, test_y)
+
+                # result_as_csv_str += m + "-" + str(syn_sem_threshold) + " vs mode(annotators)," + \
+                #                      get_kappa_correlation_score(data_in_1d, annotated_data) + "\r\n"
+
+        # print("result_as_csv_str2:", result_as_dict)
+        return result_as_dict
+        # self.log(["*"] * 80)
+
     def calculateOvrBetweenComputedAndAnnotatedData(self, dataset):
         performance_dict = {}
         development_y = dataset['dev_y']
@@ -900,84 +993,78 @@ dataset = {}
 dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test_y'] = train_test_split(
     range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.3)
 
-minFive = 0.0
-maxFive = 0.0
-step = 0.05
-all_score_at_thresholds = {}
-performance_dict = {}
-while minFive < 1:
-    maxFive = round(float(minFive + step), 2)
-    while maxFive <= 1:
-        annotatedDataHandler.log(['*'] * 80)
-        thresholds = {annotatedDataHandler.class_unrelated: minFive, annotatedDataHandler.class_related: maxFive}
-        str_thresholds_key = str(minFive) + "_" + str(maxFive)
-        annotatedDataHandler.log('Thresholds:' + str_thresholds_key)
-        annotatedDataHandler.read_all_computed_data(read_headers=True, _thresholds=thresholds)
-
-        # Read other models
-        for baseline_method in annotatedDataHandler.notSynAndSem:
-            # Check if there are any inconsistencies between the 2 lists
-            devset_computed_2d = annotatedDataHandler.computed_data[baseline_method]["0-0"]
-            devset_computed_1d = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(devset_computed_2d)
-            development_x = [devset_computed_1d[i] for i in dataset['dev_x_index']]
-            annotatedDataHandler.compare1dLists(development_x, dataset['dev_y'])
-
-        # Read own models
-        for own_method in annotatedDataHandler.computed_method:
-            for syn_sem_threshold in annotatedDataHandler.result_indexes:
-                # Check if there are any inconsistencies between the 2 lists
-                devset_computed_2d = annotatedDataHandler.computed_data[own_method][syn_sem_threshold]
-                devset_computed_1d = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(devset_computed_2d)
-                development_x = [devset_computed_1d[i] for i in dataset['dev_x_index']]
-                annotatedDataHandler.compare1dLists(development_x, dataset['dev_y'])
-        # annotatedDataHandler.log(["BEFORE kappa_score = ", all_score_at_thresholds])
-        kappa_score = annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(dataset)
-        # annotatedDataHandler.log(["kappa_score = ", all_score_at_thresholds])
-        # annotatedDataHandler.log(["kappa_score = ", kappa_score])
-        mcc_and_kappa_score = annotatedDataHandler.calculateMccBetweenComputedAndAnnotatedData(dataset, kappa_score)
-
-        if str_thresholds_key not in performance_dict:
-            performance_dict[str_thresholds_key] = annotatedDataHandler.calculateOvrBetweenComputedAndAnnotatedData(dataset)
-        # annotatedDataHandler.log(["mcc_and_kappa_score = ", all_score_at_thresholds])
-
-        # print("str(thresholds):", str_thresholds_key)
-        if str_thresholds_key not in all_score_at_thresholds:
-            all_score_at_thresholds[str_thresholds_key] = {}
-            # print(all_score_at_thresholds[str_thresholds_key])
-
-        # annotatedDataHandler.log(["all_score_at_thresholds = ", all_score_at_thresholds])
-
-        all_score_at_thresholds[str_thresholds_key] = mcc_and_kappa_score
-
-        # annotatedDataHandler.log(["Scores for thresholds = ", all_score_at_thresholds])
-        # annotatedDataHandler.log(['-'] * 80)
-        maxFive = round(float(maxFive + step), 2)
-    minFive = round(float(minFive + step), 2)
-# annotatedDataHandler.log(["Scores for thresholds = ", all_score_at_thresholds])
-
-# annotatedDataHandler.log("Printing Final Results")
-# annotatedDataHandler.log([kappa_score_at_thresholds])
-annotatedDataHandler.writeDetailedDictToCsv(all_score_at_thresholds,
-                                            "kappa_score" + annotatedDataHandler.computational_iteration, type="kappa")
-
-annotatedDataHandler.writeDetailedDictToCsv(performance_dict, "performance" + annotatedDataHandler.computational_iteration, type="condition")
+# minFive = 0.0
+# maxFive = 0.0
+# step = 0.05
+# all_score_at_thresholds = {}
+# performance_dict = {}
+# while minFive < 1:
+#     maxFive = round(float(minFive + step), 2)
+#     while maxFive <= 1:
+#         annotatedDataHandler.log(['*'] * 80)
+#         thresholds = {annotatedDataHandler.class_unrelated: minFive, annotatedDataHandler.class_related: maxFive}
+#         str_thresholds_key = str(minFive) + "_" + str(maxFive)
+#         annotatedDataHandler.log('Thresholds:' + str_thresholds_key)
+#         annotatedDataHandler.read_all_computed_data(read_headers=True, _thresholds=thresholds)
 #
+#         # Read other models
+#         for baseline_method in annotatedDataHandler.notSynAndSem:
+#             # Check if there are any inconsistencies between the 2 lists
+#             devset_computed_2d = annotatedDataHandler.computed_data[baseline_method]["0-0"]
+#             devset_computed_1d = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(devset_computed_2d)
+#             development_x = [devset_computed_1d[i] for i in dataset['dev_x_index']]
+#             annotatedDataHandler.compare1dLists(development_x, dataset['dev_y'])
 #
+#         # Read own models
+#         for own_method in annotatedDataHandler.computed_method:
+#             for syn_sem_threshold in annotatedDataHandler.result_indexes:
+#                 # Check if there are any inconsistencies between the 2 lists
+#                 devset_computed_2d = annotatedDataHandler.computed_data[own_method][syn_sem_threshold]
+#                 devset_computed_1d = annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(devset_computed_2d)
+#                 development_x = [devset_computed_1d[i] for i in dataset['dev_x_index']]
+#                 annotatedDataHandler.compare1dLists(development_x, dataset['dev_y'])
+#         # annotatedDataHandler.log(["BEFORE kappa_score = ", all_score_at_thresholds])
+#         kappa_score = annotatedDataHandler.calculateKappaScoreBetweenComputedAndAnnotatedData(dataset)
+#         # annotatedDataHandler.log(["kappa_score = ", all_score_at_thresholds])
+#         # annotatedDataHandler.log(["kappa_score = ", kappa_score])
+#         mcc_and_kappa_score = annotatedDataHandler.calculateMccBetweenComputedAndAnnotatedData(dataset, kappa_score)
+#
+#         if str_thresholds_key not in performance_dict:
+#             performance_dict[str_thresholds_key] = annotatedDataHandler.calculateOvrBetweenComputedAndAnnotatedData(dataset)
+#         # annotatedDataHandler.log(["mcc_and_kappa_score = ", all_score_at_thresholds])
+#
+#         # print("str(thresholds):", str_thresholds_key)
+#         if str_thresholds_key not in all_score_at_thresholds:
+#             all_score_at_thresholds[str_thresholds_key] = {}
+#             # print(all_score_at_thresholds[str_thresholds_key])
+#
+#         # annotatedDataHandler.log(["all_score_at_thresholds = ", all_score_at_thresholds])
+#
+#         all_score_at_thresholds[str_thresholds_key] = mcc_and_kappa_score
+#
+#         # annotatedDataHandler.log(["Scores for thresholds = ", all_score_at_thresholds])
+#         # annotatedDataHandler.log(['-'] * 80)
+#         maxFive = round(float(maxFive + step), 2)
+#     minFive = round(float(minFive + step), 2)
+# # annotatedDataHandler.log(["Scores for thresholds = ", all_score_at_thresholds])
+#
+# # annotatedDataHandler.log("Printing Final Results")
+# # annotatedDataHandler.log([kappa_score_at_thresholds])
+# annotatedDataHandler.writeDetailedDictToCsv(all_score_at_thresholds,
+#                                             "kappa_score" + annotatedDataHandler.computational_iteration, type="kappa")
+#
+# annotatedDataHandler.writeDetailedDictToCsv(performance_dict, "performance" + annotatedDataHandler.computational_iteration, type="condition")
 
-#
-# annotatedDataHandler.log(['Development: Class0=%d, Class1=%d, Class2=%d' % (
-#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_unrelated]),
-#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_related]),
-#             len([t for t in dataset['dev_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
-#
-# # print('Threshold Selection: Class0=%d, Class1=%d, Class2=%d' %
-# #       (len([t for t in threshold_selection_y if t == "0.0"]),
-# #        len([t for t in threshold_selection_y if t == "0.5"]),
-# #        len([t for t in threshold_selection_y if t == self.class_equal])))
-#
-# annotatedDataHandler.log(['Test Selection: Class0=%d, Class1=%d, Class2=%d' % (
-#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_unrelated]),
-#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_related]),
-#     len([t for t in dataset['test_y'] if t == annotatedDataHandler.class_equal]))], annotatedDataHandler.logTRACE)
-#
-#
+annotatedDataHandler.test_data = {}
+for method, threshold in annotatedDataHandler.max_thresholds.items():
+    annotatedDataHandler.test_data[method] = {}
+    if method in annotatedDataHandler.computed_method:
+        annotatedDataHandler.test_data[method] = annotatedDataHandler.read_computed_data_for_model(method + "_syn_sem",True,"0.0-1.0",threshold)
+        # print(len(annotatedDataHandler.test_data[method]))
+    if method in annotatedDataHandler.notSynAndSem:
+        annotatedDataHandler.test_data[method] = annotatedDataHandler.read_computed_data_for_model(method,True,"0-0",threshold)
+        # print(len(annotatedDataHandler.test_data[method]))
+
+print(annotatedDataHandler.calculateMccOnTest(dataset))
+
+print(annotatedDataHandler.calculateKapaaOnTest(dataset))
