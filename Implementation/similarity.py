@@ -9,7 +9,7 @@ import torch
 from numba import njit, cuda, prange
 from numba import jit
 import numpy as np
-from fastdist import fastdist
+#from fastdist import fastdist
 from numpy import dot
 from numpy.linalg import norm
 
@@ -723,6 +723,8 @@ data = simObj.readData('Data/AmplifiedSimilarity-V0.3.txt')
 
 print('data')
 print(len(data))
+
+exit()
 
 # data = simObj.calcualteBaseLineSimilarity(data)
 
