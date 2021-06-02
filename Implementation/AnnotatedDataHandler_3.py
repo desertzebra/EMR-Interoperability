@@ -93,7 +93,7 @@ class AnnotatedDataHandler:
         #                        "0.8-0.2", "0.9-0.1"]
         self.result_indexes = ["0.0-1.0"]
         self.computational_iteration = "1.7"
-        self.result_iteration = ".3"
+        self.result_iteration = ".5"
         self.notSynAndSem = ["FUZZY_MATCH", "Word2Vec"]
         self.computed_method = ['bert-base-nli-stsb-mean-tokens',
                                 'bert-large-nli-stsb-mean-tokens',
@@ -520,6 +520,49 @@ class AnnotatedDataHandler:
         return result_as_dict
         # self.log(["*"] * 80)
 
+    def calculateOvrBetweenComputedAndAnnotatedData(self, dataset):
+        performance_dict = {}
+        development_y = dataset['dev_y']
+        # result_as_csv_str = "\r\n"
+        # print("result_as_dict:", result_as_dict)
+
+        # Base methods
+        for m in self.notSynAndSem:
+            if m not in performance_dict:
+                performance_dict[m] = {}
+            if len(self.computed_data[m]) < 1:
+                self.log("Insufficient data for measuring performance of the computed methods, have you read the files yet?")
+                return
+            # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+            data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.computed_data[m]["0-0"])
+            development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+            if "0-0" not in performance_dict[m]:
+                performance_dict[m]["0-0"] = {}
+            performance_dict[m]["0-0"] = self.calculate_ovr_conditions(development_x, development_y)
+        # print(self.computed_data)
+        for m in self.computed_method:
+            if m not in performance_dict:
+                performance_dict[m] = {}
+            for _syn_sem_threshold in self.result_indexes:
+                if len(self.computed_data[m]) < 1:
+                    self.log("Insufficient data for the computed methods, have you read the files yet?")
+                    return
+                # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+                data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.computed_data[m][_syn_sem_threshold])
+                development_x = [data_in_1d[i] for i in dataset['dev_x_index']]
+
+                if _syn_sem_threshold not in performance_dict[m]:
+                    performance_dict[m][_syn_sem_threshold] = {}
+
+                performance_dict[m][_syn_sem_threshold] = self.calculate_ovr_conditions(development_x, development_y)
+
+                # result_as_csv_str += m + "-" + str(syn_sem_threshold) + " vs mode(annotators)," + \
+                #                      get_kappa_correlation_score(data_in_1d, annotated_data) + "\r\n"
+
+        # print("result_as_csv_str2:", result_as_dict)
+        return performance_dict
+        # self.log(["*"] * 80)
+
     def calculateModeScoreBetweenAllAnnotators(self, has_headers=False):
         if len(self.annotator1Data) < 1 or len(self.annotator2Data) < 1 or len(self.annotator3Data) < 1 \
                 or len(self.annotator4Data) < 1:
@@ -648,10 +691,14 @@ class AnnotatedDataHandler:
             self.log(["countProblematicRows:", countProblematicRows])
             exit()
 
-    # Calcualte performance metrics from confusion matrix
-    def calculate_ovr_conditions(self, cm, thresholds):
+    # Calculate performance metrics from confusion matrix
+    def calculate_ovr_conditions(self, y_pred_tuple, y_true_tuple):
+        y_true = [t[2] for t in y_true_tuple]
+        y_pred = [t[2] for t in y_pred_tuple]
+
+        cm = confusion_matrix(y_true, y_pred, sample_weight=None)
+
         performance_dict = {}
-        performance_dict["threshold"] = thresholds
         for pc_index, positiveClass in enumerate(self.classes):
 
             performance_dict[pc_index] = {}
@@ -753,9 +800,11 @@ class AnnotatedDataHandler:
             if type == "kappa":
                 csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "d score (kappa)", "mcc"])
             elif type == "condition":
-                csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold", "AUC method",
-                                     " AUC Score - " + self.class_unrelated, " AUC Score - " + self.class_related,
-                                     " AUC Score - " + self.class_equal,
+                csv_writer.writerow(["Outer Threshold", "Method name", "Inner Threshold",
+                                     " F1 - " + self.class_unrelated, " F1 - " + self.class_related,
+                                     " F1 - " + self.class_equal,
+                                     " MCC - " + self.class_unrelated, " MCC - " + self.class_related,
+                                     " MCC - " + self.class_equal,
                                      "Conditions - positive class=" + self.class_unrelated
                                         , "Conditions - positive class=" + self.class_related
                                         , "Conditions - positive class=" + self.class_equal])
@@ -765,21 +814,46 @@ class AnnotatedDataHandler:
             for k_outer_threshold, v_outer_threshold in dict.items():
                 # print("k_outer_threshold:", k_outer_threshold, ", items: ", len(v_outer_threshold.items()))
                 for k_method_name, v_method_name in v_outer_threshold.items():
-                    # print("k_method_name:",k_method_name)
+                    print("v_method_name:", v_method_name)
                     if not isinstance(v_method_name, list):
-                        if type == "kappa":
-                            for k_inner_threshold, v_inner_threshold in v_method_name.items():
+                        for k_inner_threshold, v_inner_threshold in v_method_name.items():
+                            row = [k_outer_threshold, k_method_name, k_inner_threshold]
+                            if type == "kappa":
                                 print(v_inner_threshold)
                                 if isinstance(v_inner_threshold, list):
-                                    row = [k_outer_threshold, k_method_name, k_inner_threshold]
                                     row.extend(v_inner_threshold)
-                                    print(row)
+                                    # print(row)
                                     csv_writer.writerow(row)
                                 else:
                                     csv_writer.writerow(
                                         [k_outer_threshold, k_method_name, k_inner_threshold, v_inner_threshold])
+                            elif type == "condition":
+                                # print(v_inner_threshold)
+                                conditions_for_positive_class = dict.fromkeys(self.classes)
+                                for pc_index, positiveClass in enumerate(self.classes):
+                                    conditions_for_positive_class[positiveClass] = dict.fromkeys(["f1","mcc", "con"])
+                                    conditions_for_positive_class[positiveClass]["f1"] = v_inner_threshold[pc_index]['f-measure']['1']
+                                    conditions_for_positive_class[positiveClass]["mcc"] = \
+                                    v_inner_threshold[pc_index]['mcc']
+                                    conditions_for_positive_class[positiveClass]["con"] = str(v_inner_threshold[pc_index])
+
+                                row.append(conditions_for_positive_class[self.class_unrelated]["f1"])
+                                row.append(conditions_for_positive_class[self.class_related]["f1"])
+                                row.append(conditions_for_positive_class[self.class_equal]["f1"])
+                                row.append(conditions_for_positive_class[self.class_unrelated]["mcc"])
+                                row.append(conditions_for_positive_class[self.class_related]["mcc"])
+                                row.append(conditions_for_positive_class[self.class_equal]["mcc"])
+                                row.append(conditions_for_positive_class[self.class_unrelated]["con"])
+                                row.append(conditions_for_positive_class[self.class_related]["con"])
+                                row.append(conditions_for_positive_class[self.class_equal]["con"])
+                                print(row)
+                                csv_writer.writerow(row)
+
+                                # for k_class_index, v_class_index in v_method_name.items():
+
 
             print("done")
+
 
     # def plot_scatter_for_mcc_vs_f1(self, condition_from_experimental_iterations, plotTitle):
     #     fig = plt.figure(figsize=(20, 10))
@@ -827,9 +901,10 @@ dataset['dev_x_index'], dataset['test_x_index'], dataset['dev_y'], dataset['test
     range(len(flatAnnotatedData)), flatAnnotatedData, test_size=0.3)
 
 minFive = 0.0
-maxFive = 0.01
-step = 0.01
+maxFive = 0.0
+step = 0.05
 all_score_at_thresholds = {}
+performance_dict = {}
 while minFive < 1:
     maxFive = round(float(minFive + step), 2)
     while maxFive <= 1:
@@ -860,6 +935,9 @@ while minFive < 1:
         # annotatedDataHandler.log(["kappa_score = ", all_score_at_thresholds])
         # annotatedDataHandler.log(["kappa_score = ", kappa_score])
         mcc_and_kappa_score = annotatedDataHandler.calculateMccBetweenComputedAndAnnotatedData(dataset, kappa_score)
+
+        if str_thresholds_key not in performance_dict:
+            performance_dict[str_thresholds_key] = annotatedDataHandler.calculateOvrBetweenComputedAndAnnotatedData(dataset)
         # annotatedDataHandler.log(["mcc_and_kappa_score = ", all_score_at_thresholds])
 
         # print("str(thresholds):", str_thresholds_key)
@@ -881,6 +959,8 @@ while minFive < 1:
 # annotatedDataHandler.log([kappa_score_at_thresholds])
 annotatedDataHandler.writeDetailedDictToCsv(all_score_at_thresholds,
                                             "kappa_score" + annotatedDataHandler.computational_iteration, type="kappa")
+
+annotatedDataHandler.writeDetailedDictToCsv(performance_dict, "performance" + annotatedDataHandler.computational_iteration, type="condition")
 #
 #
 

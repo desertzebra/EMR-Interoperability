@@ -1,38 +1,10 @@
 
 \section*{Methodology}
 \label{methodology}
-Healthcare interoperability, with a focus on non-standard compliant medical schema, is dependent on the generation and validation of schema maps, as discussed above. To this end, the creation of a cohesive workflow is of utmost importance. In our earlier work \cite{Satti2020} we used maximum sequence identification and matching using suffix trees for syntactic matching of two distinctly sources data schemas. This was followed by semantic concept enrichment and subsequently concept matching, for creating rules in the form of schema maps. The simplified mapping functions, thereby created, provided a simple methodology for converting semi-structured medical data, into a non-persisted, interpretable, model form.
-\textbf{In our current methodology we have utilized state-of-the-art machine learning techniques for converting medical schemas into semi-structured form, which is then used to create embedding vectors. These vectors are then used for} modeling and creating interpretable rules for applying semantic reconciliation in the form of schema matching and/or transformation. These rules are managed by the RDR which allows fast inference using the relevant knowledge sub-tree, and can well manage knowledge evolution to scale out (by incorporating new schema) and up (by incorporating changes and additions to existing schema)
-In essence, the aim here is to define a uniqueness property ($\mathbb{P}$), as shown in Equation \eqref{uniquenessProp}, whereby the semantic and syntactic uniqueness of each attribute as a disjoint union, is used.
-
-\begin{equation}\label{uniquenessProp}
-range(\mathbb{P})= \tau_{syntatic} \uplus \tau_{semantic}
-\end{equation}
-
-The syntactic uniqueness as represented in Equation \eqref{synType}, is also a disjoint union of the measured attribute type and its valid values. The type of the attribute can correspond to one of Long (signed decimal values), Double (signed floating point values), Date (yyyy-MM-dd), DateTime (yyyy-MM-dd'T'HH:mm:ss. SSSXXX) or String. On the other hand, ``validValues" are determined based on what is contained in some sampled portion of the database. It is represented by the set of all possible categorical values (such as values of the attribute with type Date, DateTime, and String which can be used to represent names, address, and others textual elements of the EMR), the minimum and maximum values enclosed within closed intervals (``[ ]") to represent a range of numerical values ( such as values of attributes with type Double or Long),
-
-The elements of $t$ set have been determined based on some common types available to our java application. This set can be further extended to include other types, such as ``Boolean", ``Long", ``UUID" and so on, however each type requires a parser, which can identify the type, based on the values in the instances. As an example, if we add the type ``Boolean" to the set $t$, then a parser must exist, which can at the very least validate, values such as ``True", ``T", ``1", as true, and ``False:, ``f", ``0" as false. However, the problem here lies in determining, if the string ``1" and ``0" really belongs to the type Boolean or Long? Therefore, in our current implementation, we have limited the attribute type set, as mentioned above.
-Additionally, while database schema used by EMR systems, correspond to the SQL datatypes\cite{SQLDataTypes}, the application of semantic reconciliation-on-read strategy, instead necessitates the usage of common programming primitive types. This ensures that the querying application is able to correctly transform the textual values into their most relevant, programming type counterparts. 
-
-\begin{equation}\label{synType}
-\tau_{syntatic}= \left \{ t \mid t \epsilon \left \{ \left \{ Long, Double, Date, DateTime, String \right \} \uplus validValues \right \} \right \}
-\end{equation}
-
-The semantic type is represented by the Equation \eqref{semType}, which is the set of all concepts corresponding to the leaf nodes of the suffix tree, generated from the name of the attribute. Suffix trees are used to divide a string into components, which is a very useful base for quickly identifying the longest common subsequence between a pair of strings and data compression. In our case, these trees provide a manageable list of words, contained with the name of attribute. For each substring, represented by a path of the tree, we then identify the corresponding concept, if it exists, thereby producing a set of concepts which may represent the attribute.
-
-\begin{equation}\label{semType}
-\tau_{semantic}= \left \{s \mid s \epsilon \left \{ concept_{i,j} \mid i \leq width(suffixTree(s)) \wedge j \epsilon \left \{ substring_i \right \} \right \} \right \}
-\end{equation}
-
-Finally, the set $AA$ of Amplified Attribute (AA), holds all unique attributes of participating schema, as shown in Equation \eqref{uniqueA}. For each element of this set, the attribute is unique if its properties from Equation \eqref{uniquenessProp}, are not similar to any other element of this set. The similarity function ``$\sim$" is a threshold based loose bound, on the disjoint elements of ``$\mathbb{P}$".
-
-
-\begin{equation}\label{uniqueA}
-\exists a \epsilon AA \mid ( \mathbb{P}(a) \wedge \forall b \epsilon AA \mid \mathbb{P}(b) \rightarrow a \sim b)
-\end{equation}
-
-
-As a possible realization of this theoretical set notation form, and from a practical point of view, our methodology is presented in the following subsections.
+Healthcare interoperability, with a focus on non-standard compliant medical schema, is dependent on the generation and validation of schema maps, as discussed above. To this end, the creation of a cohesive workflow is of utmost importance. In our earlier work \cite{Satti2020} we used maximum sequence identification and suffix tress based matching for syntactic matching of two distinct data schemas. This was followed by semantic concept enrichment and subsequently concept matching, for creating rules in the form of schema maps. The simplified mapping functions, thereby created, provided a simple methodology for converting semi-structured medical data, into an interpretable, model form.
+In our current methodology we have utilized state-of-the-art natural language processing (NLP) techniques to extract the schema mapping rules from semi-structured data schemas. This methodology is based on identifying similarity between vector representations of two attributes, belonging to different medical schemas. 
+\textbf{Traditional NLP techniques such as WordNet are able to convert a word into an embedded vector, while Bidirectional Encoder Representations from Transformers (BERT) extracts an embedded vector from a sentence.} However, the terms forming the attribute names are bigger than a word (combination of multiple words) and smaller than a sentence. In order to resolve this problem, we extracted the set of suffixes from the terms forming the attribute names. The bidirectional nature of BERT, allows the creation of contextual embedded vectors, where each target word is affected by its neighboring words. Hence to convert the set of suffixes into a sentence, we collected the set of concepts corresponding to each suffix, from Unified Medical Language System (UMLS). This operation has two effects, firstly it is used to remove any suffix, which does not have a corresponding concept and secondly the extracted concepts are used to add context to each suffix and produce a contextual sentence. 
+The following subsections provide the practical details for our methodology, from schema acquisition, to attribute name expansion, and finally schema map generation.
 
 \subsection*{Schema acquisition}
 \label{schema_acq}
@@ -42,83 +14,27 @@ In the former case, while SNOMED-CT provides a mechanism for identifying the sta
 In the later case, differences in normalization cause semantic differences, due to which some data could be available in one schema but absent in others, such as OpenEMR demographics identifying the patient's residential location using specific attributes like ``Address", ``City", ``State", ``Postal Code", ``Country", and others. Similarly, ``EncounterDate" from $s_5$ is semantically similar to ``BeginDate" of ``openemr\_MedicalProblems" table in $s_1$, ``AdmissionStartDate" of ``LabsCorePopulatedTable" in $s_2$, 
 ``time" in ``Diagnosis" table of $s_3$, and  ``dateOfAdmission" in ``Diagnosis" and ``CareHistory" tables of $s_4$.
 Finally, $s_1$ and $s_3$ have separate tables containing the medicinal prescription details, however the same details are unavailable in $s_2$, $s_4$, $s_5$. Once again, this is not an incorrect behavior since this information, might not be a part of the context or the requirements for these EMR storage systems.
-In fact, the change in context of the EMR storage system from the initial time of development to a later stage of collaborative processing systems, is the main cause of heterogeneity. In order to provide an interoperable solution, it is therefore necessary to provide syntactic and semantic mappings, while taking the data instances (or tuples) into account. Specifically, the creation of Amplified Attributes (AA), as an enriched version of EMR attributes, provides a semantic context, by establishing its existential context(such as schema, table, version, date and other factors), probable data type, possible value set, and its related semantic concepts. 
+In fact, the change in context of the EMR storage system from the initial time of development to a later stage of collaborative processing systems, is the main cause of heterogeneity. In order to provide an interoperable solution, it is therefore necessary to enhance the semantics of each EMR attribute by its contextually equivalent sentence. 
 
-\subsection*{From Attribute to Amplified Attribute}
+\subsection*{From Attribute to Sentence}
 \label{schema_prepro}
-\textbf{metadata}
-In order to process the EMR schema set $S$ and produce AA, we use the methodology shown in \textbf{figAlgorithm}.
-First we use the data representation $s_i$, generated through the process explained above (\ref{schema_acq}) to collect the various medical fragments in memory. We then iterate over these fragments, building a set of attributes (not AA), distinguished by their name, schema's name, table's name, schema's version, source, and recorded data. This entails that ``PatientID" from each of the four tables in $s_2$, and ``patientID" from five tables in $s_4$, would result into nine attributes (assuming, as in the current case, of no differences in versions of these systems).
+In order to process the EMR schema set $S$ and produce a set of corresponding semantically enriched sentences, we use the methodology shown in \textbf{figAlgorithm}.
+First we use the data representation $s_i$, generated through the process explained above (\ref{schema_acq}) to collect the various medical fragments in memory. We then iterate over these fragments, building a set of attributes, distinguished by their name, schema's name, table's name, schema's version, source, and recorded data. This entails that ``PatientID" from each of the four tables in $s_2$, and ``patientID" from five tables in $s_4$, would result into nine attributes (assuming, as in the current case, of no differences in versions of these systems).
 For each attribute, we then generate the suffix array, which provides all possible substring representations contained within the attribute name. In order to generate the set of suffixes, we employ three strategies, forward suffix generation, whereby for a word $w$ of length $n$, $n-1$ suffixes of size 2 to $n-1$ are produced, backward suffix generation, to produce $n-1$ suffixes in reverse order with size $n-1$ to 2, and regular expression based suffix generation, which splits each word on, change of case, special characters(such as -, \_, !, and others), and numbers. An example of this suffix generation process is shown in \textbf{figSuffixAttribute}. 
 Here, the attribute ``DOB" in $s_1$, ``PatientDateOfBirth" appears in $s_2$, ``birthday" appears in $s_3$, ``DateOfBirth" in $s_5$, and ``birthDate" in $s_4$. These attributes refer to the same attribute of the patient entity, however, with the suffix generation process, our aim is to identify all words within these strings. While the forward and backward generation process, generates all possible sequences of characters as suffix, the regex based method, only identifies the changes in the string. In this way a large list of suffixes is generated, which is combined using a ``TreeSet" data structure of Java, which internally sorts this list as well.
 
-Similarly the attribute, ``dateOfAdmission" appears in $s_4$, while ``AdmissionStartDate". ``diseaseNameOnAdmission", and ``AdmissionEndDate" appear in $s_2$. As evident within these strings, while they refer to semantically different entity attributes, syntactically they contain similar elements. The suffixes generated from these strings are shown in \textbf{figSuffixAttribute (b)}. The suffix generation process, identified thus far, is only able to generate syntactic suffixes, producing many incoherent and unrelated suffixes. In order to counter this problem, and to limit the list of suffixes within the domain, we then query UMLS, with exact search strategy, looking for the existence of any concepts, against each suffix. In case, no semantic concept is found for a particular suffix, it is removed from the final Suffix Array. On the other hand, if atleast one semantic concepts is found against the queried suffix, it is retained. The list of concepts thus found, are also added to Concept Array of the AA. We continue this process, until all substrings have been processed. This is followed by syntactic type check of the attribute, which is based on its data. Here we determine, if the attribute values correspond to one of the types from $t$ (Equation \eqref{synType}). Additionally, we collect the values of each corresponding data cell, and determine the list of possible values in each case. 
-
-Meanwhile the process continues for the next attribute, then the next table, and finally the next system, till no further processing is possible. The flat enriched schema, following the design shown in \textbf{figEnrichedSchema} provides the input to our knowledge base. The logically amplified structure of the attribute, AA, is represented in \textbf{figAttributeRepresentation}. Here, the elements of AA are categorized into three parts. ``AttributeContext" contains the metadata conforming to an instance of the attribute's existence,  with its name, container table name and schema name, acting as a pointer, and schema version, source, and recorded date providing the version control features. In this manner, the attribute's fully qualified reference, along with its existential context is identified. ``AttributeType" then encapsulates the data type features of this attribute's instances, with its primitive data type, and values providing a representation of the attribute's instance. Finally, ``Attribute Semantics" holds, the semantic information of this attribute, in the form of its suffix array, CA and Embedding Vector.
-A pair of AA's with distinct references, are then used as an input to the schema map generation process, which is explained in the next step.
-
-\subsection*{Schema Map generation}
-\label{schema_map_gen}
-Schema Maps, provide an interoperable bridge between two medical systems ($s_i \wedge s_j$), by identifying the links between their participating attributes. This identification is based on the schema matching process, shown in Algorithm \ref{knowledgeEvolAlgo}, which operates on a pair of AA, $\left ( aa_i,aa_j \right ) \mid aa_i \epsilon s_i \wedge aa_j \epsilon s_j$, and calculates the similarity score $S$.
-
-
-\begin{algorithm}
-	\textbf{Input}: AmplifiedAttributes $ aa_i, aa_j$ \\
-	\textbf{Output}: Similarity $S$ 
-	\begin{algorithmic}[1]
-		\State Similarity $S = 0$;
-		\If{$aa_i.AttributeContext == aa_j.AttributeContext$}:
-		\State $S = 1$;
-		\Else
-		% Checking Attribute Type
-		\State Syntactic Similarity $SynSim = 0 $
-		\State $at_i = aa_i.AttributeType$
-		\State $at_j = aa_j.AttributeType$
-		
-		\If{$(at_i.DataType == at_j.DataType) || (at_i.DataType \Leftrightarrow at_j.DataType)$}: 
-		\State	$SynSim = 1$
-		\EndIf
-		\State Semantic Similarity $SemSim = 0 $
-		\State $\vec{ae_i} =  aa_i.Attribute Semantics
-		.TreeEmbedding$
-		\State $\vec{ae_j} =  aa_j.Attribute Semantics
-		.TreeEmbedding$
-		
-		\State $SemSim = \frac{\vec{ae_i} \cdot \vec{ae_j}}{\|\vec{ae_i}\|\|\vec{ae_j}\|}$
-		
-		\State $S = (0.5 * SynSim) + (0.5 * SemSim) $
-		\EndIf
-		
-		\State return $S$
-		\caption{Attributes similarity identifier}
-		\label{knowledgeEvolAlgo}
-	\end{algorithmic}
-\end{algorithm}
-
-This algorithmic process starts by comparing the metadata context of the two amplified attributes. The schema name, table name, attribute name, and version are used to establish the context of each attribute, which are then evaluated based on naive string matching of corresponding elements. If the pair refer to the same instance of the amplified attribute the process simply returns 1 as the similarity score. If however, the amplified attribute refer to separate instances, we then apply syntactic and semantic similarity on the pair. Firstly we compare the datatypes of the pair, to determine if they either have the same datatype or the datatypes are convertible. In our current approach \textit{Double} is convertible into \textit{Long} and vice versa, and \textit{Date} is convertible into \textit{DateTime} datatypes and vice versa. However, this step is very much implementation specific and can be extended if $t$ is enhanced with newer data types. This test is used to set the ``SynSim" score to ``1", if the datatypes are equal or convertible, and ``0" otherwise. Secondly, we compare the semantic concepts of the two amplified attributes, by applying \textbf{cosine} similarity between their embedding vectors. In order to generate the embedding vectors, we utilize {BERT} and apply it on the sentence formed by flattening the AA. This operation is applied on each AA in the schema map pair, by concatenating the name of the attribute, its $m$ suffixes, and their associated $0..n$ concepts, to create a sentence as shown in Equation \ref{aaSentenceFormat}:
-
-\begin{equation}\label{aaSentenceFormat}
-\begin{aligned}
-\left \{ Attribute\_Name < w_0,c_{00},c_{01},...c_{0n}; w_1,c_{10},c_{11},...c_{1n};...w_m,c_{m0},c_{m1},...c_{mn};>\right \}\\
-| w_i \epsilon \phi_{suffix}(Attribute\_Name) \wedge c_{ij} \epsilon \phi_{concept}(w_i) 
-\end{aligned}
-\end{equation}
-
-An example of the resultant sentence is shown as follows:\\
+Similarly the attribute, ``dateOfAdmission" appears in $s_4$, while ``AdmissionStartDate". ``diseaseNameOnAdmission", and ``AdmissionEndDate" appear in $s_2$. As evident within these strings, while they refer to semantically different entity attributes, syntactically they contain similar elements. The suffixes generated from these strings are shown in \textbf{figSuffixAttribute (b)}. The suffix generation process, identified thus far, is only able to generate syntactic suffixes, producing many incoherent and unrelated suffixes. In order to counter this problem, and to limit the list of suffixes within the domain, we then query UMLS, with exact search strategy, looking for the existence of any concepts, against each suffix. In case, no semantic concept is found for a particular suffix, it is removed from the final Suffix Array. On the other hand, if atleast one semantic concept is found against the queried suffix, it is retained. Meanwhile the process continues for the next attribute, then the next table, and finally the next system, till no further processing is possible. 
+The set of suffixes and their corresponding concepts are then used to build the sentence, where by each concept, corresponding to a suffix is appended next to the suffix. An example of the resultant sentence for the attribute ``DateOfAdmission" is shown as follows:\\
 
 \framebox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{\itshape%
 		
-		``$DateOfAdmission < mission,C0026219;Dat,C1420213,C3813713,C0114838,\\
-		C0200555,C1439340,C2826247,C0057150,C0002395;Of,C1705644,C0919490,\\
-		C1704913,C1426958,C0332285,C0456628,C0029151,C1879775;ion,C1700702,\\
-		C0022023;Admission,C0809949,C0184666;Da,C3668815,C0678223,C0226032,\\
-		C1602374,C0280573,C4761311,C0332151,C1704643;Date,C1548309,C2740799,\\
-		C0011008,C1547350,C2348077;on,C2985244,C0029446,C1420342,C1720294,\\
-		C1720176 >$"
+		``Date Value type - Date date allergenic extract Date in time Data types - Date Date Fruit;Of SPI1 wt Allele SPI1 gene TAF1 wt Allele BRIP1 gene Within Degrees fahrenheit Oral contraception BRIP1 wt Allele;Da Displacement of abomasum dalton Anterior descending branch of left coronary artery deca units cytarabine/daunorubicin protocol Dai Chinese Asymptomatic diagnosis of Drug Accountability Domain;ion Iontophoresis Route of Drug Administration Ions;on SPARC wt Allele Osteonectin SPARC gene On (qualifier value) Upon - dosing instruction fragment;Admission Admission activity Hospital admission;Dat SLC6A3 gene SLC6A3 wt Allele dopamine transporter Direct Coombs test SLC6A3 protein, human Test Date cytarabine/daunorubicin/thioguanine Alzheimer's Disease;mission Religious Missions;"
 }}\\
 
-Since the embedding vector is based on the amalgamation of the suffix strings and their corresponding concepts, \textbf{cosine similarity can give a good measure of the direction of these vectors}. ``SemSim", thereby obtained is then used in conjuction with previously obtained ``SynSim" to calculate the similarity of the two amplified attributes. Using equal weights for syntactic and semantic similarity, we then re-scale their individual values to finally provide a similarity score between ``0" and ``1". 
+Here the various suffixes and their concepts are seperated by the symbol ``;", however together they form one sentence, for which an embedded vector is generated. 
 
-The schema matching approach represented above, can be further improved by enwrapping the individual calls with memoization, which can avoid redundant checks. However, in practical terms, the creation of the schema map between two amplified attributes is rarer than its application to transform or link two distinct schemas. Additionally, just like its other schema/ontology matching counterparts, the presented Algorithm \ref{knowledgeEvolAlgo}, applies a one-way compression on the various matched factors to produce a similarity measure/ indicator. This operation is very useful for building unsupervised and semi-supervised automated systems, which base their decisions on a measured confidence score. However, in the healthcare domain, knowledge acquisition and application process, requires the use of supervised automated systems, which can provide strong traceability for the decision making process. Summarily, it is not enough for our schema matching process to simply return $S$.
+\subsection*{Schema Map generation}
+\label{schema_map_gen}
 
-This is where, Ripple Down Rules (RDR) knowledge base, steps in. RDR, by design, provides a safe and traceable data structure for creating, maintaining, and evolving knowledge, in the form of iterpretable rules \cite{compton1992ripple, richards2009two, kim2018rdr}. As \textbf{figRDR} shows, the RDR implementation, which serves as our schema map knowledge base, is very closely related to our schema matching algorithm. Beyond the root node of the RDR, which represents the default condition, at lower depths, syntactic matching characteristics are represented, while semantic matching characteristics, such as the concepts associated with semantic types, follow thereafter. ``AttributeType" elements representing the data types of the attributes (from set $t$) are placed in the first case, followed by convertible types, such as the case where the attribute values, in the form of Long are placed in a string (``\textit{1}",``\textit{2}", and so on). The ``Except" clauses then point towards various ``\textbf{SemanticType}", collected from UMLS. Here, the conditional part of the node refers to types such as (``\textit{Sign or Symptom}", ``\textit{Organism Function}", ``\textit{organism Attribute}", and so on), while the conclusion part refers to concepts, such as (``\textit{Fever}", ``\textit{blood pressure}", ``\textit{age}", and so on). In this way, the RDR based knowledge base, provides us with a concrete, memoized, tree data structure, that can be used for schema matching, on the fly. In moving from root to the leaf nodes of this tree, we gain additional matching characteristics, which are all accumulated in the returned results to provide traceability for the decision makers. Additionally, the RDR creation and subsequently evolution process, is dependent on approval by the expert, in determining which cases can be added to the knowledge base. This combination of automated process for building the schema maps, followed by expert intervention to approve the results, enables a safe and consistent knowledge base. 
+Schema Maps, provide an interoperable bridge between two medical systems ($s_i \wedge s_j$), by identifying the semantic relationship between their participating attributes. This identification is based on the similarity between the embedded vectors, of the semantically enriched sentences, corresponding to each EMR attribute. While the embedded vectors can be generated using any methodology (we tested 11 methodologies, with WordNet and 10 models of BERT further detailed in section \ref{experimentalSetup}), the large/STSb version of the Siamese BERT-Networks \cite{reimers-2019-sentence-bert}, commonly known as \textbf{stsb-roberta-large} provides the best results. The pair of embedded vectors thus produced are then used to calculate cosine similarity, which is based on the inverse cosine distance between them. For our classification, we used the raw results (unnormalized) of cosine similarity, which produces a score between -1, and 1. Cosine similarity score of 0 indicates orthogonal relationship between the two vectors, which in our scenario indicates that the two sentences, and by extension their attributes are not related to each other. -1 indicates, inverse relationship between the attributes, while 1 indicates the two attributes are very much the same.
+For producing our schema maps, we are interested in three types of relationships, ``equal" (the two attributes are same), ``related" (the two attributes are related to each other), and ``unrelated" (no relationship between the attributes). In order to classify the similarity results, into one of these three classes, we then calculated the best thresholds, using Matthews Correlation coefficient (MCC) \cite{chicco2020advantages} for classifying each instance as ``equal", ``related", and ``unrelated". Finally on a test dataset we evaluated our multi-class classification approach, to identify the relationships between each pair of attributes.

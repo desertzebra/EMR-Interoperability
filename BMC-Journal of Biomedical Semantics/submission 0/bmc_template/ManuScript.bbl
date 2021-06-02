@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{26}
+\begin{thebibliography}{23}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -292,15 +292,6 @@ pp. \bfpage{39}--\blpage{46}
 \endbibitem
 
 %%% 18
-\bibitem{SQLDataTypes}
-\begin{botherref}
-SQL Data Types.
-\url{https://www.w3resource.com/sql/data-type.php}.
-Accessed: 2021-01-14
-\end{botherref}
-\endbibitem
-
-%%% 19
 \bibitem{kartoun2016methodology}
 \begin{botherref}
 \oauthor{\bsnm{Kartoun}, \binits{U.}}:
@@ -310,7 +301,7 @@ arXiv preprint arXiv:1608.00570
 \end{botherref}
 \endbibitem
 
-%%% 20
+%%% 19
 \bibitem{pan2016design}
 \begin{bchapter}
 \bauthor{\bsnm{Pan}, \binits{L.}},
@@ -328,7 +319,7 @@ pp. \bfpage{38}--\blpage{41}
 \end{bchapter}
 \endbibitem
 
-%%% 21
+%%% 20
 \bibitem{inokuchi2007medtakmi}
 \begin{barticle}
 \bauthor{\bsnm{Inokuchi}, \binits{A.}},
@@ -344,62 +335,7 @@ pp. \bfpage{38}--\blpage{41}
 \end{barticle}
 \endbibitem
 
-%%% 22
-\bibitem{compton1992ripple}
-\begin{barticle}
-\bauthor{\bsnm{Compton}, \binits{P.}},
-\bauthor{\bsnm{Edwards}, \binits{G.}},
-\bauthor{\bsnm{Kang}, \binits{B.}},
-\bauthor{\bsnm{Lazarus}, \binits{L.}},
-\bauthor{\bsnm{Malor}, \binits{R.}},
-\bauthor{\bsnm{Preston}, \binits{P.}},
-\bauthor{\bsnm{Srinivasan}, \binits{A.}}:
-\batitle{Ripple down rules: Turning knowledge acquisition into knowledge
-  maintenance}.
-\bjtitle{Artificial Intelligence in Medicine}
-\bvolume{4}(\bissue{6}),
-\bfpage{463}--\blpage{475}
-(\byear{1992})
-\end{barticle}
-\endbibitem
-
-%%% 23
-\bibitem{richards2009two}
-\begin{botherref}
-\oauthor{\bsnm{Richards}, \binits{D.}}, et al.:
-Two decades of ripple down rules research
-(2009)
-\end{botherref}
-\endbibitem
-
-%%% 24
-\bibitem{kim2018rdr}
-\begin{barticle}
-\bauthor{\bsnm{Kim}, \binits{D.}},
-\bauthor{\bsnm{Han}, \binits{S.C.}},
-\bauthor{\bsnm{Lin}, \binits{Y.}},
-\bauthor{\bsnm{Kang}, \binits{B.H.}},
-\bauthor{\bsnm{Lee}, \binits{S.}}:
-\batitle{Rdr-based knowledge based system to the failure detection in
-  industrial cyber physical systems}.
-\bjtitle{Knowledge-Based Systems}
-\bvolume{150},
-\bfpage{1}--\blpage{13}
-(\byear{2018})
-\end{barticle}
-\endbibitem
-
-%%% 25
-\bibitem{FuzzyWuzzy}
-\begin{botherref}
-\oauthor{\bsnm{{Adam Cohen}}}:
-FuzzyWuzzy: Fuzzy String Matching in Python
-(Jul 8th, 2011).
-\url{https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python/}
-\end{botherref}
-\endbibitem
-
-%%% 26
+%%% 21
 \bibitem{reimers-2019-sentence-bert}
 \begin{bchapter}
 \bauthor{\bsnm{Reimers}, \binits{N.}},
@@ -411,6 +347,30 @@ In: \bbtitle{Proceedings of the 2019 Conference on Empirical Methods in Natural
 (\byear{2019}).
 \burl{http://arxiv.org/abs/1908.10084}
 \end{bchapter}
+\endbibitem
+
+%%% 22
+\bibitem{chicco2020advantages}
+\begin{barticle}
+\bauthor{\bsnm{Chicco}, \binits{D.}},
+\bauthor{\bsnm{Jurman}, \binits{G.}}:
+\batitle{The advantages of the matthews correlation coefficient (mcc) over f1
+  score and accuracy in binary classification evaluation}.
+\bjtitle{BMC genomics}
+\bvolume{21}(\bissue{1}),
+\bfpage{1}--\blpage{13}
+(\byear{2020})
+\end{barticle}
+\endbibitem
+
+%%% 23
+\bibitem{FuzzyWuzzy}
+\begin{botherref}
+\oauthor{\bsnm{{Adam Cohen}}}:
+FuzzyWuzzy: Fuzzy String Matching in Python
+(Jul 8th, 2011).
+\url{https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python/}
+\end{botherref}
 \endbibitem
 
 \end{thebibliography}
@@ -675,12 +635,6 @@ In: \bbtitle{Proceedings of the 2019 Conference on Empirical Methods in Natural
 </bibl>
 
 <bibl id="B18">
-  <title><p>SQL Data Types</p></title>
-  <source>\url{https://www.w3resource.com/sql/data-type.php}</source>
-  <note>Accessed: 2021-01-14</note>
-</bibl>
-
-<bibl id="B19">
   <title><p>A methodology to generate virtual patient repositories</p></title>
   <aug>
     <au><snm>Kartoun</snm><fnm>U</fnm></au>
@@ -689,7 +643,7 @@ In: \bbtitle{Proceedings of the 2019 Conference on Empirical Methods in Natural
   <pubdate>2016</pubdate>
 </bibl>
 
-<bibl id="B20">
+<bibl id="B19">
   <title><p>Design a novel electronic medical record system for regional
   clinics and health centers in China</p></title>
   <aug>
@@ -706,7 +660,7 @@ In: \bbtitle{Proceedings of the 2019 Conference on Empirical Methods in Natural
   <lpage>-41</lpage>
 </bibl>
 
-<bibl id="B21">
+<bibl id="B20">
   <title><p>MedTAKMI-CDI: interactive knowledge discovery for clinical decision
   intelligence</p></title>
   <aug>
@@ -724,65 +678,7 @@ In: \bbtitle{Proceedings of the 2019 Conference on Empirical Methods in Natural
   <lpage>-133</lpage>
 </bibl>
 
-<bibl id="B22">
-  <title><p>Ripple down rules: Turning knowledge acquisition into knowledge
-  maintenance</p></title>
-  <aug>
-    <au><snm>Compton</snm><fnm>P</fnm></au>
-    <au><snm>Edwards</snm><fnm>G</fnm></au>
-    <au><snm>Kang</snm><fnm>B</fnm></au>
-    <au><snm>Lazarus</snm><fnm>L</fnm></au>
-    <au><snm>Malor</snm><fnm>R</fnm></au>
-    <au><snm>Preston</snm><fnm>P</fnm></au>
-    <au><snm>Srinivasan</snm><fnm>A</fnm></au>
-  </aug>
-  <source>Artificial Intelligence in Medicine</source>
-  <publisher>Elsevier</publisher>
-  <pubdate>1992</pubdate>
-  <volume>4</volume>
-  <issue>6</issue>
-  <fpage>463</fpage>
-  <lpage>-475</lpage>
-</bibl>
-
-<bibl id="B23">
-  <title><p>Two decades of ripple down rules research</p></title>
-  <aug>
-    <au><snm>Richards</snm><fnm>D</fnm></au>
-    <au><cnm>others</cnm></au>
-  </aug>
-  <publisher>Cambridge University Press</publisher>
-  <pubdate>2009</pubdate>
-</bibl>
-
-<bibl id="B24">
-  <title><p>RDR-based knowledge based system to the failure detection in
-  industrial cyber physical systems</p></title>
-  <aug>
-    <au><snm>Kim</snm><fnm>D</fnm></au>
-    <au><snm>Han</snm><fnm>SC</fnm></au>
-    <au><snm>Lin</snm><fnm>Y</fnm></au>
-    <au><snm>Kang</snm><fnm>BH</fnm></au>
-    <au><snm>Lee</snm><fnm>S</fnm></au>
-  </aug>
-  <source>Knowledge-Based Systems</source>
-  <publisher>Elsevier</publisher>
-  <pubdate>2018</pubdate>
-  <volume>150</volume>
-  <fpage>1</fpage>
-  <lpage>-13</lpage>
-</bibl>
-
-<bibl id="B25">
-  <title><p>FuzzyWuzzy: Fuzzy String Matching in Python</p></title>
-  <aug>
-    <au><cnm>{Adam Cohen}</cnm></au>
-  </aug>
-  <pubdate>Jul 8th, 2011</pubdate>
-  <url>https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python/</url>
-</bibl>
-
-<bibl id="B26">
+<bibl id="B21">
   <title><p>Sentence-BERT: Sentence Embeddings using Siamese
   BERT-Networks</p></title>
   <aug>
@@ -794,6 +690,31 @@ In: \bbtitle{Proceedings of the 2019 Conference on Empirical Methods in Natural
   <publisher>Association for Computational Linguistics</publisher>
   <pubdate>2019</pubdate>
   <url>http://arxiv.org/abs/1908.10084</url>
+</bibl>
+
+<bibl id="B22">
+  <title><p>The advantages of the Matthews correlation coefficient (MCC) over
+  F1 score and accuracy in binary classification evaluation</p></title>
+  <aug>
+    <au><snm>Chicco</snm><fnm>D</fnm></au>
+    <au><snm>Jurman</snm><fnm>G</fnm></au>
+  </aug>
+  <source>BMC genomics</source>
+  <publisher>Springer</publisher>
+  <pubdate>2020</pubdate>
+  <volume>21</volume>
+  <issue>1</issue>
+  <fpage>1</fpage>
+  <lpage>-13</lpage>
+</bibl>
+
+<bibl id="B23">
+  <title><p>FuzzyWuzzy: Fuzzy String Matching in Python</p></title>
+  <aug>
+    <au><cnm>{Adam Cohen}</cnm></au>
+  </aug>
+  <pubdate>Jul 8th, 2011</pubdate>
+  <url>https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python/</url>
 </bibl>
 
 </refgrp>

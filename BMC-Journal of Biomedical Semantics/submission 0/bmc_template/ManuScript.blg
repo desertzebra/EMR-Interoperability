@@ -20,7 +20,11 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: references.bib
-I was expecting a `,' or a `}'---line 485 of file references.bib
+Repeated entry---line 497 of file references.bib
+ : @inproceedings{reimers-2019-sentence-bert
+ :                                          ,
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 527 of file references.bib
  :  
  :  note = {Accessed: 2021-03-19}
 (Error may have been on previous line)
@@ -29,49 +33,48 @@ Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Warning--to sort, need author or key in snomedct_url
 Warning--to sort, need author or key in loinc
-Warning--to sort, need author or key in SQLDataTypes
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 26 entries,
+You've used 23 entries,
             7128 wiz_defined-function locations,
-            1267 strings with 14576 characters,
-and the built_in function-call counts, 551999 in all, are:
-= -- 101318
-> -- 744
-< -- 392
-+ -- 61995
-- -- 261
-* -- 15321
-:= -- 96020
-add.period$ -- 32
-call.type$ -- 26
-change.case$ -- 294
-chr.to.int$ -- 746
-cite$ -- 32
-duplicate$ -- 2388
-empty$ -- 7998
-format.name$ -- 870
-if$ -- 140729
+            1252 strings with 14066 characters,
+and the built_in function-call counts, 539067 in all, are:
+= -- 99766
+> -- 664
+< -- 356
++ -- 61727
+- -- 237
+* -- 14256
+:= -- 93374
+add.period$ -- 29
+call.type$ -- 23
+change.case$ -- 269
+chr.to.int$ -- 683
+cite$ -- 27
+duplicate$ -- 2107
+empty$ -- 7206
+format.name$ -- 757
+if$ -- 137928
 int.to.chr$ -- 1
-int.to.str$ -- 62
-missing$ -- 907
-newline$ -- 753
-num.names$ -- 115
-pop$ -- 1186
+int.to.str$ -- 56
+missing$ -- 796
+newline$ -- 676
+num.names$ -- 105
+pop$ -- 1031
 preamble$ -- 1
-purify$ -- 109
-quote$ -- 52
-skip$ -- 60700
+purify$ -- 99
+quote$ -- 46
+skip$ -- 59979
 stack$ -- 0
-substring$ -- 54914
-swap$ -- 673
-text.length$ -- 415
+substring$ -- 53235
+swap$ -- 609
+text.length$ -- 382
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 1023
-warning$ -- 3
-while$ -- 884
+type$ -- 923
+warning$ -- 2
+while$ -- 799
 width$ -- 0
-write$ -- 1035
-(There was 1 error message)
+write$ -- 918
+(There were 2 error messages)
