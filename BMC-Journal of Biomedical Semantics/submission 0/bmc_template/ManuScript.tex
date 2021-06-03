@@ -300,8 +300,9 @@ Text for this section\ldots
 	\label{fig:schemas}
 \end{figure}
 
-  \begin{figure}[h!]
-  \caption{Sample figure title}
+\begin{figure}[h!]
+	\caption{Cohen's Kappa (d) score between the four annotators.}
+	\label{fig:kappaInterAnnotatorAgrement}
 \end{figure}
 
 \begin{figure}[h!]
@@ -316,7 +317,24 @@ Text for this section\ldots
 
 %% Use of \listoftables is discouraged.
 %%
+
 \section*{Tables}
+
+\begin{table}[h!]
+	\caption{Annotations performed by the four annotators on five medical schemas}
+	\begin{tabular}{c|ccccc}
+		\hline
+		Method     & Total Matches & Marked as Equal & Marked as Related & Marked as Unrelated & Not Marked \\ \hline
+		Annotator1 & 40698         & 238             & 109               & 40351               & 0          \\ 
+		Annotator2 & 40698         & 241             & 116               & 40341               & 0          \\ 
+		Annotator3 & 40698         & 260             & 2103              & 38182               & 153        \\ 
+		Annotator4 & 40698         & 225             & 62                & 40400               & 11         \\ \hline
+	\end{tabular}
+	\label{tab:annotator_marking}
+\end{table}
+
+
+
 \begin{table}[h!]
 \caption{Sample table title. This is where the description of the table should go}
   \begin{tabular}{cccc}
@@ -327,6 +345,8 @@ Text for this section\ldots
     A3 & ..  & .   & .\\ \hline
   \end{tabular}
 \end{table}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                               %%

@@ -2,19 +2,22 @@
 \section*{Results}
 \label{results}
 
+The validity of our proposed approach has been evaluated using several techniques, including comparison of the proposed semantic matching process with fuzzy string matching, embedded vector generation and comparison using Word2Vec, and 10 BERT nli models. 
+
+\subsection*{Dataset Annotation}
+In order to compare our computed models with ground truth, and to identify the best thresholds for classifying each instance as ``equal", ``related", or ``unrelated" 4 human annotators were utilized, to anonymously, score the similarity of each pair of attribute names. In order to support this process, we first repurposed one of our generated data matrix, by marking all attribute pairs belonging to the same schema with the symbol ``-". Following this, the annotators, marked each cell corresponding to a pair of attributes (conversely, each attribute pair corresponds to two cells, with the positioning of the pair-participants swapped; which is used for clarity and identify correct relationships between the attribute on left and attribute on right), by determining the similarity in terms of dissimilar as ``0", exactly similar as ``1", row attribute as child of column attribute as ``<", row attribute as a parent of the column attribute as ``>", and finally, unknown as ``~". The data sheets generated after this extensive human effort, have been made available for other researchers\footnote{https://github.com/desertzebra/EMR-Interoperability/tree/master/Implemenation/Data/Annotated}.
+These sheets, additionally contain some missing values, which were left out by the annotators, but in order to maintain their originality, these values were not filled; instead during our evaluation for these datasets, the missing values were considered as having the score ``0". Using \textbf{Cohen's Kappa score (d)}, we evaluated the inter-rater agreement of these annotations, which have been visualized in \ref{fig:kappaInterAnnotatorAgrement}. It can be seen in this plot, that ``Annotator3" has very small correlation with the other 3 annotators. This difference can be traced back to the number and type of annotations performed by each annotator, which is shown in Table \ref{tab:annotator_marking}. The ``Annotator3" has marked 2103 cells as related (one of >, < , or ~) and left 153 as empty. However, even in the presence of these difference, it is pertinent to include the data for all annotators in order to avoid any biasedness. 
+This annotated data was then processed, to replace all related entries with ``0.5" and all``-" with ``0", while the values for similar at ``1" and ``0" for dissimilar were kept the same. This conversion was then used to produce a consolidated dataset of 40,698 attribute pairs, using mode scores of all annotators, for each cell. We also tested average scores between the annotators, but that would produce scores between ``0", ``0.5", and ``1", greatly increasing the number of classes for classification. Hence the maximum agreement between the annotators, maintains the final label values within these three classes, which become easier to evaluate. Additionally, the original dataset and its mode consolidated form is biased in favour of class "0", since most attribute pairs are not related to each other.
+This dataset is then split into development and testing partitions with a ratio of 70:30. The development partition is used for threshold selection, based on the best MCC score for identifying class ``equal", followed by best scores for class ``related" and finally best of class "unrelated". The optimal threshold thus achieved is used to classify the instances of the test dataset, which is finally evaluated on its MCC and F-1 score.
+\subsection*{Threshold Selection}
 
 
 
 
-
-
-
-
-The validity of our proposed approach has been evaluated using several techniques, including comparison of the proposed syntactic and semantic matching process with fuzzy string matching, only semantic matching of attribute names using sentence embedding, and with multiple human annotated versions of the schema map. Using the 21,873 AA pairs, we created a two dimensional matrix, of AA identifiers, whereby each cell refers to a ``SchemaName\_TableName\_AttributeName" element. All nodes, for which the SchemaName part of the name is same, are then marked with ``-", and these are omitted from further processing. This various versions of this dataset (D) are available at \textbf{url}.
 
 The results of fuzzy string comparison ($D_f$) on the attribute names of each pair, can be visualized using the heatmap shown in \textbf{figFuzzyWuzzy}. Similarly, the results of comparison using BERT based word embedding of the attribute names ($D_b$), is shown in \textbf{figBase}. Finally, the heatmap of the syntactic and semantic matching of the AA's using our proposed Algorithm \ref{knowledgeEvolAlgo} ($D_p$), is shown in \textbf{figSynAndSemMatching}. The values, for each cell range between ``0" and ``1", with higher values indicating a larger match between the elements, in each of these cases. The black areas of these heatmaps, indicate missing values, while white indicates a matching value of ``0". The few areas with red color, indicate the values above ``0.9", while blue areas indicate values above ``0.8". 
 
-\textbf{Threshold Selection}
+
 Overall, the number of similarities above the threshold values of ``0.8" are greatly increased from $D_f$, to $D_b$, and then to $D_p$ (proposed methodology). Changing the threshold value in $D_p$ to ``0.9", brings it relatively closer to $D_b$. This is due to our proposed similarity matching methodology, which gives an equal score (0.5) to the values obtained from both syntactic and semantic matches. Since the decision made at the syntactic evaluation is binary (0 or 1), thus for a similarity score of ``0.8", in $D_p$, ``0.5" represents the syntactic similarity, and ``0.3" semantic similarity. The semantic similarity value, obtained from this rescaling process, would in turn represent an original value of ``0.6" from $D_b$. Therefore, for an equal semantic representation, the value of semantic similarity after rescaling (between 0 and 0.5) should be ``0.4", and originally ``0.8". \textbf{figSynAndSemMatching0.9} shows the heatmap, of similarity matrix, obtained from $D_p$ with the threshold values as ``0.9".
 
 Generally, a comparison of these heatmaps, indicate an increase in the recall rate of the methodology. This is due to the fact, that our proposed methodology is able to match a larger number of AAs, providing 50\% of the score to the syntactic match, thereby increasing the count of cells without a missing value. This approach is also able to reduce the impact of semantic matching from names, which might contain repeated words, such as ``patient" but in reality refer to disparate concepts, such as ``PatientName" and "PatientDateOfBirth". Another important aspect of our matching process is the inclusion of semantic concepts and suffixes, as a sentence before its conversion to an embedded vector. As discussed earlier, this process is used to reduce the impact of syntactic matches alone, which would give a higher score to the attributes ``PatientName" and ``PatientGender", which refer to different concepts. The inclusion of concepts behind ``Name" and ``Gender" part of these names, allow for an improved comparison. 
@@ -23,16 +26,6 @@ Generally, a comparison of these heatmaps, indicate an increase in the recall ra
 In order to evaluate the accuracy and precision rates of these methodologies, we then compared the results of our computed methods $D_f$, $D_b$, and $D_p$, with the average scored datasets by the human annotators. A visualization of the resultant Cohen's Kappa score for the 261 participating attributes, is shown in \textbf{figComputedComparisonKappaScore}. The bar chart shown in this visualization, indicates, an overall greater positive agreement between our proposed methodolody $D_p$, and the average scores of the annotators. The same is shown by the \textbf{orange} colored peaks in this dataset, which in all cases is either equivalent to the other approaches ($D_f$ and $D_b$), or better than them.
 
 
-\begin{table}[]
-	\begin{tabular}{|l|l|l|l|l|l|}
-		\hline
-		Method     & Total Matches & Marked as Equal & Marked as Related & Marked as Unrelated & Not Marked \\ \hline
-		Annotator1 & 40698         & 238             & 109               & 40351               & 0          \\ \hline
-		Annotator2 & 40698         & 241             & 116               & 40341               & 0          \\ \hline
-		Annotator3 & 40698         & 260             & 2103              & 38182               & 153        \\ \hline
-		Annotator4 & 40698         & 225             & 62                & 40400               & 11         \\ \hline
-	\end{tabular}
-\end{table}
 
 
 
