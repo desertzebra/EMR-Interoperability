@@ -91,13 +91,12 @@ The following subsections provide the practical details for our methodology, fro
 \label{schema_acq}
 In the first step of our semantic reconciliation methodology, we simulate medical data acquisition from five distinct EMR storage systems ($S$). These include patient reports from OpenEMR ($s_1$), 100,000 patient records from EMRBOTS ($s_2$) \cite{kartoun2016methodology}, custom database design by Pan et. al($s_3$) for supporting regional clinics and health care centers in China \cite{pan2016design}, clinical knowledge discovery tool MedTAKMI-CDI ($s_4$) \cite{inokuchi2007medtakmi}, and our custom implementation ($s_5$). Each of these medical systems as shown in \ref{figSchema}, follows the relational database design, with logical entities, such as demographics, diagnosis, medicine or others, placed into tables which can be further linked to one or more tables. While the database design implemented by each of these systems, fulfills the need of their respective information processing applications, the lack of interoperability, in terms of identifying similar attributes or exchanging the medical data is very much evident here. 
 
-
-%[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{a2.png}}]
-
-\Figure[t!](topskip=0pt, botskip=0pt, midskip=0pt){schemas}
-{Schemas used for knowledge interoperability.\label{figSchema}}
-
-
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[scale=0.53]{schemas}
+	\caption{Schemas used for knowledge interoperability.}
+	\label{figSchema}
+\end{figure*}
 
 A similar notion of data heterogeneity, in terms of medical data schema, is evident across the healthcare domain. This is caused by various factors, including the lack of one all-encompassing, and universally applicable terminological standard and different normalization level for representing attributes.\\
 In the former case, while SNOMED-CT provides a mechanism for identifying the standard codes for clinical terms and LOINC can be used for laboratory related terms, most attribute names are created based on the gut feeling of the database designer. Additionally, while these codes can be used to represent data instances, the data schema, achieves no benefit from the same.  Consider the terms ``name" and ``patientName", which refer to the same attribute of the patient entity.  However, since there is no standard way to represent this attribute, both are considered correct ($s_1$ and $s_3$ use the former representation, while $s_2$ and $s_5$ use the latter).\\
@@ -112,9 +111,12 @@ In order to process the EMR schema set $S$ and produce a set of corresponding se
 For each attribute, we then generate the suffix array, which provides all possible substring representations contained within the attribute name. In order to generate the set of suffixes, we employ three strategies, forward suffix generation, whereby for a word $w$ of length $n$, $n-1$ suffixes of size 2 to $n-1$ are produced, backward suffix generation, to produce $n-1$ suffixes in reverse order with size $n-1$ to 2, and regular expression based suffix generation, which splits each word on, change of case, special characters(such as -, \_, !, and others), and numbers. An example of this suffix generation process is shown in \ref{figSuffixAttribute}. 
 Here, the attribute ``DOB" in $s_1$, ``PatientDateOfBirth" appears in $s_2$, ``birthday" appears in $s_3$, ``DateOfBirth" in $s_5$, and ``birthDate" in $s_4$. These attributes refer to the same attribute of the patient entity, however, with the suffix generation process, our aim is to identify all words within these strings. While the forward and backward generation process, generates all possible sequences of characters as suffix, the regex based method, only identifies the changes in the string. In this way a large list of suffixes is generated, which is combined using a ``TreeSet" data structure of Java, which internally sorts this list as well.
 
-\Figure[t!](topskip=0pt, botskip=0pt, midskip=0pt){suffixAttribute}
-{Suffix attributes.\label{figSuffixAttribute}}
-
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[scale=0.53]{suffixAttribute}
+	\caption{Suffix attributes.}
+	\label{figSuffixAttribute}
+\end{figure*}
 
 
 Similarly the attribute, ``dateOfAdmission" appears in $s_4$, while ``AdmissionStartDate". ``diseaseNameOnAdmission", and ``AdmissionEndDate" appear in $s_2$. As evident within these strings, while they refer to semantically different entity attributes, syntactically they contain similar elements. The suffixes generated from these strings are shown in \ref{figSuffixAttribute}. The suffix generation process, identified thus far, is only able to generate syntactic suffixes, producing many incoherent and unrelated suffixes. In order to counter this problem, and to limit the list of suffixes within the domain, we then query UMLS, with exact search strategy, looking for the existence of any concepts, against each suffix. In case, no semantic concept is found for a particular suffix, it is removed from the final Suffix Array. On the other hand, if atleast one semantic concept is found against the queried suffix, it is retained. Meanwhile the process continues for the next attribute, then the next table, and finally the next system, till no further processing is possible. 
