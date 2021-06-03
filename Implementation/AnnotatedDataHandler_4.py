@@ -424,9 +424,14 @@ class AnnotatedDataHandler:
 
         allKappaAnnotatedDataHandlers = "\r\n"
 
-        # self.log('Cohen kappa score  between annotator1 and annotator2: ')
-        # allKappaAnnotatedDataHandlers += "annotator1 vs annotator2," + str(annotatedDataHandler.get_kappa_correlation_score(annotator1DataFlat, annotator2DataFlat) )+ "\r\n"
-        # self.log(["*"] * 80)
+        self.log('Cohen kappa score  between annotator1 and annotator2: ')
+        allKappaAnnotatedDataHandlers += "annotator1 vs annotator2," + str(annotatedDataHandler.get_kappa_correlation_score(annotator1DataFlat, annotator2DataFlat) )+ "\r\n"
+        self.log(["*"] * 80)
+
+        self.log('Cohen kappa score  between annotator2 and annotator1: ')
+        allKappaAnnotatedDataHandlers += "annotator2 vs annotator1," + str(
+            annotatedDataHandler.get_kappa_correlation_score(annotator2DataFlat, annotator1DataFlat)) + "\r\n"
+        self.log(["*"] * 80)
 
         self.log('Cohen kappa score  between annotator1 and annotator3: ')
         allKappaAnnotatedDataHandlers += "annotator1 vs annotator3," + str(annotatedDataHandler.get_kappa_correlation_score(annotator1DataFlat,annotator3DataFlat)) + "\r\n"
@@ -910,6 +915,7 @@ annotatedDataHandler = AnnotatedDataHandler()
 # Now to convert the datasets into 1d
 annotatedDataHandler.readAllAnnotatorsData(True)
 annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
+exit()
 
 
 

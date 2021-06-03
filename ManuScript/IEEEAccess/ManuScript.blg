@@ -1,0 +1,58 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: ManuScript.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: unsrt.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Database file #1: references.bib
+Repeated entry---line 249 of file references.bib
+ : @inproceedings{reimers-2019-sentence-bert
+ :                                          ,
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 264 of file references.bib
+ :  
+ :  note = {Accessed: 2021-03-19}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+You've used 23 entries,
+            1791 wiz_defined-function locations,
+            571 strings with 8229 characters,
+and the built_in function-call counts, 5219 in all, are:
+= -- 446
+> -- 264
+< -- 4
++ -- 98
+- -- 75
+* -- 341
+:= -- 812
+add.period$ -- 66
+call.type$ -- 23
+change.case$ -- 22
+chr.to.int$ -- 0
+cite$ -- 23
+duplicate$ -- 230
+empty$ -- 523
+format.name$ -- 75
+if$ -- 1172
+int.to.chr$ -- 0
+int.to.str$ -- 23
+missing$ -- 19
+newline$ -- 111
+num.names$ -- 21
+pop$ -- 86
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 122
+stack$ -- 0
+substring$ -- 290
+swap$ -- 58
+text.length$ -- 4
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 51
+width$ -- 25
+write$ -- 234
+(There were 2 error messages)

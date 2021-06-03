@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="db81ac21-dd70-457a-a56c-27ee67198b62" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Implementation/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/Implementation/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Implementation/.idea/Implementation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Implementation/.idea/Implementation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Implementation/AnnotatedDataHandler_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Implementation/AnnotatedDataHandler_3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Implementation/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/Implementation/results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Implementation/similarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/Implementation/similarity.py" afterDir="false" />
-    </list>
+    <list default="true" id="db81ac21-dd70-457a-a56c-27ee67198b62" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,20 +20,20 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python.similarity">
-    <configuration name="AnnotatedDataHandler_3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="EMR-Interoperability" />
+  <component name="RunManager" selected="Python.AnnotatedDataHandler_4">
+    <configuration name="AnnotatedDataHandler_4" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\Musarrat Hussain\AppData\Local\Microsoft\WindowsApps\python3.9.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Implementation" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Implementation/AnnotatedDataHandler_3.py" />
+      <module name="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Implementation/AnnotatedDataHandler_4.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -93,8 +86,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.AnnotatedDataHandler_4" />
         <item itemvalue="Python.similarity" />
-        <item itemvalue="Python.AnnotatedDataHandler_3" />
         <item itemvalue="Python.results" />
       </list>
     </recent_temporary>
