@@ -575,6 +575,44 @@ class AnnotatedDataHandler:
         return result_as_dict
         # self.log(["*"] * 80)
 
+    def calculatePerformanceOnTest(self, dataset):
+        result_as_dict = {}
+        test_y = dataset['test_y']
+        # result_as_csv_str = "\r\n"
+        # print("result_as_dict:", result_as_dict)
+
+        # Base methods
+        for m in self.notSynAndSem:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            if len(self.test_data[m]) < 1:
+                self.log("Insufficient data for the computed methods, have you read the files yet?")
+                return
+            # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+            data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.test_data[m])
+            test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+            result_as_dict[m] = self.calculate_ovr_conditions(test_x, test_y)
+        # print(self.computed_data)
+        for m in self.computed_method:
+            if m not in result_as_dict:
+                result_as_dict[m] = {}
+            for _syn_sem_threshold in self.result_indexes:
+                if len(self.test_data[m]) < 1:
+                    self.log("Insufficient data for the computed methods, have you read the files yet?")
+                    return
+                # self.log('Cohen kappa score  between ' + m + ' and avg(annotators): ')
+                data_in_1d = self.collapseDataSetTo1dArrayWithHeaders(self.test_data[m])
+                test_x = [data_in_1d[i] for i in dataset['test_x_index']]
+
+                result_as_dict[m] = self.calculate_ovr_conditions(test_x, test_y)
+
+                # result_as_csv_str += m + "-" + str(syn_sem_threshold) + " vs mode(annotators)," + \
+                #                      get_kappa_correlation_score(data_in_1d, annotated_data) + "\r\n"
+
+        # print("result_as_csv_str2:", result_as_dict)
+        return result_as_dict
+        # self.log(["*"] * 80)
+
     def calculateKapaaOnTest(self, dataset):
         result_as_dict = {}
         test_y = dataset['test_y']
@@ -790,10 +828,10 @@ class AnnotatedDataHandler:
         y_pred = [t[2] for t in y_pred_tuple]
 
         cm = confusion_matrix(y_true, y_pred, sample_weight=None)
-
+        performance_table = {}
         performance_dict = {}
         for pc_index, positiveClass in enumerate(self.classes):
-
+            performance_table[positiveClass] = []
             performance_dict[pc_index] = {}
             performance_dict[pc_index]["classPositive"] = positiveClass
             performance_dict[pc_index]["classNegative"] = []
@@ -802,15 +840,18 @@ class AnnotatedDataHandler:
                     performance_dict[pc_index]["classNegative"].append(c)
 
             performance_dict[pc_index]["tp"] = cm[pc_index][pc_index]  # 0-0, 1-1, 2,2
-
+            performance_table[positiveClass].append(performance_dict[pc_index]["tp"])
             # must be a square matrix with rows = cols
             total_rows_in_cm = len(cm)
             total_cols_in_cm = len(cm[0])
 
             performance_dict[pc_index]["fn"] = cm[pc_index][(pc_index + 1) % total_cols_in_cm] + cm[pc_index][
                 (pc_index + 2) % total_cols_in_cm]
+            performance_table[positiveClass].append(performance_dict[pc_index]["fn"])
+
             performance_dict[pc_index]["fp"] = cm[(pc_index + 1) % total_rows_in_cm][pc_index] + cm[(pc_index + 1) % 3][
                 (pc_index + 2) % total_cols_in_cm]
+            performance_table[positiveClass].append(performance_dict[pc_index]["fp"])
             performance_dict[pc_index]["tn"] = cm[(pc_index + 2) % total_rows_in_cm][
                                                    (pc_index + 2) % total_cols_in_cm] + \
                                                cm[(pc_index + 1) % total_rows_in_cm][
@@ -818,14 +859,14 @@ class AnnotatedDataHandler:
                                                cm[(pc_index + 2) % total_rows_in_cm][
                                                    (pc_index + 1) % total_cols_in_cm] + \
                                                cm[(pc_index + 1) % total_rows_in_cm][(pc_index + 2) % total_cols_in_cm]
-
+            performance_table[positiveClass].append(performance_dict[pc_index]["tn"])
             performance_dict[pc_index]["accuracy"] = (performance_dict[pc_index]["tp"] + performance_dict[pc_index][
                 "tn"]) / (
                                                              performance_dict[pc_index]["tp"] +
                                                              performance_dict[pc_index]["fp"] +
                                                              performance_dict[pc_index]["fn"] +
                                                              performance_dict[pc_index]["tn"])
-
+            performance_table[positiveClass].append(performance_dict[pc_index]["accuracy"])
             if performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"] == 0:
                 performance_dict[pc_index]["sensitivity"] = 0
             else:
@@ -842,13 +883,13 @@ class AnnotatedDataHandler:
             else:
                 performance_dict[pc_index]["precision"] = (performance_dict[pc_index]["tp"]) / (
                         performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fp"])
-
+            performance_table[positiveClass].append(performance_dict[pc_index]["precision"])
             if performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"] == 0:
                 performance_dict[pc_index]["recall"] = 0
             else:
                 performance_dict[pc_index]["recall"] = (performance_dict[pc_index]["tp"]) / (
                         performance_dict[pc_index]["tp"] + performance_dict[pc_index]["fn"])
-
+            performance_table[positiveClass].append(performance_dict[pc_index]["recall"])
             performance_dict[pc_index]["f-measure"] = {}
             for B in [0.5, 1, 2]:
 
@@ -862,7 +903,7 @@ class AnnotatedDataHandler:
                     if f_measure_numerator / f_measure_denominator > 1:
                         print("calculate_ovr_conditions:", f_measure_numerator, "/", f_measure_denominator)
                     performance_dict[pc_index]["f-measure"][str(B)] = f_measure_numerator / f_measure_denominator
-
+            performance_table[positiveClass].append(performance_dict[pc_index]["f-measure"]["1"])
             performance_dict[pc_index]["G-mean1"] = math.sqrt(performance_dict[pc_index]["sensitivity"] * \
                                                               performance_dict[pc_index]["precision"])
             performance_dict[pc_index]["G-mean2"] = math.sqrt(
@@ -879,8 +920,9 @@ class AnnotatedDataHandler:
                 performance_dict[pc_index]["mcc"] = 0
             else:
                 performance_dict[pc_index]["mcc"] = mcc_numerator / mcc_denominator
-
-        return performance_dict
+            performance_table[positiveClass].append(performance_dict[pc_index]["mcc"])
+        return performance_table
+        # return performance_dict
 
     def writeDetailedDictToCsv(self, dict={}, dict_name="result", type="kappa", is_max_score=False):
         file_name = self.raw_dict_result_dir + "" + dict_name
@@ -1066,5 +1108,7 @@ for method, threshold in annotatedDataHandler.max_thresholds.items():
         # print(len(annotatedDataHandler.test_data[method]))
 
 print(annotatedDataHandler.calculateMccOnTest(dataset))
+
+print(annotatedDataHandler.calculatePerformanceOnTest(dataset))
 
 print(annotatedDataHandler.calculateKapaaOnTest(dataset))
