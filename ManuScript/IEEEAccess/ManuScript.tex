@@ -218,6 +218,7 @@ With a step size of 0.05 ($step_size$), and starting from $t_1$ as 0.0 and $t_2$
 	\caption{Thresholds selection.}
 	\label{fig:thresholdSelection}
 \end{figure*}
+
 Threshold values for Word2Vec are placed at the lower end of the spectrum, indicating a very large number of instances are classified as similar (above similarity score of 0.1), while a small number of instances (with similarity score 0.05) are classified as dissimilar. Similarly, the class related lies within the similarity threshold of 0.05 similarity points. It can be observed that the threshold for selecting the related class, is within 0.05 points, in all except one case (bert-large-nli-mean-tokens where the difference is 0.15 points). Five BERT based models, trained on the STSb dataset, all have minimum threshold values of 0.85 and maximum of 0.9, while the 4 remaining BERT models, lie between 0.9 and 0.95. These results show a general trend, of how the cosine similarity varies/maintains itself, against embedded vectors generated from various pre-trained models. In absolute terms, however these threshold values provide the mechanism for classifying the test dataset, which is evaluated for performance, in the next subsection.
 
 \subsection{Model Evaluation}
@@ -233,6 +234,14 @@ Finally, we evaluated the
 
 
 The results of fuzzy string comparison ($D_f$) on the attribute names of each pair, can be visualized using the heatmap shown in \textbf{figFuzzyWuzzy}. Similarly, the results of comparison using BERT based word embedding of the attribute names ($D_b$), is shown in \textbf{figBase}. Finally, the heatmap of the syntactic and semantic matching of the AA's using our proposed Algorithm \ref{knowledgeEvolAlgo} ($D_p$), is shown in \textbf{figSynAndSemMatching}. The values, for each cell range between ``0" and ``1", with higher values indicating a larger match between the elements, in each of these cases. The black areas of these heatmaps, indicate missing values, while white indicates a matching value of ``0". The few areas with red color, indicate the values above ``0.9", while blue areas indicate values above ``0.8". 
+
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[scale=0.83]{evaluation}
+	\caption{Models evaluation.}
+	\label{fig:evaluation}
+\end{figure*}
+
 
 
 Overall, the number of similarities above the threshold values of ``0.8" are greatly increased from $D_f$, to $D_b$, and then to $D_p$ (proposed methodology). Changing the threshold value in $D_p$ to ``0.9", brings it relatively closer to $D_b$. This is due to our proposed similarity matching methodology, which gives an equal score (0.5) to the values obtained from both syntactic and semantic matches. Since the decision made at the syntactic evaluation is binary (0 or 1), thus for a similarity score of ``0.8", in $D_p$, ``0.5" represents the syntactic similarity, and ``0.3" semantic similarity. The semantic similarity value, obtained from this rescaling process, would in turn represent an original value of ``0.6" from $D_b$. Therefore, for an equal semantic representation, the value of semantic similarity after rescaling (between 0 and 0.5) should be ``0.4", and originally ``0.8". \textbf{figSynAndSemMatching0.9} shows the heatmap, of similarity matrix, obtained from $D_p$ with the threshold values as ``0.9".
