@@ -160,9 +160,11 @@ In order to compare our computed models with ground truth, and to identify the b
 
 These sheets, additionally contain some missing values, which were left out by the annotators, but in order to maintain their originality, these values were not filled; instead during our evaluation for these datasets, the missing values were considered as having the score ``0". Using \textbf{Cohen's Kappa score (d)}, we evaluated the inter-rater agreement of these annotations, which have been visualized in \ref{fig:kappaInterAnnotatorAgrement}. It can be seen in this plot, that ``Annotator3" has very small correlation with the other 3 annotators. This difference can be traced back to the number and type of annotations performed by each annotator, which is shown in Table \ref{tab:annotator_marking}. The ``Annotator3" has marked 2103 cells as related (one of >, < , or ~) and left 153 as empty. However, even in the presence of these difference, it is pertinent to include the data for all annotators in order to avoid any biasedness. 
 
-\begin{table}[h!]
+\begin{table*}
+	\centering
 	\caption{Annotations performed by the four annotators on five medical schema}
-	\begin{tabular}{c|ccccc}
+	\label{tab:annotator_marking}
+	\begin{tabular}{|l|l|l|l|l|l|}
 		\hline
 		Method     & Total Matches & Marked as Equal & Marked as Related & Marked as Unrelated & Not Marked \\ \hline
 		Annotator1 & 40698         & 238             & 109               & 40351               & 0          \\
@@ -170,8 +172,7 @@ These sheets, additionally contain some missing values, which were left out by t
 		Annotator3 & 40698         & 260             & 2103              & 38182               & 153        \\
 		Annotator4 & 40698         & 225             & 62                & 40400               & 11         \\ \hline
 	\end{tabular}
-	\label{tab:annotator_marking}
-\end{table}
+\end{table*}
 
 
 This annotated data was then processed, to replace all related entries with ``0.5" and all``-" with ``0", while the values for similar at ``1" and ``0" for dissimilar were kept the same. This conversion was then used to produce a consolidated dataset of 40,698 attribute pairs, using mode scores of all annotators, for each cell. We also tested average scores between the annotators, but that would produce scores between ``0", ``0.5", and ``1", greatly increasing the number of classes for classification. Hence the maximum agreement between the annotators, maintains the final label values within these three classes, which become easier to evaluate. Additionally, the original dataset and its mode consolidated form is biased in favour of class "0", since most attribute pairs are not related to each other.
