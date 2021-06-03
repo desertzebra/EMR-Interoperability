@@ -212,6 +212,13 @@ This dataset is then split into development and testing partitions with a ratio 
 A good text classification methodology is dependent on the correct choice of a threshold, which can maximize the target class participation. In case of independent labels, area under the precision recall curve can provide this optimal measure, however as in our case, for dependent classes on a biased dataset the Matthews Correlation Coefficient (MCC), is better\cite{chicco2020advantages}. Since our aim is to apply an optimal text similarity classifier to resolve this multi-class problem (class 0, class 0.5, and class 1), we have to test various threshold scores for separating the instances between 0 and 0.5 ($t_1$), and then 0.5 and 1($t_2$). Additionally, since our aim is to correctly identify the similar attribute instances, it is pertinent to maximize the classification performance of class 1 (similar), followed by class 0.5 (related), and finally class 0 (unrelated).
 With a step size of 0.05 ($step_size$), and starting from $t_1$ as 0.0 and $t_2$ as $t_1$ + $step_size$, we move the thresholds until $t_2$ reaches 1, followed by increase in $t_1$ by step size. Eventually, $t_1$, reaches 0.95 and $t_2$ reaches 1, at which point, the process stops. This is to ensure that $t_1$ remains behind $t_2$, for all iterations, measuring MCC score, for the 12 models. These models include, ``Fuzzy\_Wuzzy", ``Word2Vec", and 10 BERT models.
 
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[scale=0.83]{thresholdSelection}
+	\caption{Thresholds selection.}
+	\label{fig:thresholdSelection}
+\end{figure*}
+
 
 The results of fuzzy string comparison ($D_f$) on the attribute names of each pair, can be visualized using the heatmap shown in \textbf{figFuzzyWuzzy}. Similarly, the results of comparison using BERT based word embedding of the attribute names ($D_b$), is shown in \textbf{figBase}. Finally, the heatmap of the syntactic and semantic matching of the AA's using our proposed Algorithm \ref{knowledgeEvolAlgo} ($D_p$), is shown in \textbf{figSynAndSemMatching}. The values, for each cell range between ``0" and ``1", with higher values indicating a larger match between the elements, in each of these cases. The black areas of these heatmaps, indicate missing values, while white indicates a matching value of ``0". The few areas with red color, indicate the values above ``0.9", while blue areas indicate values above ``0.8". 
 
