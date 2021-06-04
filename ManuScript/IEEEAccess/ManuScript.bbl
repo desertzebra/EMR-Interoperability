@@ -105,6 +105,12 @@ Jonas Moll and {\AA}sa Cajander.
   a major university hospital in sweden.
 \newblock {\em Health informatics journal}, 26(2):1392--1403, 2020.
 
+\bibitem{zhu2018exploring}
+Xunjie Zhu, Tingfeng Li, and Gerard De~Melo.
+\newblock Exploring semantic properties of sentence embeddings.
+\newblock In {\em Proceedings of the 56th Annual Meeting of the Association for
+  Computational Linguistics (Volume 2: Short Papers)}, pages 632--637, 2018.
+
 \bibitem{kartoun2016methodology}
 Uri Kartoun.
 \newblock A methodology to generate virtual patient repositories.
