@@ -1,15 +1,9 @@
-This is BibTeX, Version 0.99d
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ManuScript.aux
-Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: unsrt.bst
-Reallocating 'name_of_file' (item size: 1) to 11 items.
 Database file #1: references.bib
-Repeated entry---line 265 of file references.bib
- : @inproceedings{reimers-2019-sentence-bert
- :                                          ,
-I'm skipping whatever remains of this entry
-I was expecting a `,' or a `}'---line 280 of file references.bib
+I was expecting a `,' or a `}'---line 271 of file references.bib
  :  
  :  note = {Accessed: 2021-03-19}
 (Error may have been on previous line)
@@ -55,4 +49,4 @@ warning$ -- 0
 while$ -- 55
 width$ -- 27
 write$ -- 255
-(There were 2 error messages)
+(There was 1 error message)
