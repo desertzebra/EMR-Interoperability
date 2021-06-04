@@ -140,4 +140,15 @@ Davide Chicco and Giuseppe Jurman.
 {Adam Cohen}.
 \newblock Fuzzywuzzy: Fuzzy string matching in python, Jul 8th, 2011.
 
+\bibitem{gwet2014handbook}
+Kilem~L Gwet.
+\newblock {\em Handbook of inter-rater reliability: The definitive guide to
+  measuring the extent of agreement among raters}.
+\newblock Advanced Analytics, LLC, 2014.
+
+\bibitem{mchugh2012interrater}
+Mary~L McHugh.
+\newblock Interrater reliability: the kappa statistic.
+\newblock {\em Biochemia medica}, 22(3):276--282, 2012.
+
 \end{thebibliography}

@@ -11,36 +11,35 @@
 \doi{10.1109/ACCESS.2017.DOI}
 
 \title{Preparation of Papers for IEEE ACCESS}
-\author{\uppercase{First A. Author}\authorrefmark{1}, \IEEEmembership{Fellow, IEEE},
-\uppercase{Second B. Author\authorrefmark{2}, and Third C. Author,
-Jr}.\authorrefmark{3},
-\IEEEmembership{Member, IEEE}}
-\address[1]{National Institute of Standards and 
-Technology, Boulder, CO 80305 USA (e-mail: author@boulder.nist.gov)}
-\address[2]{Department of Physics, Colorado State University, Fort Collins, 
-CO 80523 USA (e-mail: author@lamar.colostate.edu)}
-\address[3]{Electrical Engineering Department, University of Colorado, Boulder, CO 
-80309 USA}
-\tfootnote{This paragraph of the first footnote will contain support 
-information, including sponsor and financial support acknowledgment. For 
-example, ``This work was supported in part by the U.S. Department of 
-Commerce under Grant BS123456.''}
+
+\author{ \uppercase{Fahad Ahmed Satti}\authorrefmark{1,2},
+	\uppercase{Musarrat Hussain}\authorrefmark{1},
+	\uppercase{Jamil Hussain}\authorrefmark{3},
+	\uppercase{Syed Imran Ali}\authorrefmark{1}, % \IEEEmembership{} 
+	\uppercase{Taqdir Ali}\authorrefmark{1},
+	\uppercase{Hafiz Syed Muhammad Bilal}\authorrefmark{1,2},
+	\uppercase{TaeChoog Chung}\authorrefmark{1},and  \uppercase {Sungyoung Lee}\authorrefmark{1}
+	\IEEEmembership{Member, IEEE}}
+\address[1]{Department of Computer Science and Engineering, Kyung Hee University, Seocheon-dong, Giheung-gu South Korea (e-mail: \{fahad.satti, musarrat.hussain, imran.ali, bilalrizvi, sylee\}@oslab.khu.ac.kr,  \{tcchung, ghpark\}@khu.ac.kr)}
+\address[2]{National Univeristy of Sciences and Technology, School of Electrical Engineering and Computer Science NUST-SEECS, Islamabad, Pakistan (e-mail: \{fahad.satti, bilal.ali\}@seecs.edu.pk)}
+\address[3]{Department of Data Science, Sejong University, Seoul, South Korea (e-mail: jamil@sejong.ac.kr)}
+\tfootnote{}
+
+
 
 \markboth
-{Author \headeretal: Preparation of Papers for IEEE TRANSACTIONS and JOURNALS}
-{Author \headeretal: Preparation of Papers for IEEE TRANSACTIONS and JOURNALS}
+{Fahad \headeretal:Ensemble feature ranking for cost-based non-overlapping groups}
+{Fahad \headeretal:Ensemble feature ranking for cost-based non-overlapping groups}
 
-\corresp{Corresponding author: First A. Author (e-mail: author@ boulder.nist.gov).}
+
+\corresp{Corresponding authors: Sungyoung Lee (e-mail: sylee@oslab.khu.ac.kr) and TaeChoog Chung (e-mail: tcchung@@khu.ac.kr)}
 
 \begin{abstract}
-Abstract goes here.
+Data, information, and knowledge processing systems, in the domain of healthcare are currently plagued by the heterogeneity at various levels. Current solutions, have focused on developing a standard based, manual intervention mechanism, which requires a large amount of human resource and necessitate realignment of existing systems. State-of-the-art methodologies in the field of natural language processing and machine learning, can help to partially automate this process, reducing the resource requirements and providing a relatively good multi-class based classification algorithm. We present a novel methodology for bridging the gap between various healthcare data management solutions by leveraging the strength of transformer based machine learning models, to create mappings between the data elements. Additionally, the annotated data, collected against five medical schemas and labeled by 4 annotators is made available for helping future researchers. Our results indicate, that for biased, dependent multi-class text classification, RoBERTa shows the best performance, achieving a cohen's kappa score of 0.47 and MCC score of 0.48, with human annotated data.
 \end{abstract}
 
 \begin{keywords}
-Enter key words or phrases in alphabetical 
-order, separated by commas. For a list of suggested keywords, send a blank 
-e-mail to keywords@ieee.org or visit \underline
-{http://www.ieee.org/organizations/pubs/ani\_prod/keywrd98.txt}
+Electronic medical records, Health information management, Medical information systems,  Text processing, Unsupervised learning
 \end{keywords}
 
 \titlepgskip=-15pt
@@ -181,14 +180,14 @@ The validity of our proposed approach has been evaluated using several technique
 \subsection{Dataset Annotation}
 In order to compare our computed models with ground truth, and to identify the best thresholds for classifying each instance as ``equal", ``related", or ``unrelated" 4 human annotators were utilized, to anonymously, score the similarity of each pair of attribute names. In order to support this process, we first repurposed one of our generated data matrix, by marking all attribute pairs belonging to the same schema with the symbol ``-". Following this, the annotators, marked each cell corresponding to a pair of attributes (conversely, each attribute pair corresponds to two cells, with the positioning of the pair-participants swapped; which is used for clarity and identify correct relationships between the attribute on left and attribute on right), by determining the similarity in terms of dissimilar as ``0", exactly similar as ``1", row attribute as child of column attribute as ``<", row attribute as a parent of the column attribute as ``>", and finally, unknown as ``~". The data sheets generated after this extensive human effort, have been made available for other researchers\footnote{https://github.com/desertzebra/EMR-Interoperability/tree/master/Implemenation/Data/Annotated}.
 
-\begin{figure*}[t!]
+\begin{figure}[]
 	\centering
-	\includegraphics{kappaInterAnnotatorAgrement}
-	\caption{Cohen's Kappa (d) score between the four annotators}
+	\includegraphics[width=\columnwidth]{kappaInterAnnotatorAgrement}
+	\caption{Cohen's Kappa ($\kappa$) score between the four annotators}
 	\label{fig:kappaInterAnnotatorAgrement}
-\end{figure*}
+\end{figure}
 
-These sheets, additionally contain some missing values, which were left out by the annotators, but in order to maintain their originality, these values were not filled; instead during our evaluation for these datasets, the missing values were considered as having the score ``0". Using \textbf{Cohen's Kappa score (d)}, we evaluated the inter-rater agreement of these annotations, which have been visualized in Figure \ref{fig:kappaInterAnnotatorAgrement}. It can be seen in this plot, that ``Annotator3" has very small correlation with the other 3 annotators. This difference can be traced back to the number and type of annotations performed by each annotator, which is shown in Table \ref{tab:annotator_marking}. The ``Annotator3" has marked 2103 cells as related (one of >, < , or ~) and left 153 as empty. However, even in the presence of these difference, it is pertinent to include the data for all annotators in order to avoid any biasedness. 
+These sheets, additionally contain some missing values, which were left out by the annotators, but in order to maintain their originality, these values were not filled; instead during our evaluation for these datasets, the missing values were considered as having the score ``0". Using Cohen's Kappa score ($\kappa$) \cite{gwet2014handbook}, we evaluated the inter-rater agreement of these annotations, which have been visualized in Figure \ref{fig:kappaInterAnnotatorAgrement}. It can be seen in this plot, that ``Annotator3" has very small correlation with the other 3 annotators. This difference can be traced back to the number and type of annotations performed by each annotator, which is shown in Table \ref{tab:annotator_marking}. The ``Annotator3" has marked 2103 cells as related (one of >, < , or ~) and left 153 as empty. However, even in the presence of these difference, it is pertinent to include the data for all annotators in order to avoid any biasedness. 
 
 \begin{table*}
 	\centering
@@ -203,7 +202,6 @@ These sheets, additionally contain some missing values, which were left out by t
 		Annotator4 & 40698         & 225             & 62                & 40400               & 11         \\ \hline
 	\end{tabular}
 \end{table*}
-
 
 This annotated data was then processed, to replace all related entries with ``0.5" and all``-" with ``0", while the values for similar at ``1" and ``0" for dissimilar were kept the same. This conversion was then used to produce a consolidated dataset of 40,698 attribute pairs, using mode scores of all annotators, for each cell. We also tested average scores between the annotators, but that would produce scores between ``0", ``0.5", and ``1", greatly increasing the number of classes for classification. Hence the maximum agreement between the annotators, maintains the final label values within these three classes, which become easier to evaluate. Additionally, the original dataset and its mode consolidated form is biased in favour of class "0", since most attribute pairs are not related to each other.
 This dataset is then split into development and testing partitions with a ratio of 70:30. The development partition is used for threshold selection, based on the best MCC score for identifying class ``equal", followed by best scores for class ``related" and finally best of class "unrelated". The optimal threshold thus achieved is used to classify the instances of the test dataset, which is finally evaluated on its MCC and F-1 score.
@@ -222,18 +220,10 @@ With a step size of 0.05 ($step_size$), and starting from $t_1$ as 0.0 and $t_2$
 Threshold values for Word2Vec are placed at the lower end of the spectrum, indicating a very large number of instances are classified as similar (above similarity score of 0.1), while a small number of instances (with similarity score 0.05) are classified as dissimilar. Similarly, the class related lies within the similarity threshold of 0.05 similarity points. It can be observed that the threshold for selecting the related class, is within 0.05 points, in all except one case (bert-large-nli-mean-tokens where the difference is 0.15 points). Five BERT based models, trained on the STSb dataset, all have minimum threshold values of 0.85 and maximum of 0.9, while the 4 remaining BERT models, lie between 0.9 and 0.95. These results show a general trend, of how the cosine similarity varies/maintains itself, against embedded vectors generated from various pre-trained models. In absolute terms, however these threshold values provide the mechanism for classifying the test dataset, which is evaluated for performance, in the next subsection.
 
 \subsection{Model Evaluation}
-On unseen test dataset, with thresholds selected in the previous step and the 12 models, we measured the performance score, using one vs all binarization of the multi-class classification and overall as well. 
-In the first case, we evaluated 
+On unseen test dataset, with thresholds selected in the previous step and the 12 models, we measured the performance score, using one vs all binarization of the multi-classes.
 
 
-
-
-
-
-Finally, we evaluated the 
-
-
-The results of fuzzy string comparison ($D_f$) on the attribute names of each pair, can be visualized using the heatmap shown in \textbf{figFuzzyWuzzy}. Similarly, the results of comparison using BERT based word embedding of the attribute names ($D_b$), is shown in \textbf{figBase}. Finally, the heatmap of the syntactic and semantic matching of the AA's using our proposed Algorithm \ref{knowledgeEvolAlgo} ($D_p$), is shown in \textbf{figSynAndSemMatching}. The values, for each cell range between ``0" and ``1", with higher values indicating a larger match between the elements, in each of these cases. The black areas of these heatmaps, indicate missing values, while white indicates a matching value of ``0". The few areas with red color, indicate the values above ``0.9", while blue areas indicate values above ``0.8". 
+Finally, we evaluated the overall $\kappa$ coefficient and MCC score to evaluate the performance of each model on the test dataset. These measures range between [0,1], and provide a measure quantifying the accuracy of the classifier to correctly predict correct and incorrect instances. The models Word2Vec, bert-large-nli-mean-tokens, and roberta-base-nli-mean-tokens, with values between [0,0.20] indicate random classification, while $\kappa$ score between [0.21,0.39], achieved by fuzzy wuzzy, bert-base-nli-mean-tokens, roberta-base-nli-sts-mean-tokens, distilbert-base-nli-stsb-mean-tokens, bert-base-nli-mean-tokens, roberta-large-nli-mean-tokens, and distilbert-base-nli-mean-tokens, show only minimal agreement with the annotated data \cite{mchugh2012interrater}.  Relative best rates, in this case, are achieved by roberta-large-nli-stsb-mean-tokens, which substantially surpasses the other models, however in absolute terms, it shows only weak agreement. Similarly, MCC scores show a similar result, with roberta-large-nli-stsb-mean-tokens, achieving the relative best performance amongst all classifiers.
 
 \begin{figure*}[t!]
 	\centering
@@ -242,14 +232,13 @@ The results of fuzzy string comparison ($D_f$) on the attribute names of each pa
 	\label{fig:evaluation}
 \end{figure*}
 
+\section{Discussion}
 
 
-Overall, the number of similarities above the threshold values of ``0.8" are greatly increased from $D_f$, to $D_b$, and then to $D_p$ (proposed methodology). Changing the threshold value in $D_p$ to ``0.9", brings it relatively closer to $D_b$. This is due to our proposed similarity matching methodology, which gives an equal score (0.5) to the values obtained from both syntactic and semantic matches. Since the decision made at the syntactic evaluation is binary (0 or 1), thus for a similarity score of ``0.8", in $D_p$, ``0.5" represents the syntactic similarity, and ``0.3" semantic similarity. The semantic similarity value, obtained from this rescaling process, would in turn represent an original value of ``0.6" from $D_b$. Therefore, for an equal semantic representation, the value of semantic similarity after rescaling (between 0 and 0.5) should be ``0.4", and originally ``0.8". \textbf{figSynAndSemMatching0.9} shows the heatmap, of similarity matrix, obtained from $D_p$ with the threshold values as ``0.9".
+$F_1$ score, which provides the harmonic mean of precision and recall, ranges between 0 and 1, while MCC provides a fair measure of the ability with which a classifier can correctly predict both positive and negative instances \cite{chicco2020advantages}. 
 
-Generally, a comparison of these heatmaps, indicate an increase in the recall rate of the methodology. This is due to the fact, that our proposed methodology is able to match a larger number of AAs, providing 50\% of the score to the syntactic match, thereby increasing the count of cells without a missing value. This approach is also able to reduce the impact of semantic matching from names, which might contain repeated words, such as ``patient" but in reality refer to disparate concepts, such as ``PatientName" and "PatientDateOfBirth". Another important aspect of our matching process is the inclusion of semantic concepts and suffixes, as a sentence before its conversion to an embedded vector. As discussed earlier, this process is used to reduce the impact of syntactic matches alone, which would give a higher score to the attributes ``PatientName" and ``PatientGender", which refer to different concepts. The inclusion of concepts behind ``Name" and ``Gender" part of these names, allow for an improved comparison. 
-
-
-In order to evaluate the accuracy and precision rates of these methodologies, we then compared the results of our computed methods $D_f$, $D_b$, and $D_p$, with the average scored datasets by the human annotators. A visualization of the resultant Cohen's Kappa score for the 261 participating attributes, is shown in \textbf{figComputedComparisonKappaScore}. The bar chart shown in this visualization, indicates, an overall greater positive agreement between our proposed methodolody $D_p$, and the average scores of the annotators. The same is shown by the \textbf{orange} colored peaks in this dataset, which in all cases is either equivalent to the other approaches ($D_f$ and $D_b$), or better than them.
+Normalized MCC -> linear interpolation
+x := (c - a) / (b - a)
 
 \section{Conclusion}
 Conclusion goes here. 
@@ -264,70 +253,52 @@ Acknowledgment goes here.
 \bibliographystyle{unsrt}
 \bibliography{references}
 
-
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{a1.png}}]{First A. Author} (M'76--SM'81--F'87) and all authors may include 
-biographies. Biographies are often not included in conference-related
-papers. This author became a Member (M) of IEEE in 1976, a Senior
-Member (SM) in 1981, and a Fellow (F) in 1987. The first paragraph may
-contain a place and/or date of birth (list place, then date). Next,
-the author's educational background is listed. The degrees should be
-listed with type of degree in what field, which institution, city,
-state, and country, and year the degree was earned. The author's major
-field of study should be lower-cased. 
-
-The second paragraph uses the pronoun of the person (he or she) and not the 
-author's last name. It lists military and work experience, including summer 
-and fellowship jobs. Job titles are capitalized. The current job must have a 
-location; previous positions may be listed 
-without one. Information concerning previous publications may be included. 
-Try not to list more than three books or published articles. The format for 
-listing publishers of a book within the biography is: title of book 
-(publisher name, year) similar to a reference. Current and previous research 
-interests end the paragraph. The third paragraph begins with the author's 
-title and last name (e.g., Dr.\ Smith, Prof.\ Jones, Mr.\ Kajor, Ms.\ Hunter). 
-List any memberships in professional societies other than the IEEE. Finally, 
-list any awards and work for IEEE committees and publications. If a 
-photograph is provided, it should be of good quality, and 
-professional-looking. Following are two examples of an author's biography.
+% orcid: 0000-0002-9883-3355
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{FA.jpg}}]{Fahad Ahmed Satti}  is currently pursuing Ph.D. in Computer Engineering from Kyung Hee University, South Korea. He completed his MS in Computer Science from University of Trento, Italy in 2014. His primary research interest is directed towards providing a technical solution to resolve the lack of interoperability in information systems. In general, he is interested in domains of semantic matching, stream reasoning, knowledge extraction, and machine learning.
+	
 \end{IEEEbiography}
 
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{a2.png}}]{Second B. Author} was born in Greenwich Village, New York, NY, USA in 
-1977. He received the B.S. and M.S. degrees in aerospace engineering from 
-the University of Virginia, Charlottesville, in 2001 and the Ph.D. degree in 
-mechanical engineering from Drexel University, Philadelphia, PA, in 2008.
 
-From 2001 to 2004, he was a Research Assistant with the Princeton Plasma 
-Physics Laboratory. Since 2009, he has been an Assistant Professor with the 
-Mechanical Engineering Department, Texas A{\&}M University, College Station. 
-He is the author of three books, more than 150 articles, and more than 70 
-inventions. His research interests include high-pressure and high-density 
-nonthermal plasma discharge processes and applications, microscale plasma 
-discharges, discharges in liquids, spectroscopic diagnostics, plasma 
-propulsion, and innovation plasma applications. He is an Associate Editor of 
-the journal \emph{Earth, Moon, Planets}, and holds two patents. 
-
-Dr. Author was a recipient of the International Association of Geomagnetism 
-and Aeronomy Young Scientist Award for Excellence in 2008, and the IEEE 
-Electromagnetic Compatibility Society Best Symposium Paper Award in 2011. 
+% orcid: 0000-0001-8450-6946
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{S2.jpg}}]{Syed Imran Ali} received the BS degree in Computer Science from IQRA University, Islamabad in 2008 and MS degree in Computer Science From National University of Computer and Emerging Sciences (NUCES) in 2012. He has taught in NUCES as an adjunct faculty. He is currently pursuing Ph.D. degree from Department of Computer Science and Engineering, Kyung Hee University, South Korea. His area of interests include machine learning, health analytics and data-driven systems.
 \end{IEEEbiography}
 
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{a3.png}}]{Third C. Author, Jr.} (M'87) received the B.S. degree in mechanical 
-engineering from National Chung Cheng University, Chiayi, Taiwan, in 2004 
-and the M.S. degree in mechanical engineering from National Tsing Hua 
-University, Hsinchu, Taiwan, in 2006. He is currently pursuing the Ph.D. 
-degree in mechanical engineering at Texas A{\&}M University, College 
-Station, TX, USA.
 
-From 2008 to 2009, he was a Research Assistant with the Institute of 
-Physics, Academia Sinica, Tapei, Taiwan. His research interest includes the 
-development of surface processing and biological/medical treatment 
-techniques using nonthermal atmospheric pressure plasmas, fundamental study 
-of plasma sources, and fabrication of micro- or nanostructured surfaces. 
+% orcid: 0000-0002-8920-4231
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{b2.jpg}}]{Hafiz Syed Muhammad Bilal}  received the M.S. degree in computer science from National University of Sciences and Technology, Pakistan,in 2008. He is currently pursuing the Ph.D. degree in computer science and engineering at Kyung Hee University, South Korea. He has working experience of more than three years in data science and open source development and is actively involved in developing big data ecosystem for academic and health care. His research interests include behavior quantification \& assessment, machine learning, and behavior modeling \& adaptation.
+\end{IEEEbiography}
 
-Mr. Author's awards and honors include the Frew Fellowship (Australian 
-Academy of Science), the I. I. Rabi Prize (APS), the European Frequency and 
-Time Forum Award, the Carl Zeiss Research Award, the William F. Meggers 
-Award and the Adolph Lomb Medal (OSA).
+
+% orcid: 0000-0003-4494-1593
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{M3.jpg}}]{Musarrat Hussain} is a Ph.D. candidate in the Ubiquitous Computing Laboratory, Kyung Hee University, 	South Korea. He has completed his MS software Engineering in 2015 from National University of Science 	and Technology (NUST) Pakistan. His research interests include clinical text mining, knowledge 	extraction and representation, and machine learning.
+	
+\end{IEEEbiography}
+
+
+% orcid: 0000-0003-3862-8787
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{J2.jpg}}]{Jamil Hussain} received the Ph.D. degree from the Department of Computer Engineering, Kyung Hee University, South Korea. in 2019. He is currently working as a postdoctoral researcher in the Ubiquitous Computing Laboratory, Kyung Hee University, South Korea. He has a professional experience of over 7 years in software industry working on user experience design and development on various projects. His research interest includes user experience design, artificial intelligence, and information extraction from textual data.
+	
+\end{IEEEbiography}
+
+
+
+
+%orcid: 0000-0002-1663-1718
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Maq3.jpg}}]{Maqbool Hussain}  received the B.S. degree 	in computer science from the Kohat University of Science and Technology, Kohat, Pakistan, the M.S. degree from the School of Electrical Engineering and Computer Science, National University of Sciences and Technology, Pakistan, in 2009, and the Ph.D. degree from Kyung Hee University, South Korea, in 2016. He is currently an Assistant Professor with Sejong University, South Korea. He is also working as a Visiting Scholar with Oakland	University, Michigan, USA. He has more than eight years software development experience and involve in consultation and development of hospital system with collaboration of medical experts. His research interests include	artificial intelligence, and healthcare interoperability standards and clinical decision support systems.
+	
+\end{IEEEbiography}
+
+
+% orcid: 0000-0001-7133-8285
+%(M'95SM'14)
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{G1.jpg}}]{Gwang Hoon Park}  received the B.S. and M.S. degrees in electronic engineering from Yonsei University, Seoul, South Korea, in 1985 and 1987, respectively, and the M.S. and Ph.D. degrees in electrical engineering and applied physics from Case Western Reserve University, OH, USA, in 1991 and 1995, respectively. He was a Principal Research Engineer with the Information and Telecommunication Research and Development Center, Hyundai Electronics Industries, Icheon, South Korea, from 1995 to 1997, and an Associate Professor with the Department of Computer Science, Yonsei University, Wonju, South Korea, from 1997 to 2001. Since 2001, he has been a Professor with the Department of Computer Engineering, Kyung Hee University, South Korea. His research interests include video signal processing, multimedia systems, pattern recognition, and computational intelligence.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{TC.jpg}}]{Tae Choong Chung}  received his B.S. degree in Electronic Engineering from Seoul National University, Republic of Korea, in 1980, and his M.S. and Ph.D. degrees in Computer Science from KAIST, Republic of Korea, in 1982 and 1987, respectively. Since 1988, he has been with the Department of Computer Science and Engineering, Kyung Hee University, Republic of Korea, where he is now a Professor. His research interests include machine learning, meta search, and robotics.
+\end{IEEEbiography}
+
+% orcid: 0000-0002-5962-1587
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{a3.png}}]{Sungyoung Lee} received the B.S.degree from Korea University, Seoul, South Korea,and the M.S. and Ph.D. degrees in computer science from the Illinois Institute of Technology,Chicago, IL, USA, in 1987 and 1991, respectively.He was an Assistant Professor with the Department of Computer Science, Governors State University, University Park, IL, USA, from 1992 to 1993. He has been a Professor with the Department of Computer Engineering, Kyung Hee University,South Korea, since 1993, where he has been the Director of the Neo Medical ubiquitous-Life Care Information Technology Research Center since 2006.He is currently the Founding Director of the Ubiquitous Computing Laboratory. His current research interests include ubiquitous computing and applications, wireless ad hoc and sensor networks, context-aware middle-ware, sensor operating systems, real-time systems and embedded systems,and activity and emotion recognition. He is a member of ACM.
 \end{IEEEbiography}
 
 \EOD
