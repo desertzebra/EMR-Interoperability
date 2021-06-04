@@ -223,7 +223,7 @@ With a step size of 0.05 ($step_size$), and starting from $t_1$ as 0.0 and $t_2$
 Threshold values for Word2Vec are placed at the lower end of the spectrum, indicating a very large number of instances are classified as similar (above similarity score of 0.1), while a small number of instances (with similarity score 0.05) are classified as dissimilar. Similarly, the class related lies within the similarity threshold of 0.05 similarity points. It can be observed that the threshold for selecting the related class, is within 0.05 points, in all except one case (bert-large-nli-mean-tokens where the difference is 0.15 points). Five BERT based models, trained on the STSb dataset, all have minimum threshold values of 0.85 and maximum of 0.9, while the 4 remaining BERT models, lie between 0.9 and 0.95. These results show a general trend, of how the cosine similarity varies/maintains itself, against embedded vectors generated from various pre-trained models. In absolute terms, however these threshold values provide the mechanism for classifying the test dataset, which is evaluated for performance, in the next subsection.
 
 \subsection{Model Evaluation}
-On unseen test dataset, with thresholds selected in the previous step and the 12 models, we measured the performance score, using one vs all binarization of the multi-classes.
+On unseen test dataset, with thresholds selected in the previous step and the 12 models, we measured the performance score, using one vs all binarization of the multi-classes. For class 1 (``similar")
 
 % Please add the following required packages to your document preamble:
 % \usepackage{multirow}
@@ -291,7 +291,8 @@ Normalized MCC -> linear interpolation
 x := (c - a) / (b - a)
 
 \section{Conclusion}
-Conclusion goes here. 
+Healthcare information systems are slowly moving towards a standardized approach, whereby the storage, exchange, and usage of health data, information, and knowledge is becoming interoperable. However, research and development of ubiquitous health management systems, still require manual interventions by human experts. Such approaches require costly resource allocations, which is not possible for small and medium scaled healthcare service providers. In order to provide data interoperability services to these providers, and automating the process of generating maps between HMIS schema, which can match and transform patient data from a source provider to a target one, it is important to utilize state-of-the-art NLP techniques. Using transformer based pre-trained BERT models, we show the applicability of these techniques on creating the, as yet non-validated, schema maps. Resultantly, human effort can now focus on validating and verifying the schema maps, which can greatly accelerate the application of healthcare data interoperability, and provide a cohesive ecosystem for ubiquitous healthcare service delivery.
+In future, we shall look towards developing a mechanism for schema map storage and evolution, along with expert validation to finally close this loop. We shall also work on re-training some of the existing pre-trained models, to improve the performance of schema map creation.
 
 
 \section*{Acknowledgment}
