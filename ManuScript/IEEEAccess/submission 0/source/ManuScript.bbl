@@ -130,6 +130,14 @@ Akihiro Inokuchi, Koichi Takeda, Noriko Inaoka, and Fumihiko Wakao.
   intelligence.
 \newblock {\em IBM Systems Journal}, 46(1):115--133, 2007.
 
+\bibitem{ali2017reconciliation}
+Taqdir Ali and Sungyoung Lee.
+\newblock Reconciliation of snomed ct and domain clinical model for
+  interoperable medical knowledge creation.
+\newblock In {\em 2017 39th Annual International Conference of the IEEE
+  Engineering in Medicine and Biology Society (EMBC)}, pages 2654--2657. IEEE,
+  2017.
+
 \bibitem{reimers-2019-sentence-bert}
 Nils Reimers and Iryna Gurevych.
 \newblock Sentence-bert: Sentence embeddings using siamese bert-networks.

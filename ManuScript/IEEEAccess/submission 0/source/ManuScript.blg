@@ -25,45 +25,45 @@ I was expecting a `,' or a `}'---line 308 of file references.bib
  :  note = {Accessed: 2021-03-19}
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
-You've used 30 entries,
+You've used 31 entries,
             1791 wiz_defined-function locations,
-            615 strings with 9639 characters,
-and the built_in function-call counts, 6942 in all, are:
-= -- 612
-> -- 311
-< -- 7
-+ -- 117
-- -- 87
-* -- 429
-:= -- 1056
-add.period$ -- 88
-call.type$ -- 30
-change.case$ -- 28
+            620 strings with 9902 characters,
+and the built_in function-call counts, 7352 in all, are:
+= -- 658
+> -- 319
+< -- 8
++ -- 120
+- -- 89
+* -- 449
+:= -- 1105
+add.period$ -- 92
+call.type$ -- 31
+change.case$ -- 29
 chr.to.int$ -- 0
-cite$ -- 30
-duplicate$ -- 323
-empty$ -- 709
-format.name$ -- 87
-if$ -- 1580
+cite$ -- 31
+duplicate$ -- 346
+empty$ -- 750
+format.name$ -- 89
+if$ -- 1685
 int.to.chr$ -- 0
-int.to.str$ -- 30
-missing$ -- 27
-newline$ -- 147
-num.names$ -- 28
-pop$ -- 115
+int.to.str$ -- 31
+missing$ -- 28
+newline$ -- 152
+num.names$ -- 29
+pop$ -- 121
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 175
+skip$ -- 193
 stack$ -- 0
-substring$ -- 415
-swap$ -- 89
-text.length$ -- 7
+substring$ -- 455
+swap$ -- 102
+text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 71
-width$ -- 32
-write$ -- 311
+while$ -- 75
+width$ -- 33
+write$ -- 323
 (There were 4 error messages)
