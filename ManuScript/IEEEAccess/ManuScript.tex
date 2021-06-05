@@ -6,6 +6,7 @@
 \usepackage{textcomp}
 \usepackage{multirow}
 \usepackage{ulem}
+\usepackage{hyperref}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -31,11 +32,11 @@
 
 
 \markboth
-{Fahad \headeretal:Ensemble feature ranking for cost-based non-overlapping groups}
-{Fahad \headeretal:Ensemble feature ranking for cost-based non-overlapping groups}
+{Fahad \headeretal:Unsupervised Semantic Mapping for Healthcare Data Stroage Schema}
+{Fahad \headeretal:Unsupervised Semantic Mapping for Healthcare Data Stroage Schema}
 
 
-\corresp{Corresponding authors: Sungyoung Lee (e-mail: sylee@oslab.khu.ac.kr) and TaeChoog Chung (e-mail: tcchung@@khu.ac.kr)}
+\corresp{Corresponding authors: Sungyoung Lee (e-mail: sylee@oslab.khu.ac.kr) and TaeChoong Chung (e-mail: tcchung@khu.ac.kr)}
 
 \begin{abstract}
 Data, information, and knowledge processing systems, in the domain of healthcare are currently plagued by the heterogeneity at various levels. Current solutions, have focused on developing a standard based, manual intervention mechanism, which requires a large amount of human resource and necessitate realignment of existing systems. State-of-the-art methodologies in the field of natural language processing and machine learning, can help to partially automate this process, reducing the resource requirements and providing a relatively good multi-class based classification algorithm. We present a novel methodology for bridging the gap between various healthcare data management solutions by leveraging the strength of transformer based machine learning models, to create mappings between the data elements. Additionally, the annotated data, collected against five medical schemas and labeled by 4 annotators is made available for helping future researchers. Our results indicate, that for biased, dependent multi-class text classification, RoBERTa shows the best performance, achieving a cohen's kappa score of 0.47 and Matthews Correlation Coefficient (MCC) score of 0.48, with human annotated data.
@@ -207,12 +208,12 @@ The validity of our proposed approach has been evaluated using several technique
 \begin{figure}[htb!]
 	\centering
 	\includegraphics[width=\columnwidth]{kappaInterAnnotatorAgrement}
-	\caption{Cohen's Kappa ($\kappa$) score between the four annotators}
+	\caption{Cohen's Kappa ($\kappa$) score among the four annotators}
 	\label{fig:kappaInterAnnotatorAgrement}
 \end{figure}
 
 \subsection{Dataset Annotation}
-In order to compare our computed models with ground truth and to identify the best thresholds for classifying each instance as ``equal'', ``related'', or ``unrelated'' 4 human annotators were utilized to anonymously, score the similarity of each pair of attribute names. In order to support this process, we first repurposed one of our generated data matrix by marking all attribute pairs belonging to the same schema with the symbol ``-''. Following this, the annotators marked each cell corresponding to a pair of attributes (conversely, each attribute pair corresponds to two cells with the positioning of the pair-participants swapped; which is used for clarity and identify correct relationships between the attribute on left and attribute on right), by determining the similarity in terms of dissimilar as ``0'', exactly similar as ``1'', row attribute as child of column attribute as ``<'', row attribute as a parent of the column attribute as ``>'', and finally, unknown as ``~''. The data sheets generated after this extensive human effort have been made available for other researchers\footnote{https://github.com/desertzebra/EMR-Interoperability/tree/master/Implemenation/Data/Annotated}.
+In order to compare our computed models with ground truth and to identify the best thresholds for classifying each instance as ``equal'', ``related'', or ``unrelated'' 4 human annotators were utilized to anonymously, score the similarity of each pair of attribute names. In order to support this process, we first repurposed one of our generated data matrix by marking all attribute pairs belonging to the same schema with the symbol ``-''. Following this, the annotators marked each cell corresponding to a pair of attributes (conversely, each attribute pair corresponds to two cells with the positioning of the pair-participants swapped; which is used for clarity and identify correct relationships between the attribute on left and attribute on right), by determining the similarity in terms of dissimilar as ``0'', exactly similar as ``1'', row attribute as child of column attribute as ``<'', row attribute as a parent of the column attribute as ``>'', and finally, unknown as ``~''. The data sheets generated after this extensive human effort have been made available for other researchers\footnote{\url{https://github.com/desertzebra/EMR-Interoperability/tree/master/Implemenation/Data/Annotated}}.
 
 \begin{table*}
 	\centering
@@ -244,11 +245,6 @@ This dataset is then split into development and testing partitions with a ratio 
 A good text classification methodology is dependent on the correct choice of a threshold, which can maximize the target class participation. In case of independent labels, area under the precision recall curve can provide this optimal measure, however as in our case, for dependent classes on a biased dataset the MCC, is better\cite{chicco2020advantages}.
 Since our aim is to apply an optimal text similarity classifier to resolve this multi-class problem ($class_0$, $class_{0.5}$, and $class_1$), we have to test various threshold scores for separating the instances between $class_0$ and $class_{0.5}$ ($t_1$), and then $class_{0.5}$ and $class_1$ ($t_2$). Additionally, since our aim is to correctly identify the similar attribute instances, it is pertinent to maximize the classification performance of $class_1$ (similar), followed by $class_{0.5}$ (related), and finally $class_0$ (unrelated).
 With a step size of \textit{0.05} ($step$), and starting from $t_1$ as 0.0 and $t_2$ as $t_1$ + $step$, we move the thresholds until $t_2$ reaches \textit{1.0}, followed by increase in $t_1$ by step size. Eventually, $t_1$, reaches \textit{0.95} and $t_2$ reaches \textit{1.0}, at which point, the process stops. This is to ensure that $t_1$ remains behind $t_2$, for all iterations, measuring MCC score, for the 12 models. These models include, ``Fuzzy\_Wuzzy'', ``Word2Vec'', and 10 BERT based models.
-
-Threshold values for Word2Vec are placed at the lower end of the spectrum indicating a very large number of instances are classified as similar (above similarity score of \textit{0.1}), while a small number of instances (with similarity score \textit{0.05}) are classified as dissimilar. Similarly, the $class_{0.5}$ lies within the similarity threshold of \textit{0.05} similarity points. It can be observed that the threshold for selecting the related class is within \textit{0.05} points, in all except one case (bert-large-nli-mean-tokens where the difference is \textit{0.15} points). Five BERT based models, trained on the STSb dataset, all have minimum threshold values of \textit{0.85} and maximum of \textit{0.9}, while the 4 remaining BERT models, lie between \textit{0.9} and \textit{0.95}. These results show a general trend of how the cosine similarity varies/maintains itself, against embedded vectors generated from various pre-trained models. In absolute terms, however these threshold values provide the mechanism for classifying the test dataset, which is evaluated for performance in the next subsection.
-
-\subsection{Model Evaluation}
-On unseen test dataset with thresholds selected in the previous step and the 12 models, we measured the performance score using one vs all binarization of the multi-classes. As evident in Table \ref{tab:evaluations}, very high values of accuracy are visible across all models with all three positive classes. In all, except the case of Word2Vec, Precision and recall also show values close to \textit{1.0}. However, these measures are very misleading, since the dataset is greatly biased in favour of $class_0$. In terms of $F_1$ measure $class_{0.5}$ shows the worst possible results, independently, with all except Word2Vec and bert-large-nli-mean-tokens having a score of \textit{0.0}. Bert-large-nli-mean-tokens provides the best $F_1$ measure at \textit{0.49}. These metrics are thus not useful to gauge the performance of the evaluated models. Instead, focusing on the MCC score, provides a good picture of the model performance for individual classes when all other instances are negative.
 
 % Please add the following required packages to your document preamble:
 % \usepackage{multirow}
@@ -297,6 +293,13 @@ On unseen test dataset with thresholds selected in the previous step and the 12 
 		& $class_1$                       & $class_0$,$class_{0.5}$           & 0.99                                   & 0.21                                    & 0.50                                 & 0.30                              & 0.32                              \\ \hline
 	\end{tabular}
 \end{table*}
+
+Threshold values for Word2Vec are placed at the lower end of the spectrum indicating a very large number of instances are classified as similar (above similarity score of \textit{0.1}), while a small number of instances (with similarity score \textit{0.05}) are classified as dissimilar. Similarly, the $class_{0.5}$ lies within the similarity threshold of \textit{0.05} similarity points. It can be observed that the threshold for selecting the related class is within \textit{0.05} points, in all except one case (bert-large-nli-mean-tokens where the difference is \textit{0.15} points). Five BERT based models, trained on the STSb dataset, all have minimum threshold values of \textit{0.85} and maximum of \textit{0.9}, while the 4 remaining BERT models, lie between \textit{0.9} and \textit{0.95}. These results show a general trend of how the cosine similarity varies/maintains itself, against embedded vectors generated from various pre-trained models. In absolute terms, however these threshold values provide the mechanism for classifying the test dataset, which is evaluated for performance in the next subsection.
+
+\subsection{Model Evaluation}
+On unseen test dataset with thresholds selected in the previous step and the 12 models, we measured the performance score using one vs all binarization of the multi-classes. As evident in Table \ref{tab:evaluations}, very high values of accuracy are visible across all models with all three positive classes. In all, except the case of Word2Vec, Precision and recall also show values close to \textit{1.0}. However, these measures are very misleading, since the dataset is greatly biased in favour of $class_0$. In terms of $F_1$ measure $class_{0.5}$ shows the worst possible results, independently, with all except Word2Vec and bert-large-nli-mean-tokens having a score of \textit{0.0}. Bert-large-nli-mean-tokens provides the best $F_1$ measure at \textit{0.49}. These metrics are thus not useful to gauge the performance of the evaluated models. Instead, focusing on the MCC score, provides a good picture of the model performance for individual classes when all other instances are negative.
+
+
 
 Finally, we evaluated the overall $\kappa$ coefficient and MCC score to evaluate the performance of each model on the test dataset. These scores range between [-1,1], providing a measure quantifying the accuracy of the classifier to correctly predict correct and incorrect instances. The models Word2Vec, bert-large-nli-mean-tokens, and roberta-base-nli-mean-tokens, with values between [0,0.20] indicate random classification, while $\kappa$ score between [0.21,0.39], achieved by fuzzy wuzzy, bert-base-nli-mean-tokens, roberta-base-nli-sts-mean-tokens, distilbert-base-nli-stsb-mean-tokens, bert-base-nli-mean-tokens, roberta-large-nli-mean-tokens, and distilbert-base-nli-mean-tokens, show only minimal agreement with the annotated data \cite{mchugh2012interrater}.  Relative best rates, in this case, are achieved by roberta-large-nli-stsb-mean-tokens, which substantially surpasses the other models, however in absolute terms, it shows only weak agreement. Similarly, MCC scores show a similar result, with roberta-large-nli-stsb-mean-tokens, achieving the relative best performance amongst all classifiers.
 
