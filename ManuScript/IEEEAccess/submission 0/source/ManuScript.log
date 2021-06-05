@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.2) (preloaded format=pdflatex 2021.3.1)  5 JUN 2021 13:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.2) (preloaded format=pdflatex 2021.3.1)  5 JUN 2021 13:25
 entering extended mode
 **./ManuScript.tex
 (ManuScript.tex
@@ -615,7 +615,7 @@ Overfull \hbox (9.2679pt too wide) in paragraph at lines 52--52
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1728) has occurred while \output is active []
 
 
 
@@ -698,7 +698,7 @@ Package epstopdf Info: Output file is already uptodate.
 
 pdfTeX warning: pdflatex.exe (file ./methodology-eps-converted-to.pdf): PDF inc
 lusion: found PDF version <1.7>, but at most version <1.5> allowed
-<methodology-eps-converted-to.pdf, id=139, 767.86874pt x 393.47pt>
+<methodology-eps-converted-to.pdf, id=140, 767.86874pt x 393.47pt>
 File: methodology-eps-converted-to.pdf Graphic file (type pdf)
 <use methodology-eps-converted-to.pdf>
 Package pdftex.def Info: methodology-eps-converted-to.pdf  used on input line 1
@@ -742,7 +742,7 @@ Package epstopdf Info: Output file is already uptodate.
 
 pdfTeX warning: pdflatex.exe (file ./schemas-eps-converted-to.pdf): PDF inclusi
 on: found PDF version <1.7>, but at most version <1.5> allowed
-<schemas-eps-converted-to.pdf, id=160, 961.5925pt x 515.9275pt>
+<schemas-eps-converted-to.pdf, id=161, 961.5925pt x 515.9275pt>
 File: schemas-eps-converted-to.pdf Graphic file (type pdf)
 <use schemas-eps-converted-to.pdf>
 Package pdftex.def Info: schemas-eps-converted-to.pdf  used on input line 137.
@@ -753,7 +753,7 @@ Overfull \hbox (4.51984pt too wide) in paragraph at lines 137--138
  []
 
 
-Underfull \vbox (badness 4108) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 1092) has occurred while \output is active []
@@ -944,7 +944,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 File: notaglineLogo.png Graphic file (type png)
 <use notaglineLogo.png>
-Package pdftex.def Info: notaglineLogo.png  used on input line 301.
+Package pdftex.def Info: notaglineLogo.png  used on input line 304.
 (pdftex.def)             Requested size: 91.32pt x 23.1352pt.
 
 Overfull \hbox (505.12177pt too wide) has occurred while \output is active
@@ -1000,9 +1000,6 @@ Package pdftex.def Info: evaluation-eps-converted-to.pdf  used on input line 30
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-Underfull \vbox (badness 1253) has occurred while \output is active []
-
 File: notaglineLogo.png Graphic file (type png)
 <use notaglineLogo.png>
 Package pdftex.def Info: notaglineLogo.png  used on input line 316.
@@ -1030,7 +1027,7 @@ Underfull \vbox (badness 1975) has occurred while \output is active []
 
 File: notaglineLogo.png Graphic file (type png)
 <use notaglineLogo.png>
-Package pdftex.def Info: notaglineLogo.png  used on input line 323.
+Package pdftex.def Info: notaglineLogo.png  used on input line 325.
 (pdftex.def)             Requested size: 91.32pt x 23.1352pt.
 
 Overfull \hbox (505.12177pt too wide) has occurred while \output is active
@@ -1079,9 +1076,23 @@ File: fahad.jpg Graphic file (type jpg)
 <use fahad.jpg>
 Package pdftex.def Info: fahad.jpg  used on input line 332.
 (pdftex.def)             Requested size: 62.29657pt x 90.33498pt.
+<musarrat.jpg, id=575, 381.425pt x 529.98pt>
+File: musarrat.jpg Graphic file (type jpg)
+<use musarrat.jpg>
+Package pdftex.def Info: musarrat.jpg  used on input line 335.
+(pdftex.def)             Requested size: 65.01016pt x 90.32991pt.
+File: musarrat.jpg Graphic file (type jpg)
+<use musarrat.jpg>
+Package pdftex.def Info: musarrat.jpg  used on input line 335.
+(pdftex.def)             Requested size: 65.01016pt x 90.32991pt.
+
+Underfull \hbox (badness 2626) in paragraph at lines 335--336
+\T1/ptm/n/n/8 tional Uni-ver-sity of Sci-ence and Tech-nol-ogy
+ []
+
 File: notaglineLogo.png Graphic file (type png)
 <use notaglineLogo.png>
-Package pdftex.def Info: notaglineLogo.png  used on input line 335.
+Package pdftex.def Info: notaglineLogo.png  used on input line 338.
 (pdftex.def)             Requested size: 91.32pt x 23.1352pt.
 
 Overfull \hbox (505.12177pt too wide) has occurred while \output is active
@@ -1098,22 +1109,8 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 []
  []
 
-[11 <./fahad.jpg>]
-<musarrat.jpg, id=582, 381.425pt x 529.98pt>
-File: musarrat.jpg Graphic file (type jpg)
-<use musarrat.jpg>
-Package pdftex.def Info: musarrat.jpg  used on input line 335.
-(pdftex.def)             Requested size: 65.01016pt x 90.32991pt.
-File: musarrat.jpg Graphic file (type jpg)
-<use musarrat.jpg>
-Package pdftex.def Info: musarrat.jpg  used on input line 335.
-(pdftex.def)             Requested size: 65.01016pt x 90.32991pt.
-
-Underfull \hbox (badness 2626) in paragraph at lines 335--336
-\T1/ptm/n/n/8 tional Uni-ver-sity of Sci-ence and Tech-nol-ogy
- []
-
-<jamil.jpg, id=585, 144.54pt x 216.81pt>
+[11 <./fahad.jpg> <./musarrat.jpg>]
+<jamil.jpg, id=586, 144.54pt x 216.81pt>
 File: jamil.jpg Graphic file (type jpg)
 <use jamil.jpg>
 Package pdftex.def Info: jamil.jpg  used on input line 338.
@@ -1122,7 +1119,7 @@ File: jamil.jpg Graphic file (type jpg)
 <use jamil.jpg>
 Package pdftex.def Info: jamil.jpg  used on input line 338.
 (pdftex.def)             Requested size: 60.22557pt x 90.33838pt.
-<imran.jpg, id=588, 130.23656pt x 173.89969pt>
+<imran.jpg, id=589, 130.23656pt x 173.89969pt>
 File: imran.jpg Graphic file (type jpg)
 <use imran.jpg>
 Package pdftex.def Info: imran.jpg  used on input line 341.
@@ -1131,7 +1128,7 @@ File: imran.jpg Graphic file (type jpg)
 <use imran.jpg>
 Package pdftex.def Info: imran.jpg  used on input line 341.
 (pdftex.def)             Requested size: 67.65384pt x 90.33546pt.
-<taqdir.jpg, id=591, 93.951pt x 122.859pt>
+<taqdir.jpg, id=592, 93.951pt x 122.859pt>
 File: taqdir.jpg Graphic file (type jpg)
 <use taqdir.jpg>
 Package pdftex.def Info: taqdir.jpg  used on input line 344.
@@ -1140,7 +1137,7 @@ File: taqdir.jpg Graphic file (type jpg)
 <use taqdir.jpg>
 Package pdftex.def Info: taqdir.jpg  used on input line 344.
 (pdftex.def)             Requested size: 69.0854pt x 90.34244pt.
-<bilal.jpg, id=594, 427.1157pt x 517.4532pt>
+<bilal.jpg, id=595, 427.1157pt x 517.4532pt>
 File: bilal.jpg Graphic file (type jpg)
 <use bilal.jpg>
 Package pdftex.def Info: bilal.jpg  used on input line 347.
@@ -1149,7 +1146,7 @@ File: bilal.jpg Graphic file (type jpg)
 <use bilal.jpg>
 Package pdftex.def Info: bilal.jpg  used on input line 347.
 (pdftex.def)             Requested size: 72.2698pt x 87.5553pt.
-<prof_tcc.jpg, id=597, 225.84375pt x 282.30469pt>
+<prof_tcc.jpg, id=598, 225.84375pt x 282.30469pt>
 File: prof_tcc.jpg Graphic file (type jpg)
 <use prof_tcc.jpg>
 Package pdftex.def Info: prof_tcc.jpg  used on input line 349.
@@ -1158,7 +1155,7 @@ File: prof_tcc.jpg Graphic file (type jpg)
 <use prof_tcc.jpg>
 Package pdftex.def Info: prof_tcc.jpg  used on input line 349.
 (pdftex.def)             Requested size: 72.27147pt x 90.33934pt.
-<prof_sylee.png, id=600, 99.37125pt x 121.20282pt>
+<prof_sylee.png, id=601, 99.37125pt x 121.20282pt>
 File: prof_sylee.png Graphic file (type png)
 <use prof_sylee.png>
 Package pdftex.def Info: prof_sylee.png  used on input line 352.
@@ -1195,8 +1192,8 @@ Underfull \hbox (badness 10000) has occurred while \output is active
 []
  []
 
-[12 <./musarrat.jpg> <./jamil.jpg> <./imran.jpg> <./taqdir.jpg> <./bilal.jpg> <
-./prof_tcc.jpg> <./prof_sylee.png>] (ManuScript.aux)
+[12 <./jamil.jpg> <./imran.jpg> <./taqdir.jpg> <./bilal.jpg> <./prof_tcc.jpg> <
+./prof_sylee.png>] (ManuScript.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -1209,11 +1206,11 @@ Package rerunfilecheck Info: File `ManuScript.out' has not changed.
 Here is how much of TeX's memory you used:
  11027 strings out of 479334
  168076 string characters out of 2851822
- 518220 words of memory out of 3000000
+ 518837 words of memory out of 3000000
  28185 multiletter control sequences out of 15000+200000
  503499 words of font info for 156 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,12n,88p,2224b,419s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 83i,13n,88p,2224b,419s stack positions out of 5000i,500n,10000p,200000b,50000s
 pdfTeX warning (dest): name{section*.2} has been referenced but does not exis
 t, replaced by a fixed one
 
@@ -1240,7 +1237,7 @@ nts/type1/urw/helvetic/uhvro8a.pfb><C:/Users/Musarrat Hussain/AppData/Local/Pro
 grams/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Musarrat Hussain/AppDat
 a/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Musarrat Hus
 sain/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on ManuScript.pdf (12 pages, 2298470 bytes).
+Output written on ManuScript.pdf (12 pages, 2298436 bytes).
 PDF statistics:
  692 PDF objects out of 1000 (max. 8388607)
  75 named destinations out of 1000 (max. 500000)
