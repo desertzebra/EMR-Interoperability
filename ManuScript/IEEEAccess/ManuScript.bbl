@@ -32,8 +32,9 @@ Taqdir Ali, Maqbool Hussain, Wajahat~Ali Khan, Muhammad Afzal, Jamil Hussain,
 {LOINC}.
 
 \bibitem{CIMI2015}
-CIMI.
-\newblock {Clinical Information Modeling Initiative (CIMI)}, 2015.
+David Johnson.
+\newblock {Clinical Information Modeling Initiative (CIMI)}.
+\newblock Accessed:2021-06-05.
 
 \bibitem{Satti2020}
 Fahad~Ahmed Satti, Taqdir Ali, Jamil Hussain, Wajahat~Ali Khan, Asad~Masood
@@ -156,5 +157,30 @@ Kilem~L Gwet.
 Mary~L McHugh.
 \newblock Interrater reliability: the kappa statistic.
 \newblock {\em Biochemia medica}, 22(3):276--282, 2012.
+
+\bibitem{reidsma2008exploiting}
+Dennis Reidsma and Rieks op~den Akker.
+\newblock Exploiting ‘subjective’annotations.
+\newblock In {\em Coling 2008: Proceedings of the workshop on Human Judgements
+  in Computational Linguistics}, pages 8--16, 2008.
+
+\bibitem{velupillai2010towards}
+Sumithra Velupillai.
+\newblock Towards a better understanding of uncertainties and speculations in
+  swedish clinical text--analysis of an initial annotation trial.
+\newblock In {\em Proceedings of the Workshop on Negation and Speculation in
+  Natural Language Processing}, pages 14--22, 2010.
+
+\bibitem{pavlick2019inherent}
+Ellie Pavlick and Tom Kwiatkowski.
+\newblock Inherent disagreements in human textual inferences.
+\newblock {\em Transactions of the Association for Computational Linguistics},
+  7:677--694, 2019.
+
+\bibitem{espindola2005extending}
+Rog{\'e}rio~P Esp{\'\i}ndola and Nelson~FF Ebecken.
+\newblock On extending f-measure and g-mean metrics to multi-class problems.
+\newblock {\em WIT Transactions on Information and Communication Technologies},
+  35, 2005.
 
 \end{thebibliography}
