@@ -1,0 +1,67 @@
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: ManuScript.aux
+The style file: unsrt.bst
+Database file #1: references.bib
+I was expecting a `,' or a `}'---line 33 of file references.bib
+ : 
+ : note = {Accessed:2021-06-05}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 41 of file references.bib
+ : 
+ : note = {Accessed:2021-06-05}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 58 of file references.bib
+ : 
+ : note = {Accessed:2021-06-05}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 314 of file references.bib
+ :  
+ :  note = {Accessed: 2021-03-19}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+You've used 32 entries,
+            1791 wiz_defined-function locations,
+            624 strings with 10079 characters,
+and the built_in function-call counts, 7516 in all, are:
+= -- 671
+> -- 327
+< -- 8
++ -- 123
+- -- 91
+* -- 454
+:= -- 1131
+add.period$ -- 95
+call.type$ -- 32
+change.case$ -- 29
+chr.to.int$ -- 0
+cite$ -- 32
+duplicate$ -- 356
+empty$ -- 769
+format.name$ -- 91
+if$ -- 1724
+int.to.chr$ -- 0
+int.to.str$ -- 32
+missing$ -- 30
+newline$ -- 157
+num.names$ -- 30
+pop$ -- 128
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 196
+stack$ -- 0
+substring$ -- 455
+swap$ -- 103
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 76
+width$ -- 34
+write$ -- 333
+(There were 4 error messages)
