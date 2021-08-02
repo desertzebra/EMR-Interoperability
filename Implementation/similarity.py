@@ -54,17 +54,22 @@ class Similarity:
 
     def __init__(self):
         self.embeddingVectors = {}
-        self.models = ['bert-base-nli-stsb-mean-tokens',
-                       'bert-large-nli-stsb-mean-tokens',
-                       'roberta-base-nli-stsb-mean-tokens',
-                       'roberta-large-nli-stsb-mean-tokens',
-                       'distilbert-base-nli-stsb-mean-tokens',
-                       'bert-base-nli-mean-tokens',
-                       'bert-large-nli-mean-tokens',
-                       'roberta-base-nli-mean-tokens',
-                       'roberta-large-nli-mean-tokens',
-                       'distilbert-base-nli-mean-tokens'
-                       ]
+        # self.models = ['bert-base-nli-stsb-mean-tokens',
+        #                'bert-large-nli-stsb-mean-tokens',
+        #                'roberta-base-nli-stsb-mean-tokens',
+        #                'roberta-large-nli-stsb-mean-tokens',
+        #                'distilbert-base-nli-stsb-mean-tokens',
+        #                'bert-base-nli-mean-tokens',
+        #                'bert-large-nli-mean-tokens',
+        #                'roberta-base-nli-mean-tokens',
+        #                'roberta-large-nli-mean-tokens',
+        #                'distilbert-base-nli-mean-tokens'
+        #                ]
+        self.models = [
+    'roberta-base-nli-mean-tokens',
+    'roberta-large-nli-mean-tokens',
+    'distilbert-base-nli-mean-tokens'
+    ]
         # self.models = ['bert-base-nli-stsb-mean-tokens']
 
     def readData(self, url):
@@ -169,11 +174,11 @@ class Similarity:
     @staticmethod
     def createSentenceForAA(node):
         word_concept_map = {}
-        for concept in node['conceptArray']:
-            if concept['token'] not in word_concept_map:
-                word_concept_map[concept['token']] = []
-            word_concept_map[concept['token']].append(concept['name'])
-        # print(word_concept_map)
+        # for concept in node['conceptArray']:
+        #     if concept['token'] not in word_concept_map:
+        #         word_concept_map[concept['token']] = []
+        #     word_concept_map[concept['token']].append(concept['name'])
+        # # print(word_concept_map)
         sentence = ""
         for suffix in word_concept_map:
             sentence += suffix + " " #+ " ".join(word_concept_map[suffix]) + ";"
@@ -359,7 +364,7 @@ class Similarity:
 
             attributes = self.calcualteBaseLineSimilarity(attributes, model)
 
-            with open("Data/AmplifiedSimilarity-V0.6" + model + ".txt", "wb") as fp:  # Pickling
+            with open("Data/AmplifiedSimilarity-V2.0" + model + ".txt", "wb") as fp:  # Pickling
                 pickle.dump(attributes, fp)
 
         return attributes
@@ -398,7 +403,7 @@ import numpy as np
 import ujson as json
 from numba import jit
 import multiprocessing
-from gensim.models import Word2Vec
+#from gensim.models import Word2Vec
 from numba import njit, cuda, prange
 from joblib import Parallel, delayed
 from sentence_transformers import SentenceTransformer, util
@@ -544,8 +549,8 @@ class Similarity:
         # for word in node['suffixArray']:
         #     word_concept_map["word"] = []
         amplified_sentences.extend(node['suffixArray'])
-        for concept in node['conceptArray']:
-            amplified_sentences.append(concept['name'])
+        # for concept in node['conceptArray']:
+        #     amplified_sentences.append(concept['name'])
 
         return amplified_sentences
 
@@ -702,9 +707,9 @@ class Similarity:
 
     def calculateSimilarity(self, attributes):
     
-        # attributes = self.calculateAmplifiedSimilarity(attributes, model)
+        attributes = self.calculateAmplifiedSimilarity(attributes, model)
 
-        attributes = self.calcualteBaseLineSimilarity(attributes)
+        #attributes = self.calcualteBaseLineSimilarity(attributes)
 
         
 
@@ -724,16 +729,16 @@ data = simObj.readData('Data/AmplifiedSimilarity-V0.3.txt')
 print('data')
 print(len(data))
 
-exit()
+
 
 # data = simObj.calcualteBaseLineSimilarity(data)
 
 
-similarity = simObj.calculateSimilarity(data)
+#similarity = simObj.calculateSimilarity(data)
 
 
 
-# synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
+synAndSemSimilarity = simObj.calculateAmplifiedSimilarity(data)
 
 # print('synAndSemSimilarity')
 # print(synAndSemSimilarity)
