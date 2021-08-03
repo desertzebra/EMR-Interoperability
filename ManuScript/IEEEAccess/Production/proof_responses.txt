@@ -1,0 +1,78 @@
+AQ:1 = These are correct
+-------------------------------------------------------------------------------
+AQ:2 = This is correct
+-------------------------------------------------------------------------------
+AQ:3 = The graphical abstract was uploaded with the submission.
+-------------------------------------------------------------------------------
+AQ:4 = 
+
+Organization Name = Healthcare Information and Management Systems Society (HIMSS)
+Organzation Location = 33 West Monroe Street, Suite 1700
+			Chicago, IL 60603-5616
+			Phone: (312) 664-HIMSS (664-4467)
+			https://www.himss.org/
+last-accessed = 2021 - 07- 31
+
+-------------------------------------------------------------------------------
+AQ:5 = 
+
+[5] 
+Organization name = SNOMED International
+Organization location = 1 Kingdom Street, Paddington
+			London, W2 6BD
+			United Kingdom
+			Tel: +44 (0)203 755 0974
+			Email: info@snomed.org
+			Registered in England and Wales
+			Company Registration Number 9915820
+			url: https://www.snomed.org
+
+Year = 2021
+
+[6]
+LOINC c/o Biomedical Informatics
+
+Organization name = The Regenstrief Institute, Inc
+
+organization location = 1101 West Tenth Street
+			Indianapolis, IN 46202
+			http://regenstrief.org/
+
+Year = 2021 
+-------------------------------------------------------------------------------
+AQ:6 =
+
+author = David Johnson
+title = Clinical Information Modeling Initiative (CIMI)
+url = https://confluence.hl7.org/display/CIMI
+urldate = 2019-05-08
+note = Accessed:2021-07-30
+-------------------------------------------------------------------------------
+AQ:7 = 
+
+Book title = Handbook of inter-rater reliability: The definitive guide to
+measuring the extent of agreement among raters
+Edition = Fourth Edition
+Page = 48 - 71
+
+Please note, the fourth edition does not have any volumes.
+-------------------------------------------------------------------------------
+AQ:8 = 
+organization name = SeatGeek
+organization location = New York, New York
+			https://seatgeek.com
+			hi@seatgeek.com
+
+url = https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python/
+
+report no. = I don't know what is Report No and I couldn't find any details on it.
+-------------------------------------------------------------------------------
+
+AQ:9 = 
+The photo will be separately added, named as sylee_prof.png
+
+-------------------------------------------------------------------------------
+
+Additional Comments: On page 10, line 643, is it possible to change the number "3" to "three"? 
+
+
