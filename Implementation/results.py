@@ -10,8 +10,8 @@ class Results:
     # BASE_INDEX = 2
     # FUZZY_WUZZY_INDEX = 1
     # SYN_AND_SEM_SIM_INDEX = 0
-    computational_iteration = "1.7"
-    amplified_similarity_execution_index = "0.5"
+    computational_iteration = "4.0"
+    amplified_similarity_execution_index = "4.0"
     models = ['bert-base-nli-stsb-mean-tokens',
               'bert-large-nli-stsb-mean-tokens',
               'roberta-base-nli-stsb-mean-tokens',
@@ -204,6 +204,7 @@ data = resultObj.readData('Data/AmplifiedSimilarity-V'+resultObj.amplified_simil
 print('data')
 print(len(data))
 
+
 #resultObj.generateCSV(data)
 
 
@@ -211,12 +212,12 @@ print(len(data))
 
 #for syn in frange(0.1, 0.9, 0.1):
 
-resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
+#resultObj.printBaseHeatMap(data, 'FUZZY_MATCH')
 # resultObj.printBaseHeatMap(data, 'Word2Vec')
 
 
 for model_baseline in resultObj.models:
-    resultObj.printBaseHeatMap(data, model_baseline)
+    resultObj.printBaseHeatMap(data, model_baseline, True)
 
 for syn in numpy.arange(0, 1, 0.1):
     syn = round(syn, 1)
