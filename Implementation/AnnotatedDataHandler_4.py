@@ -92,9 +92,10 @@ class AnnotatedDataHandler:
         # self.result_indexes = ["0.0-1.0", "0.1-0.9", "0.2-0.8", "0.3-0.7", "0.4-0.6", "0.5-0.5", "0.6-0.4", "0.7-0.3",
         #                        "0.8-0.2", "0.9-0.1"]
         self.result_indexes = ["0.0-1.0"]
-        self.computational_iteration = "1.7"
-        self.result_iteration = ".5"
-        self.notSynAndSem = ["FUZZY_MATCH", "Word2Vec"]
+        self.computational_iteration = "4.0"
+        self.result_iteration = "4.0"
+        #self.notSynAndSem = ["FUZZY_MATCH", "Word2Vec"]
+        self.notSynAndSem = []
         self.computed_method = ['bert-base-nli-stsb-mean-tokens',
                                 'bert-large-nli-stsb-mean-tokens',
                                 'roberta-base-nli-stsb-mean-tokens',
@@ -351,11 +352,11 @@ class AnnotatedDataHandler:
                                                                                                  _thresholds)
         # Read other methods
         # annotatedDataHandler.log(['-'] * 80)
-        for model in self.notSynAndSem:
-            syn_sem_threshold = "0-0"
-            self.computed_data[model][syn_sem_threshold] = self.read_computed_data_for_model(model, read_headers,
-                                                                                             syn_sem_threshold,
-                                                                                             _thresholds)
+        # for model in self.notSynAndSem:
+        #     syn_sem_threshold = "0-0"
+        #     self.computed_data[model][syn_sem_threshold] = self.read_computed_data_for_model(model, read_headers,
+        #                                                                                      syn_sem_threshold,
+        #                                                                                      _thresholds)
         # annotatedDataHandler.log(['*'] * 80)
 
     def calculate_pearson_score_between_annotators(self):
@@ -915,7 +916,7 @@ annotatedDataHandler = AnnotatedDataHandler()
 # Now to convert the datasets into 1d
 annotatedDataHandler.readAllAnnotatorsData(True)
 annotatedDataHandler.calculateKappaScoreBetweenAnnotators()
-exit()
+#exit()
 
 
 
@@ -950,7 +951,6 @@ annotatedDataHandler.read_all_computed_data(read_headers=True)
 
 print("Computed Method Length: ", len(annotatedDataHandler.collapseDataSetTo1dArrayWithHeaders(annotatedDataHandler.computed_data[annotatedDataHandler.computed_method[0]]["0.0-1.0"])))
 
-exit()
 
 
 
