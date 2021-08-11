@@ -78,6 +78,6 @@ Implementation/Data/AmplifiedSimilarity-V0.5roberta-large-nli-stsb-mean-tokens.t
 Implementation/Data/1.6 CREATE aa/AmplifiedSimilarity-V0.4.txt
 Implementation/Data/AmplifiedSimilarity-V0.4.txt
 Implementation/Data/AmplifiedSimilarity-Word2Vec-V0.4.txt
-ManuScript/
-Presentations/
-Related Work/
+ManuScript/**
+Presentations/**
+Related Work/**
