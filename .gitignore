@@ -81,3 +81,4 @@ Implementation/Data/AmplifiedSimilarity-Word2Vec-V0.4.txt
 ManuScript/**
 Presentations/**
 Related Work/**
+__pycache__ /**
